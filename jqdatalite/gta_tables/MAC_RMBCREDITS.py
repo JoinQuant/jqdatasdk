@@ -1,0 +1,78 @@
+
+
+# coding: utf-8
+from sqlalchemy import BigInteger, Column, DateTime, Integer, Numeric, SmallInteger, String, Table, Text, text
+from sqlalchemy.dialects.mysql.base import LONGBLOB
+from sqlalchemy.ext.declarative import declarative_base
+
+
+Base = declarative_base()
+metadata = Base.metadata
+
+
+class MAC_RMBCREDITS(Base):
+    __tablename__ = "MAC_RMBCREDITS"
+
+    SGNYEAR = Column(String(8, u'utf8_bin'), primary_key=True)
+    TOTALDEPOSIT = Column(Numeric(20, 4))
+    CORPORATEDEPOSIT = Column(Numeric(20, 4))
+    CORPORATEDEMANDDEPOSIT = Column(Numeric(20, 4))
+    CORPORATETIMEDEPOSIT = Column(Numeric(20, 4))
+    NOTICEDEPOSIT = Column(Numeric(20, 4))
+    MARGINDEPOSIT = Column(Numeric(20, 4))
+    PERSONALDEPOSIT = Column(Numeric(20, 4))
+    SAVINGDEPOSIT = Column(Numeric(20, 4))
+    DEMANDDEPOSIT = Column(Numeric(20, 4))
+    TIMEDEPOSIT = Column(Numeric(20, 4))
+    PERSONALMARGINDEPOSIT = Column(Numeric(20, 4))
+    PERSONALSTRUCTUREDEPOSIT = Column(Numeric(20, 4))
+    FISCALDEPOSIT = Column(Numeric(20, 4))
+    GOVERNMENTDEPOSIT = Column(Numeric(20, 4))
+    TEMPORARYDEPOSIT = Column(Numeric(20, 4))
+    RURALDEPOSIT = Column(Numeric(20, 4))
+    DESIGNATEDDEPOSIT = Column(Numeric(20, 4))
+    OTHERDEPOSIT = Column(Numeric(20, 4))
+    FINANCEBOND = Column(Numeric(20, 4))
+    M0 = Column(Numeric(20, 4))
+    FINANCELIABILITY = Column(Numeric(20, 4))
+    OWNEDCAPITAL = Column(Numeric(20, 4))
+    OTHERITEM = Column(Numeric(20, 4))
+    TOTALFUNDSOURCE = Column(Numeric(20, 4))
+    TOTALLOAN = Column(Numeric(20, 4))
+    DOMESTICLOAN = Column(Numeric(20, 4))
+    SHORTTERMLOAN = Column(Numeric(20, 4))
+    SHORTTPERSONALOVERLOAN = Column(Numeric(20, 4))
+    SHORTTORGOVERLOANS = Column(Numeric(20, 4))
+    SHORTTERMMALOAN = Column(Numeric(20, 4))
+    SHORTTSYNDICATEDLOAN = Column(Numeric(20, 4))
+    SHORTTERMTRADEFINANCING = Column(Numeric(20, 4))
+    SHORTTOFFSHOREFINANCING = Column(Numeric(20, 4))
+    INDUSTRYLOAN = Column(Numeric(20, 4))
+    COMMERCELOAN = Column(Numeric(20, 4))
+    CONSTRUCTLOAN = Column(Numeric(20, 4))
+    AGRICULTURELOAN = Column(Numeric(20, 4))
+    TOWNSHIPCOMPANYLOANS = Column(Numeric(20, 4))
+    FOREIGNFUNDEDCOMPANYLOANS = Column(Numeric(20, 4))
+    PRIVATECOMPANYLOANS = Column(Numeric(20, 4))
+    OTHERSHORTTERMLOAN = Column(Numeric(20, 4))
+    MEDIUMLONGTERMLOAN = Column(Numeric(20, 4))
+    MEDIUMTERMPERSONALLOAN = Column(Numeric(20, 4))
+    MEDIUMTERMORGLOAN = Column(Numeric(20, 4))
+    MEDIUMTERMMALOAN = Column(Numeric(20, 4))
+    MEDIUMTERMTSYNDICATEDLOAN = Column(Numeric(20, 4))
+    MEDIUMTERMTRADEFINANCING = Column(Numeric(20, 4))
+    MEDIUMTERMOFFSHOREFINANCING = Column(Numeric(20, 4))
+    DESIGNATELOAN = Column(Numeric(20, 4))
+    OTHERLOAN = Column(Numeric(20, 4))
+    FINANCELEASE = Column(Numeric(20, 4))
+    BILLFINANCE = Column(Numeric(20, 4))
+    ADVANCE = Column(Numeric(20, 4))
+    OVERSEALOAN = Column(Numeric(20, 4))
+    PORTFOLIOINVEST = Column(Numeric(20, 4))
+    SECURITY = Column(Numeric(20, 4))
+    OTHERSHARE = Column(Numeric(20, 4))
+    BULLIONPURCHASE = Column(Numeric(20, 4))
+    FOREXPURCHASE = Column(Numeric(20, 4))
+    TREASURYADVANCE = Column(Numeric(20, 4))
+    FINANCEASSETS = Column(Numeric(20, 4))
+    TOTALFUNDUSE = Column(Numeric(20, 4))
