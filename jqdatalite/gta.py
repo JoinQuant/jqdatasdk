@@ -35,13 +35,7 @@ class Gta(object):
 
         # query object to sql
         sql = compile_query(query_object)
-        return JQDataClient.instance().gta_query(sql=sql)
-
-    def _compat_old(self, df):
-        # 保持跟以前一样的代码, 返回一样的结果
-        csv = df.to_csv(index=False, encoding='utf-8')
-        dtypes = df.dtypes.to_csv(None, encoding='utf-8')
-        df = pd.read_csv(six.StringIO(csv), dtype=pd.Series.from_csv(six.StringIO(dtypes)), encoding='utf-8')
+        df = JQDataClient.instance().gta_query(sql=sql)
         return df
 
     def __load_table_names(self):

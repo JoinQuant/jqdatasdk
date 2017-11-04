@@ -2,45 +2,19 @@
 
 from functools import wraps
 from .utils import *
-from codec import Codec
-import numpy as np
 
-client = None
+
+data_client = None
 
 
 def assert_auth(func):
     @wraps(func)
     def _wrapper(*args, **kwargs):
-        if client is None:
+        if data_client is None:
             print("请先调用jqdatalite.init进行认证")
         else:
             return func(*args, **kwargs)
     return _wrapper
-
-
-class Security(object):
-    code = None
-    display_name = None
-    name = None
-    start_date = None
-    end_date = None
-    type = None
-    parent = None
-
-    def __init__(self, **kwargs):
-        self.code = kwargs.get("code", None)
-        self.display_name = kwargs.get("display_name", None)
-        self.name = kwargs.get("name", None)
-        self.start_date = to_date(kwargs.get("start_date", None))
-        self.end_date = to_date(kwargs.get("end_date", None))
-        self.type = kwargs.get("type", None)
-        self.parent = kwargs.get("parent", None)
-
-    def __repr__(self):
-        return self.code
-
-    def __str__(self):
-        return self.code
 
 
 @assert_auth
@@ -58,17 +32,22 @@ def get_price(security, start_date=None, end_date=None, frequency='daily',
                         分别表示X天和X分钟(不论是按天还是按分钟回测都能拿到这两种单位的数据), 
                         注意, 当X > 1时, fields只支持[‘open’, ‘close’, ‘high’, ‘low’, ‘volume’, ‘money’]这几个标准字段. 默认值是daily
     """
+    security = convert_security(security)
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
-    assert (not start_date) ^ (not count), "count 与 start_date 二选一，不可同时使用"
-    return client.get_price(**locals())
+    if (not count) and (not start_date):
+            start_date = "2015-01-01"
+    if count and start_date:
+        raise ParamsError("get_price 不能同时指定 start_date 和 count 两个参数")
+    return data_client.get_price(**locals())
 
 
 @assert_auth
 def history(count, unit='1d', field='avg', security_list=None,
-            df=True, skip_paused=False, fq='pre', pre_factor_ref_date=None):
+            df=True, skip_paused=False, fq='pre'):
     assert security_list, "security_list不能为空"
-    return client.history(**locals())
+    security_list = convert_security(security_list)
+    return data_client.history(**locals())
 
 
 @assert_auth
@@ -77,84 +56,91 @@ def attribute_history(security, count, unit='1d',
                       skip_paused=True,
                       df=True,
                       fq='pre'):
+    security = convert_security(security)
     assert is_str(security), "security 为字符串类型"
-    return client.attribute_history(**locals())
+    return data_client.attribute_history(**locals())
 
 
 @assert_auth
 def get_trade_days(start_date=None, end_date=None, count=None):
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
-    return client.get_trade_days(**locals())
+    data = data_client.get_trade_days(**locals())
+    return [to_date(i.item()) for i in data]
 
 
 @assert_auth
 def get_all_trade_days():
-    return client.get_all_trade_days()
+    data = data_client.get_all_trade_days()
+    return [to_date(i.item()) for i in data]
 
 
 @assert_auth
 def get_extras(info, security_list, start_date=None, end_date=None, df=True, count=None):
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
-    return client.get_extras(**locals())
+    security_list = convert_security(security_list)
+    return data_client.get_extras(**locals())
 
 
 @assert_auth
 def get_index_stocks(index_symbol, date=today()):
     assert index_symbol, "指数代码不能为空"
     date = to_date_str(date)
-    return client.get_index_stocks(**locals())
+    return data_client.get_index_stocks(**locals())
 
 
 @assert_auth
 def get_industry_stocks(industry_code, date=today()):
     assert industry_code, "行业编码不能为空"
     date = to_date_str(date)
-    return client.get_industry_stocks(**locals())
+    return data_client.get_industry_stocks(**locals())
 
 
 @assert_auth
 def get_concept_stocks(concept_code, date=today()):
     assert concept_code, "概念板块编码不能为空"
     date = to_date_str(date)
-    return client.get_concept_stocks(**locals())
+    return data_client.get_concept_stocks(**locals())
 
 
 @assert_auth
 def get_all_securities(types=[], date=None):
     date = to_date_str(date)
-    return client.get_all_securities(**locals())
+    return data_client.get_all_securities(**locals())
 
 
 @assert_auth
 def get_security_info(code):
     assert code, "标的代码不能为空"
-    result = client.get_security_info(**locals())
+    result = data_client.get_security_info(**locals())
     if result:
         return Security(**result)
 
 
 @assert_auth
-def get_history_name(code, date):
-    date = to_date_str(date)
-    return client.get_history_name(**locals())
-
-
-@assert_auth
 def get_money_flow(security_list, start_date=None, end_date=None, fields=None, count=None):
     assert security_list, "security_list不能为空"
+    security_list = convert_security(security_list)
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
-    return client.get_money_flow(**locals())
+    return data_client.get_money_flow(**locals())
 
 
 @assert_auth
 def get_fundamentals(query_object, date=None, statDate=None):
     from .finance_service import get_fundamentals_sql
-    assert (not date) ^ (not statDate), "date和statDate参数只能传入一个"
+    if date is None and statDate is None:
+        date = datetime.date.today()
+        from .calendar_service import CalendarService
+        trade_days = CalendarService.get_all_trade_days()
+        date = list(filter(lambda item: item < date, trade_days))[-1]
+    elif date:
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        date = min(to_date(date), yesterday)
     sql = get_fundamentals_sql(query_object, date, statDate)
-    return client.get_fundamentals(sql=sql)
+    print(sql)
+    return data_client.get_fundamentals(sql=sql)
 
 
 @assert_auth
@@ -162,12 +148,43 @@ def get_mtss(security_list, start_date=None, end_date=None, fields=None, count=N
     assert (not start_date) ^ (not count), "count 与 start_date 二选一，不可同时使用"
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
-    return client.get_mtss(**locals())
+    security_list = convert_security(security_list)
+    return data_client.get_mtss(**locals())
 
+
+@assert_auth
+def get_future_contracts(underlying_symbol, dt=None):
+    assert underlying_symbol, "underlying_symbol 不能为空"
+    dt = to_date_str(dt)
+    return data_client.get_future_contracts(**locals())
+
+
+@assert_auth
+def get_dominant_future(underlying_symbol, dt=None):
+    dt = to_date_str(dt)
+    return data_client.get_dominant_future(**locals())
+
+
+@assert_auth
+def normalize_code(code):
+    return data_client.normalize_code(**locals())
+
+
+def read_file(path):
+    with open(path, 'rb') as f:
+        return f.read()
+
+
+def write_file(path, content, append=False):
+    if isinstance(content, six.text_type):
+        content = content.encode('utf-8')
+    with open(path, 'ab' if append else 'wb') as f:
+        return f.write(content)
 
 
 __all__ = ["get_price", "history", "attribute_history", "get_trade_days", "get_all_trade_days", "get_extras", 
             "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
-            "get_security_info", "get_history_name", "get_money_flow", "get_fundamentals", "get_mtss"]
+            "get_security_info", "get_money_flow", "get_fundamentals", "get_mtss", "get_future_contracts", 
+            "get_dominant_future", "normalize_code", "read_file", "write_file"]
 
 

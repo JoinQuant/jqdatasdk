@@ -1,14 +1,14 @@
 # coding=utf-8
-
-from api import *
+from .utils import *
+from .api import *
 import thriftpy
 from thriftpy.rpc import make_client
 import msgpack
-import cPickle as pickle
+import time
 
 from os import path
 
-thrift_path = path.join(path.dirname(__file__), "../jqdata.thrift")
+thrift_path = path.join(path.dirname(__file__), "jqdata.thrift")
 thrift = thriftpy.load(thrift_path)
 
 
@@ -65,10 +65,18 @@ class JQDataClient(object):
                 self.ensure_auth()
                 response = self.client.query(request)
                 if response.status:
-                    result = msgpack.unpackb(response.msg)
-                    result = pickle.loads(result)
+                    # buffer = msgpack.unpackb(response.msg)
+                    buffer = response.msg
+                    if six.PY2:
+                        buffer = buffer.encode("utf-8")
+                        result = pickle.loads(buffer)
+                    else:
+                        result = pickle.loads(bytes(buffer, "ascii"), encoding="iso-8859-1")
                 else:
-                    err = Exception(response.error)
+                    if six.PY2:
+                        err = Exception(response.error.encode("utf-8"))
+                    else:
+                        err = Exception(response.error)
                 break
             except KeyboardInterrupt as e:
                 self._reset()
@@ -86,7 +94,6 @@ class JQDataClient(object):
 
         if result is None:
             if isinstance(err, Exception):
-                print err.message
                 raise err
 
         return result
@@ -95,7 +102,9 @@ class JQDataClient(object):
         return lambda **kwargs: self(method, **kwargs)
 
 
+
 if __name__ == "__main__":
-    client = JQDataClient(host="0.0.0.0", port=7000, username="admin", password="admin")
-    print client.get_price(security=["000001.XSHE", "000002.XSHE"], start_date="2017-10-01", end_date="2017-10-26")
+    client = JQDataClient(host="101.200.217.122", port=7000, username="admin", password="admin")
+    df = get_trade_days(start_date="2015-01-01")
+    print(df)
 

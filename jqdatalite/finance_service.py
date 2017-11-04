@@ -1,8 +1,8 @@
 # coding=utf-8
 from sqlalchemy.orm.query import Query
 import re
-from utils import *
-from finance_tables import *
+from .utils import *
+from .finance_tables import *
 FUNDAMENTAL_RESULT_LIMIT = 10000
 
 
@@ -32,7 +32,7 @@ def get_stat_date_column(cls):
 
 
 def get_fundamentals_sql(query_object, date=None, statDate=None):
-    from calendar_service import CalendarService
+    from .calendar_service import CalendarService
 
     assert isinstance(query_object, Query), \
     "query_object must be a sqlalchemy's Query object. But what passed in was: " + str(type(query_object))        

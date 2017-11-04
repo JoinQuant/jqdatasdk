@@ -1,15 +1,16 @@
 # coding=utf-8
+from __future__ import absolute_import
 
 from .api import *
-from finance_service import *
-from gta import gta
+from .finance_service import *
+from .gta import gta
 
 
-def init(username, password):
-    import api
+def init(username, password, host="101.200.217.122", port=7000):
     from .client import JQDataClient
-    api.client = JQDataClient(host="0.0.0.0", port=7000, username=username, password=password)
-    api.client.ensure_auth()
+    from . import api
+    api.data_client = JQDataClient(host=host, port=port, username=username, password=password)
+    api.data_client.ensure_auth()
 
 
 # __all__ = [

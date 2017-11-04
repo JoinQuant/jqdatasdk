@@ -1,8 +1,9 @@
 # coding=utf-8
-from utils import *
+from .utils import *
 import pandas as pd
 import numpy as np
-import cPickle as pickle
+import six
+import sqlalchemy
 
 
 class Codec(object):

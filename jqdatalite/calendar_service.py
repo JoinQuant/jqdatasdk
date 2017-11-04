@@ -1,8 +1,8 @@
 # coding=utf-8
-from client import JQDataClient
-from utils import *
+from .client import JQDataClient
+from .utils import *
 import operator
-from codec import Codec
+from .codec import Codec
 
 
 class CalendarService(object):
@@ -32,9 +32,8 @@ class CalendarService(object):
     @classmethod
     @lru_cache(None)
     def get_all_trade_days(cls):
-        client = JQDataClient.instance()
-        cls.all_trade_days = client.get_all_trade_days()
-        return cls.all_trade_days
+        from .api import get_all_trade_days
+        return get_all_trade_days()
 
     @classmethod
     def get_previous_trade_date(cls, date):
@@ -46,6 +45,7 @@ class CalendarService(object):
         date = to_date(date)
         if date not in cls.get_all_trade_days():
             temp = filter(lambda item: item < date, cls.all_trade_days)
+            temp = list(temp)
             return temp[-1]
         return date
 
