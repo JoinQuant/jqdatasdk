@@ -67,13 +67,8 @@ def check_no_join(query):
 def compile_query(query):
     """ 把一个 sqlalchemy query object 编译成mysql风格的 sql 语句 """
     from sqlalchemy.sql import compiler
-    if six.PY2:
-        from MySQLdb.converters import conversions, escape
-    else:
-        from pymysql.converters import conversions
-        from pymysql.converters import escape_object as escape
-        from pymysql.converters import escape_str, escape_date, escape_datetime
     from sqlalchemy.dialects import mysql as mysql_dialetct
+    from pymysql.converters import conversions, escape_item, encoders
 
     dialect = mysql_dialetct.dialect()
     statement = query.statement
@@ -84,24 +79,11 @@ def compile_query(query):
     params = []
     for k in comp.positiontup:
         v = comp_params[k]
-        # python2, escape(u'123', conversions) is '123', should be "'123'"
-        # escape('123', conversions) is ok
         if six.PY2 and isinstance(v, unicode):
             v = v.encode(enc)
         if six.PY3 and isinstance(v, bytes):
             v = v.decode(enc)
-        if six.PY3:
-            if isinstance(v, str):
-                v = escape_str(v, conversions)
-            elif isinstance(v, datetime.datetime):
-                v = escape_datetime(v, conversions)
-            elif isinstance(v, datetime.date):
-                v = escape_date(v, conversions)
-            else:
-                v = escape(v, conversions)
-        else:
-            v = escape(v, conversions)
-        # python3, escape return bytes
+        v = escape_item(v, conversions, encoders)
         params.append(v)
     return (comp.string % tuple(params))
 
