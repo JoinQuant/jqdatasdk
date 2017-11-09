@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#coding:utf-8
+#coding=utf-8
 
 import sys
 from os.path import dirname, join
@@ -22,7 +22,7 @@ setup(
     version=version,
     description='jqdatalite data update tool',
     # packages=find_packages(exclude=[]),
-    packages=['jqdatalite'],
+    packages=['jqdatalite', 'jqdatalite.gta_tables', "jqdatalite.macro_tables"],
     author='joinquant',
     author_email='hi@joinquant.com',
     license='Apache License v2',
@@ -37,7 +37,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.6'
     ],
 )
 
