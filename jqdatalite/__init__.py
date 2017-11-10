@@ -34,7 +34,7 @@ __all__ = [
     "get_dominant_future", 
     "normalize_code", 
     "read_file", 
-    "write_file"
+    "write_file",
     "query",
     "balance",
     "income",
