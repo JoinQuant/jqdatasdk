@@ -1,5 +1,5 @@
 # coding=utf-8
-
+# from __future__ import unicode_literals
 from functools import wraps
 from .utils import *
 
@@ -11,7 +11,7 @@ def assert_auth(func):
     @wraps(func)
     def _wrapper(*args, **kwargs):
         if data_client is None:
-            print("请先调用jqdatalite.init进行认证")
+            print("run jqdatalite.init fist")
         else:
             return func(*args, **kwargs)
     return _wrapper
@@ -38,14 +38,14 @@ def get_price(security, start_date=None, end_date=None, frequency='daily',
     if (not count) and (not start_date):
             start_date = "2015-01-01"
     if count and start_date:
-        raise ParamsError("get_price 不能同时指定 start_date 和 count 两个参数")
+        raise ParamsError("(start_date, count) only one param is required")
     return data_client.get_price(**locals())
 
 
 @assert_auth
 def history(count, unit='1d', field='avg', security_list=None,
             df=True, skip_paused=False, fq='pre'):
-    assert security_list, "security_list不能为空"
+    assert security_list, "security_list is required"
     security_list = convert_security(security_list)
     return data_client.history(**locals())
 
@@ -57,7 +57,7 @@ def attribute_history(security, count, unit='1d',
                       df=True,
                       fq='pre'):
     security = convert_security(security)
-    assert is_str(security), "security 为字符串类型"
+    assert is_str(security), "security should be string type"
     return data_client.attribute_history(**locals())
 
 
@@ -85,21 +85,21 @@ def get_extras(info, security_list, start_date=None, end_date=None, df=True, cou
 
 @assert_auth
 def get_index_stocks(index_symbol, date=today()):
-    assert index_symbol, "指数代码不能为空"
+    assert index_symbol, "index_symbol is required"
     date = to_date_str(date)
     return data_client.get_index_stocks(**locals())
 
 
 @assert_auth
 def get_industry_stocks(industry_code, date=today()):
-    assert industry_code, "行业编码不能为空"
+    assert industry_code, "industry_code is required"
     date = to_date_str(date)
     return data_client.get_industry_stocks(**locals())
 
 
 @assert_auth
 def get_concept_stocks(concept_code, date=today()):
-    assert concept_code, "概念板块编码不能为空"
+    assert concept_code, "concept_code is required"
     date = to_date_str(date)
     return data_client.get_concept_stocks(**locals())
 
@@ -112,7 +112,7 @@ def get_all_securities(types=[], date=None):
 
 @assert_auth
 def get_security_info(code):
-    assert code, "标的代码不能为空"
+    assert code, "code is required"
     result = data_client.get_security_info(**locals())
     if result:
         return Security(**result)
@@ -120,7 +120,7 @@ def get_security_info(code):
 
 @assert_auth
 def get_money_flow(security_list, start_date=None, end_date=None, fields=None, count=None):
-    assert security_list, "security_list不能为空"
+    assert security_list, "security_list is required"
     security_list = convert_security(security_list)
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
@@ -145,7 +145,7 @@ def get_fundamentals(query_object, date=None, statDate=None):
 
 @assert_auth
 def get_mtss(security_list, start_date=None, end_date=None, fields=None, count=None):
-    assert (not start_date) ^ (not count), "count 与 start_date 二选一，不可同时使用"
+    assert (not start_date) ^ (not count), "(start_date, count) only one param is required"
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
     security_list = convert_security(security_list)
@@ -154,7 +154,7 @@ def get_mtss(security_list, start_date=None, end_date=None, fields=None, count=N
 
 @assert_auth
 def get_future_contracts(underlying_symbol, dt=None):
-    assert underlying_symbol, "underlying_symbol 不能为空"
+    assert underlying_symbol, "underlying_symbol is required"
     dt = to_date_str(dt)
     return data_client.get_future_contracts(**locals())
 

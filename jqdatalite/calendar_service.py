@@ -1,8 +1,6 @@
 # coding=utf-8
 from .client import JQDataClient
 from .utils import *
-import operator
-from .codec import Codec
 
 
 class CalendarService(object):
@@ -10,7 +8,6 @@ class CalendarService(object):
     all_trade_days = None
 
     @classmethod
-    @lru_cache(16)
     def get_trade_days(cls, start_date=None, end_date=None, count=None):
         if not cls.all_trade_days:
             start_date = to_date_str(start_date)
@@ -30,7 +27,6 @@ class CalendarService(object):
             return cls.all_trade_days[start_idx:end_idx]
 
     @classmethod
-    @lru_cache(None)
     def get_all_trade_days(cls):
         from .api import get_all_trade_days
         return get_all_trade_days()

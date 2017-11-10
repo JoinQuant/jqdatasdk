@@ -4,10 +4,6 @@ import datetime
 from functools import wraps
 import re
 import pandas as pd
-try:
-    from functools import lru_cache
-except ImportError:
-    from fastcache import lru_cache
 if six.PY2:
     import cPickle as pickle
 else:
@@ -61,7 +57,7 @@ def check_no_join(query):
     """ 确保 query 中没有 join 语句, 也就是说: 没有引用多个表 """
     tables = get_tables_from_sql(str(query.statement))
     if len(tables) != 1:
-        raise Exception("一次只能查询一张表")
+        raise Exception("only a table is allowed to query every time")
 
 
 def compile_query(query):
@@ -129,10 +125,10 @@ def convert_security(s):
             elif isinstance(s[i], six.string_types):
                 res.append(s[i])
             else:
-                raise ParamsError("找不到标的{}".format(s[i]))
+                raise ParamsError("can't find symbol {}".format(s[i]))
         return res
     else:
-        raise ParamsError('security 必须是一个Security实例或者数组')
+        raise ParamsError("security's type should be Security or list")
 
 
 def to_date(date):
@@ -159,7 +155,7 @@ def to_date(date):
         return date
     elif date is None:
         return None
-    raise ParamsError("date 必须是datetime.date, datetime.datetime或者如下格式的字符串:'2015-01-05'")
+    raise ParamsError("type error")
 
 
 def _get_session():

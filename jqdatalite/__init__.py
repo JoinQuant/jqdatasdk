@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
-
 from .api import *
 from .finance_service import *
 from .gta import gta
@@ -15,7 +13,7 @@ def init(username, password, host="101.200.217.122", port=7000):
 
 
 __all__ = [
-    'init',
+    "init",
     "get_price", 
     "history", 
     "attribute_history", 
@@ -48,14 +46,3 @@ __all__ = [
     "macro"
 ]
 
-
-
-
-if __name__ == "__main__":
-    import time, datetime
-    init("admin", "admin")
-    now = datetime.datetime.now()
-    # for i in range(1000):
-    print(get_price(security=["000001.XSHE", "000002.XSHE"], start_date="2017-10-01", end_date="2017-10-26"))
-    print(get_all_trade_days())
-    print("use %s" % (datetime.datetime.now() - now))

@@ -38,7 +38,7 @@ def get_fundamentals_sql(query_object, date=None, statDate=None):
     "query_object must be a sqlalchemy's Query object. But what passed in was: " + str(type(query_object))        
 
     stat_date = statDate
-    assert (not date) ^ (not stat_date), "date和statDate参数只能传入一个"
+    assert (not date) ^ (not stat_date), "(statDate, date) only one param is required"
 
     limit = min(FUNDAMENTAL_RESULT_LIMIT, query_object._limit or FUNDAMENTAL_RESULT_LIMIT)
     offset = query_object._offset

@@ -5,11 +5,16 @@ import thriftpy
 from thriftpy.rpc import make_client
 import msgpack
 import time
-
 from os import path
+import platform
+
 
 thrift_path = path.join(path.dirname(__file__), "jqdata.thrift")
-thrift = thriftpy.load(thrift_path)
+thrift_path = path.abspath(thrift_path)
+module_name = path.splitext(path.basename(thrift_path))[0]
+thrift = None
+with open(thrift_path) as f:
+    thrift = thriftpy.load_fp(f, "jqdata_thrift")
 
 
 class JQDataClient(object):
@@ -18,14 +23,14 @@ class JQDataClient(object):
 
     @classmethod
     def instance(cls):
-        assert cls._instance, "请先调用jqdatalite.init初始化"
+        assert cls._instance, "run jqdatalite.init first"
         return cls._instance
 
     def __init__(self, host, port, username="", password="", retry_cnt=30):
-        assert host, "host不能为空"
-        assert port, "port不能为空"
-        assert username, "username不能为空"
-        assert password, "password不能为空"
+        assert host, "host is required"
+        assert port, "port is required"
+        assert username, "username is required"
+        assert password, "password is required"
         self.host = host
         self.port = port
         self.username = username
@@ -46,7 +51,7 @@ class JQDataClient(object):
             if not response.status:
                 raise RuntimeError(response.error)
             else:
-                print("登录成功")
+                print("login success")
 
     def _reset(self):
         if self.client:
@@ -74,7 +79,11 @@ class JQDataClient(object):
                         result = pickle.loads(bytes(buffer, "ascii"), encoding="iso-8859-1")
                 else:
                     if six.PY2:
-                        err = Exception(response.error.encode("utf-8"))
+                        system = platform.system().lower()
+                        if system == "windows":
+                            err = Exception(response.error.encode("gbk"))
+                        else:
+                            err = Exception(response.error.encode("utf-8"))
                     else:
                         err = Exception(response.error)
                 break
@@ -101,10 +110,4 @@ class JQDataClient(object):
     def __getattr__(self, method):
         return lambda **kwargs: self(method, **kwargs)
 
-
-
-if __name__ == "__main__":
-    client = JQDataClient(host="101.200.217.122", port=7000, username="admin", password="admin")
-    df = get_trade_days(start_date="2015-01-01")
-    print(df)
 
