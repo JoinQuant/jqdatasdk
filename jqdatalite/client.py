@@ -49,7 +49,7 @@ class JQDataClient(object):
             self.inited = True
             response = self.client.auth(self.username, self.password)
             if not response.status:
-                raise RuntimeError(response.error)
+                raise self.get_error(response)
             else:
                 print("login success")
 
@@ -58,6 +58,18 @@ class JQDataClient(object):
             self.client.close()
             self.client = None
         self.inited = False
+
+    def get_error(self, response):
+        err = None
+        if six.PY2:
+            system = platform.system().lower()
+            if system == "windows":
+                err = Exception(response.error.encode("gbk"))
+            else:
+                err = Exception(response.error.encode("utf-8"))
+        else:
+            err = Exception(response.error)
+        return err
 
     def __call__(self, method, **kwargs):
         request = thrift.St_Query_Req()
@@ -78,14 +90,7 @@ class JQDataClient(object):
                     else:
                         result = pickle.loads(bytes(buffer, "ascii"), encoding="iso-8859-1")
                 else:
-                    if six.PY2:
-                        system = platform.system().lower()
-                        if system == "windows":
-                            err = Exception(response.error.encode("gbk"))
-                        else:
-                            err = Exception(response.error.encode("utf-8"))
-                    else:
-                        err = Exception(response.error)
+                    err = self.get_error(response)
                 break
             except KeyboardInterrupt as e:
                 self._reset()
