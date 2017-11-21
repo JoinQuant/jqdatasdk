@@ -18,11 +18,11 @@ requirements = [str(ir.req) for ir in parse_requirements("requirements.txt", ses
 
 
 setup(
-    name='jqdatalite',
+    name='jqdatasdk',
     version=version,
-    description='jqdatalite data update tool',
+    description='jqdatasdk data update tool',
     # packages=find_packages(exclude=[]),
-    packages=['jqdatalite', 'jqdatalite.gta_tables', "jqdatalite.macro_tables"],
+    packages=['jqdatasdk', 'jqdatasdk.gta_tables', "jqdatasdk.macro_tables"],
     author='joinquant',
     author_email='hi@joinquant.com',
     license='Apache License v2',

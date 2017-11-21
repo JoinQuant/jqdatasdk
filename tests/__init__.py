@@ -2,7 +2,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 import sys
 sys.path.append("..")
-from jqdatalite import *
+from jqdatasdk import *
 import unittest
 import datetime
 import os

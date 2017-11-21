@@ -5,7 +5,7 @@ import sys
 
 import sys
 sys.path.append("..")
-from jqdatalite import *
+from jqdatasdk import *
 
 import numpy as np
 

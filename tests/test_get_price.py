@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 sys.path.append("..")
-from jqdatalite import *
+from jqdatasdk import *
 
 import datetime
 import sys
