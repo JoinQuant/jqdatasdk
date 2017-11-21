@@ -30,25 +30,6 @@ def get_price(security, start_date=None, end_date=None, frequency='daily',
 
 
 @assert_auth
-def history(count, unit='1d', field='avg', security_list=None,
-            df=True, skip_paused=False, fq='pre'):
-    assert security_list, "security_list is required"
-    security_list = convert_security(security_list)
-    return data_client.history(**locals())
-
-
-@assert_auth
-def attribute_history(security, count, unit='1d',
-                      fields=['open', 'close', 'high', 'low', 'volume', 'money'],
-                      skip_paused=True,
-                      df=True,
-                      fq='pre'):
-    security = convert_security(security)
-    assert is_str(security), "security should be string type"
-    return data_client.attribute_history(**locals())
-
-
-@assert_auth
 def get_trade_days(start_date=None, end_date=None, count=None):
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
@@ -126,7 +107,6 @@ def get_fundamentals(query_object, date=None, statDate=None):
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         date = min(to_date(date), yesterday)
     sql = get_fundamentals_sql(query_object, date, statDate)
-    print(sql)
     return data_client.get_fundamentals(sql=sql)
 
 
@@ -169,7 +149,7 @@ def write_file(path, content, append=False):
         return f.write(content)
 
 
-__all__ = ["get_price", "history", "attribute_history", "get_trade_days", "get_all_trade_days", "get_extras", 
+__all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", 
             "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
             "get_security_info", "get_money_flow", "get_fundamentals", "get_mtss", "get_future_contracts", 
             "get_dominant_future", "normalize_code", "read_file", "write_file"]

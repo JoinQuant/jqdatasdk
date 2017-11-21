@@ -8,7 +8,7 @@ from .finance_service import *
 from .macro import macro
 
 
-def init(username, password, host="101.200.217.122", port=7000):
+def auth(username, password, host="101.200.217.122", port=7000):
     from .client import JQDataClient
     from . import api
     api.data_client = JQDataClient(host=host, port=port, username=username, password=password)
@@ -16,10 +16,8 @@ def init(username, password, host="101.200.217.122", port=7000):
 
 
 __all__ = [
-    "init",
+    "auth",
     "get_price", 
-    "history", 
-    "attribute_history", 
     "get_trade_days", 
     "get_all_trade_days", 
     "get_extras", 
@@ -47,4 +45,5 @@ __all__ = [
     "valuation",
     "macro"
 ]
+
 

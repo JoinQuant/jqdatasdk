@@ -11,7 +11,7 @@ if sys.version_info[0] == 3:
     xrange = range
 
 
-init("admin", "admin")
+auth("admin", "admin")
 
 
 s = get_security_info('000001.XSHE')

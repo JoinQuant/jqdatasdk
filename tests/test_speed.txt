@@ -1,7 +1,7 @@
 # 测试代码
 from jqdatasdk import *
 import datetime
-init("admin", "admin")
+auth("admin", "admin")
 now1 = datetime.datetime.now()
 
 df = get_all_securities()

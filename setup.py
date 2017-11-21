@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#coding=utf-8
+# coding=utf-8
 
 import sys
 from os.path import dirname, join
@@ -18,18 +18,20 @@ requirements = [str(ir.req) for ir in parse_requirements("requirements.txt", ses
 
 
 setup(
-    name='jqdatasdk',
+    name="jqdatasdk",
     version=version,
-    description='jqdatasdk data update tool',
-    # packages=find_packages(exclude=[]),
-    packages=['jqdatasdk', 'jqdatasdk.gta_tables', "jqdatasdk.macro_tables"],
-    author='joinquant',
-    author_email='hi@joinquant.com',
+    description="jqdatasdk<SDK of fetch finance data from JoinQuant>",
+    packages=["jqdatasdk", "jqdatasdk.macro_tables"],
+    author="JoinQuant",
+    author_email="xlx@joinquant.com",
+    maintainer="wangchaoyang",
+    maintainer_email="wangchaoyang@joinquant.com",
     license='Apache License v2',
     package_data={'': ['*.*']},
-    url='https://www.joinquant.com',
+    url="https://www.joinquant.com/data",
     install_requires=requirements,
     zip_safe=False,
+    platforms=["all"],
     classifiers=[
         'Programming Language :: Python',
         'Operating System :: Microsoft :: Windows',
