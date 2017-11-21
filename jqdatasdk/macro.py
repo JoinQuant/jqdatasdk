@@ -19,7 +19,6 @@ class Macro(object):
     def __load_table_names(self):
         import os
         tables_dir = os.path.join(sys.modules["ROOT_DIR"], 'macro_tables')
-        print(tables_dir)
         if not os.path.exists(tables_dir):
             return
         names = []

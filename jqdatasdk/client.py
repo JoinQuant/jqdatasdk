@@ -52,7 +52,7 @@ class JQDataClient(object):
             if not response.status:
                 raise self.get_error(response)
             else:
-                print("login success")
+                print("auth success")
 
     def _reset(self):
         if self.client:

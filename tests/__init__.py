@@ -486,7 +486,7 @@ def test_get_future_contracts():
 
 if __name__ == "__main__":
     glo = globals()
-    auth("admin", "admin")
+    auth("18600230136", "123456")
     if len(sys.argv) >= 2:
         func = sys.argv[1]
         assert func.startswith("test") and func in glo
