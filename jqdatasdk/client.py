@@ -76,20 +76,22 @@ class JQDataClient(object):
         request = thrift.St_Query_Req()
         request.method_name = method
         request.params = msgpack.packb(kwargs)
+        import tempfile
 
         err, result = None, None
         for idx in range(self.retry_cnt):
+            file = tempfile.NamedTemporaryFile()
             try:
                 self.ensure_auth()
                 response = self.client.query(request)
                 if response.status:
-                    # buffer = msgpack.unpackb(response.msg)
                     buffer = response.msg
                     if six.PY2:
-                        buffer = buffer.encode("utf-8")
-                        result = pickle.loads(buffer)
+                        file.write(buffer)
                     else:
-                        result = pickle.loads(bytes(buffer, "ascii"), encoding="iso-8859-1")
+                        file.write(bytes(buffer, "ascii"))
+                    file.seek(0)
+                    result = pd.read_pickle(file.name)
                 else:
                     err = self.get_error(response)
                 break
@@ -106,6 +108,8 @@ class JQDataClient(object):
                 self._reset()
                 err = e
                 break
+            finally:
+                file.close()
 
         if result is None:
             if isinstance(err, Exception):

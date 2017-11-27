@@ -249,27 +249,9 @@ def normalize_code(code):
     return data_client.normalize_code(**locals())
 
 
-def read_file(path):
-    """
-    读取文件
-    """
-    with open(path, 'rb') as f:
-        return f.read()
-
-
-def write_file(path, content, append=False):
-    """
-    写入文件
-    """
-    if isinstance(content, six.text_type):
-        content = content.encode('utf-8')
-    with open(path, 'ab' if append else 'wb') as f:
-        return f.write(content)
-
-
 __all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", 
             "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
             "get_security_info", "get_money_flow", "get_fundamentals", "get_mtss", "get_future_contracts", 
-            "get_dominant_future", "normalize_code", "read_file", "write_file"]
+            "get_dominant_future", "normalize_code"]
 
 
