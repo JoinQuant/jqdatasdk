@@ -8,7 +8,7 @@
 
 
 ```
-pip install jqdatasdk
+pip install git+https://github.com/JoinQuant/jqdatasdk.git
 ```
 
 
