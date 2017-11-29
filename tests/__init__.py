@@ -395,23 +395,6 @@ def test_pd_datetime():
     pass
 
 
-def test_read_write_file():
-    def do_test(content):
-        path = 'test.bin'
-        write_file(path, content)
-        if not isinstance(content, six.text_type):
-            assert content == read_file(path)
-        else:
-            assert content == read_file(path).decode('utf-8')
-
-    do_test('123')
-    do_test(u'123')
-    do_test('你好')
-    do_test(u'你好')
-    do_test(os.urandom(1000))
-    write_file('test.bin', '123', append=True)
-
-
 def test_log():
     log.debug('debug')
     log.info('info')

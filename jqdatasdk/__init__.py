@@ -8,7 +8,7 @@ from .finance_service import *
 from .macro import macro
 
 
-def auth(username, password, host="101.200.217.122", port=7000):
+def auth(username, password, host="39.107.190.114", port=7000):
     from .client import JQDataClient
     from . import api
     api.data_client = JQDataClient(host=host, port=port, username=username, password=password)
