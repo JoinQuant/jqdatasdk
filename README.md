@@ -136,12 +136,18 @@ jqdatasdk.get_price("000001.XSHE")
 
   查询宏观经济数据，具体数据见官网API https://www.joinquant.com/data/dict/macroData
 
+  ​
+
 
 
 - alpha101
 
   查询WorldQuant 101 Alphas 因子数据，具体因子解释见官网API https://www.joinquant.com/data/dict/alpha101
 
+  ​
+
 - alpha191
 
   查询短周期价量特征 191 Alphas 因子数据，具体因子解释见官网API https://www.joinquant.com/data/dict/alpha191
+
+  ​
