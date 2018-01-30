@@ -6,13 +6,14 @@ sys.modules["ROOT_DIR"] = os.path.abspath(os.path.dirname(__file__))
 from .api import *
 from .finance_service import *
 from .macro import macro
+from . import alpha101
+from . import alpha191
 
 
 def auth(username, password, host="39.107.190.114", port=7000):
     from .client import JQDataClient
-    from . import api
-    api.data_client = JQDataClient(host=host, port=port, username=username, password=password)
-    api.data_client.ensure_auth()
+    c = JQDataClient(host=host, port=port, username=username, password=password)
+    c.ensure_auth()
 
 
 __all__ = [
@@ -41,7 +42,9 @@ __all__ = [
     "security_indicator",
     "insurance_indicator",
     "valuation",
-    "macro"
+    "macro",
+    "alpha101",
+    "alpha191"
 ]
 
 

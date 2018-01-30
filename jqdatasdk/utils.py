@@ -171,3 +171,13 @@ def query(*args, **kwargs):
     return session.query(*args, **kwargs)
 
 
+def assert_auth(func):
+    @wraps(func)
+    def _wrapper(*args, **kwargs):
+        from .client import JQDataClient
+        if not JQDataClient.instance():
+            print("run jqdatasdk.auth first")
+        else:
+            return func(*args, **kwargs)
+    return _wrapper
+

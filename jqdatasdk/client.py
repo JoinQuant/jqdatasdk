@@ -24,7 +24,6 @@ class JQDataClient(object):
 
     @classmethod
     def instance(cls):
-        assert cls._instance, "run jqdatasdk.init first"
         return cls._instance
 
     def __init__(self, host, port, username="", password="", retry_cnt=30):
@@ -39,8 +38,6 @@ class JQDataClient(object):
         self.client = None
         self.inited = False
         self.retry_cnt = retry_cnt
-        cls = self.__class__
-        cls._instance = self
 
     def ensure_auth(self):
         if not self.inited:
@@ -50,8 +47,10 @@ class JQDataClient(object):
             self.inited = True
             response = self.client.auth(self.username, self.password)
             if not response.status:
+                self.__class__._instance = None
                 raise self.get_error(response)
             else:
+                self.__class__._instance = self
                 print("auth success")
 
     def _reset(self):

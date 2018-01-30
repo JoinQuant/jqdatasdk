@@ -2,7 +2,7 @@
 
 >jqdatasdk是提供给用户获取聚宽金融数据的SDK。用户可以在自己搭建的环境中获取聚宽提供的金融数据，除了需要验证之外，其余的功能特性与官网的投资研究模块保持一致。
 
-  ​
+  
 
 #### 安装
 
@@ -30,7 +30,7 @@ jqdatasdk.get_price("000001.XSHE")
 
 - get_price
 
-  可查询股票、基金、指数、期货的历史行情数据
+  可查询股票、基金、指数、期货的历史及当前交易日的行情数据
 
   可指定单位时间长度，如一天、一分钟、五分钟等
 
@@ -135,3 +135,13 @@ jqdatasdk.get_price("000001.XSHE")
 - macro.run_query
 
   查询宏观经济数据，具体数据见官网API https://www.joinquant.com/data/dict/macroData
+
+
+
+- alpha101
+
+  查询WorldQuant 101 Alphas 因子数据，具体因子解释见官网API https://www.joinquant.com/data/dict/alpha101
+
+- alpha191
+
+  查询短周期价量特征 191 Alphas 因子数据，具体因子解释见官网API https://www.joinquant.com/data/dict/alpha191
