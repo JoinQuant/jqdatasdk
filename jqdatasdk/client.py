@@ -81,6 +81,7 @@ class JQDataClient(object):
         for idx in range(self.retry_cnt):
             d = tempfile.gettempdir()
             from tempfile import _get_candidate_names
+            import os
             file = open(os.path.join(d, _get_candidate_names().next()), "w+b")
             try:
                 self.ensure_auth()
