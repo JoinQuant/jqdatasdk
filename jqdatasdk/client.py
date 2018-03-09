@@ -79,7 +79,9 @@ class JQDataClient(object):
 
         err, result = None, None
         for idx in range(self.retry_cnt):
-            file = tempfile.NamedTemporaryFile()
+            d = tempfile.gettempdir()
+            from tempfile import _get_candidate_names
+            file = open(os.path.join(d, _get_candidate_names().next()), "w+b")
             try:
                 self.ensure_auth()
                 response = self.client.query(request)
@@ -109,6 +111,7 @@ class JQDataClient(object):
                 break
             finally:
                 file.close()
+                os.unlink(file.name)
 
         if result is None:
             if isinstance(err, Exception):
