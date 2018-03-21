@@ -8,6 +8,7 @@ import time
 from os import path
 import platform
 import sys
+import threading
 
 
 thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
@@ -20,11 +21,16 @@ with open(thrift_path) as f:
 
 class JQDataClient(object):
 
-    _instance = None
+    _threading_local = threading.local()
+    _auth_params = {}
 
     @classmethod
     def instance(cls):
-        return cls._instance
+        _instance = getattr(cls._threading_local, '_instance', None)
+        if _instance is None:
+            _instance = JQDataClient(**cls._auth_params)
+            cls._threading_local._instance = _instance
+        return _instance
 
     def __init__(self, host, port, username="", password="", retry_cnt=30):
         assert host, "host is required"
@@ -39,6 +45,11 @@ class JQDataClient(object):
         self.inited = False
         self.retry_cnt = retry_cnt
 
+    @classmethod
+    def set_auth_params(cls, **params):
+        cls._auth_params = params
+        cls.instance().ensure_auth()
+
     def ensure_auth(self):
         if not self.inited:
             if not self.username or self.username == "":
@@ -47,10 +58,9 @@ class JQDataClient(object):
             self.inited = True
             response = self.client.auth(self.username, self.password)
             if not response.status:
-                self.__class__._instance = None
+                self._threading_local._instance = None
                 raise self.get_error(response)
             else:
-                self.__class__._instance = self
                 print("auth success")
 
     def _reset(self):
