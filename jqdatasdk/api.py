@@ -265,11 +265,13 @@ def get_dominant_future(underlying_symbol, dt=None):
 def get_ticks(security, end_dt=None, start_dt=None, count=None, fields=None):
     """
     获取tick数据
-    :param security:
-    :param end_dt:
-    :param start_dt:
-    :param count:
-    :param fields:
+    :param security: 股票or期货标的代码,仅限单只
+    :param end_dt: 截止日期
+    :param start_dt: 开始日期
+    :param count: 统计个数
+    :param fields: 期货：【datetime current high low volume money position a1_v a1_p b1_v b1_p】
+                    股票：【datetime current high low volume money a1_v-a5_v a1_p-a5_p b1_v-b5_v b1_p-b5_p】
+                    为None时，默认返回datetime-money字段
     :return:
     """
     end_dt = to_date_str(end_dt)
@@ -288,6 +290,7 @@ def get_baidu_factor(category=None, day=None, stock=None, province=None):
     如果不为空，则返回指定省份的数据。
     :return:
     """
+
     day = to_date_str(day)
     stock = normal_security_code(stock)
     return JQDataClient.instance().get_baidu_factor(**locals())
