@@ -477,31 +477,62 @@ def test_alpha191():
 
 def test_ticks():
     assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=100)) == 100
-    assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"])) == 10
+    assert get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10,)
     assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10)) == 10
-    assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"])) == 10
+    assert get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"]).shape == (10,)
 
 
 def test_billboard_list():
+    hs_300 = get_index_stocks('000300.XSHG', '2016-01-10')
     assert len(get_billboard_list(stock_list="300738.XSHE", end_date="2018-03-26", count=5)) == 22
+    df = get_billboard_list(hs_300, '2016-01-10', '2017-5-10', None)
+    assert len(df) > 0
+    stock_list = set(list(df['code']))
+    assert len(stock_list) > 71
+    assert '000776' in stock_list
+    assert '300017' in stock_list
+    df = get_billboard_list(hs_300, None, '2017-5-10', 100)
+    assert len(df) > 500
+    df = get_billboard_list(None, None, '2017-5-10', 100)
+    assert len(df) > 30000
+    with pytest.raises(Exception, message="get_billboard_list 不能同时指定 start_date 和 count 两个参数"):
+        get_billboard_list(hs_300, '2016-01-10', '2017-5-10', 100)
+    with pytest.raises(Exception, message="get_billboard_list 必须指定 start_date 或 count 之一"):
+        get_billboard_list(hs_300, None, '2017-5-10', None)
 
 
 def test_get_locked_shares():
+    hs_300 = get_index_stocks('000300.XSHG', '2016-01-10')
     assert len(get_locked_shares(stock_list=['000001.XSHE', '000002.XSHE'], start_date="2018-03-26", forward_count=500)) == 1
     assert len(get_locked_shares(stock_list='000001.XSHE', start_date="2018-03-26", forward_count=500)) == 1
+    start_date = datetime.date.today()
+    end_date = start_date + datetime.timedelta(days=500)
+    df1 = get_locked_shares(hs_300, start_date, end_date, None)
+    df2 = get_locked_shares(hs_300, start_date, None, 500)
+    assert len(df1) == len(df2)
+    assert len(df1) > 0
+    with pytest.raises(Exception, message="get_locked_shares 不能同时指定 end_date 和 forward_count 两个参数"):
+        get_locked_shares(hs_300, '2017-01-10', '2018-5-10', 200)
+    with pytest.raises(Exception, message="get_locked_shares 必须指定 end_date 或 forward_count 之一"):
+        get_locked_shares(hs_300, '2017-01-10', None, None)
 
 
 def test_baidu_factor():
+    import datetime
+    dates = datetime.date(2017, 11, 20)
     assert len(get_baidu_factor("csi800", day="2017-11-20", stock="000552", province=620000)) == 1
     assert len(get_baidu_factor("csi800", day="2017-11-20", stock=["000552", "000001"], province=620000)) == 2
     assert len(get_baidu_factor("csi800", day="2017-11-20", stock="000552", province="甘肃")) == 1
-    assert get_baidu_factor("csi800", day="2017-11-20", stock="000552")["total_count"][0] == 554.0
-    assert get_baidu_factor("csi800", day="2017-11-20", stock="000552.XSHE")["total_count"][0] == 554.0
+    assert get_baidu_factor("csi800", day="2017-11-20", stock="000552")["pc_count"][0] == 104.0
+    assert get_baidu_factor("csi800", day="2017-11-20", stock="000552.XSHE")["pc_count"][0] == 104.0
     assert len(get_baidu_factor("csi800", day="2017-11-20", stock=["000552.XSHE", "000001.XSHE"])) == 2
     assert len(get_baidu_factor("csi800", day="2017-11-20")) == 800
-
+    assert len(get_baidu_factor("csi800", day=dates)) == 800
+    with pytest.raises(Exception, message="目前只支持中证800的搜索量，代码为csi800"):
+        get_baidu_factor(day="2017-11-20")
 
 if __name__ == "__main__":
+
     glo = globals()
     if len(sys.argv) >= 2:
         func = sys.argv[1]

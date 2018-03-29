@@ -127,6 +127,8 @@ def convert_security(s):
             else:
                 raise ParamsError("can't find symbol {}".format(s[i]))
         return res
+    elif s is None:
+        return s
     else:
         raise ParamsError("security's type should be Security or list")
 
