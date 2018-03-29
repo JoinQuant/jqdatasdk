@@ -13,6 +13,9 @@ import pytest
 log = logging
 
 
+auth("18600230136", "123456", "101.200.217.122")
+
+
 def test_get_index_stocks():
     assert len(get_index_stocks('000300.XSHG')) == 300
     assert len(get_index_stocks('000300.XSHG', '2015-11-01')) == 300
@@ -460,6 +463,42 @@ def test_get_future_contracts():
                             'I1610.XDCE', 'I1706.XDCE', 'I1609.XDCE', 'I1701.XDCE', 'I1702.XDCE',
                             'I1612.XDCE', 'I1611.XDCE'])
     pass
+
+
+def test_alpha101():
+    assert len(alpha101.alpha_001('2017-03-10', '000300.XSHG')) > 0
+    assert len(alpha101.alpha_101('2017-03-10', index='all')) > 0
+
+
+def test_alpha191():
+    assert len(alpha191.alpha_001("000001.XSHE", end_date="2017-03-10")) > 0
+    assert len(alpha191.alpha_010("000001.XSHE", end_date="2017-03-10")) > 0
+
+
+def test_ticks():
+    assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=100)) == 100
+    assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"])) == 10
+    assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10)) == 10
+    assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"])) == 10
+
+
+def test_billboard_list():
+    assert len(get_billboard_list(stock_list="300738.XSHE", end_date="2018-03-26", count=5)) == 22
+
+
+def test_get_locked_shares():
+    assert len(get_locked_shares(stock_list=['000001.XSHE', '000002.XSHE'], start_date="2018-03-26", forward_count=500)) == 1
+    assert len(get_locked_shares(stock_list='000001.XSHE', start_date="2018-03-26", forward_count=500)) == 1
+
+
+def test_baidu_factor():
+    assert len(get_baidu_factor("csi800", day="2017-11-20", stock="000552", province=620000)) == 1
+    assert len(get_baidu_factor("csi800", day="2017-11-20", stock=["000552", "000001"], province=620000)) == 2
+    assert len(get_baidu_factor("csi800", day="2017-11-20", stock="000552", province="甘肃")) == 1
+    assert get_baidu_factor("csi800", day="2017-11-20", stock="000552")["total_count"][0] == 554.0
+    assert get_baidu_factor("csi800", day="2017-11-20", stock="000552.XSHE")["total_count"][0] == 554.0
+    assert len(get_baidu_factor("csi800", day="2017-11-20", stock=["000552.XSHE", "000001.XSHE"])) == 2
+    assert len(get_baidu_factor("csi800", day="2017-11-20")) == 800
 
 
 if __name__ == "__main__":

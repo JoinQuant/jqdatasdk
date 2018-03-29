@@ -72,6 +72,40 @@ def get_fundamentals(query_object, date=None, statDate=None):
 
 
 @assert_auth
+def get_billboard_list(stock_list=None, start_date=None, end_date=None, count=None):
+    """
+    获取指定日期区间内的龙虎榜数据
+
+    :param stock_list:一个股票代码的 list。 当值为 None 时， 返回指定日期的所有股票。
+    :param start_date:开始日期
+    :param end_date:结束日期
+    :param count:交易日数量， 可以与 end_date 同时使用， 表示获取 end_date 前 count 个交易日的数据(含 end_date 当日)
+    :return:回一个 pandas.DataFrame
+    """
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    stock_list = convert_security(stock_list)
+    return JQDataClient.instance().get_billboard_list(**locals())
+
+
+@assert_auth
+def get_locked_shares(stock_list=None, start_date=None, end_date=None, forward_count=None):
+    """
+    获取指定日期区间内的限售解禁数据
+
+    :param stock_list:一个股票代码的 list
+    :param start_date:开始日期
+    :param end_date:结束日期
+    :param forward_count:交易日数量， 可以与 start_date 同时使用， 表示获取 start_date 到 forward_count 个交易日区间的数据
+    :return:
+    """
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    stock_list = convert_security(stock_list)
+    return JQDataClient.instance().get_locked_shares(**locals())
+
+
+@assert_auth
 def get_index_stocks(index_symbol, date=today()):
     """
     获取一个指数给定日期在平台可交易的成分股列表，请点击 https://www.joinquant.com/indexData 查看指数信息
@@ -228,6 +262,38 @@ def get_dominant_future(underlying_symbol, dt=None):
 
 
 @assert_auth
+def get_ticks(security, end_dt=None, start_dt=None, count=None, fields=None):
+    """
+    获取tick数据
+    :param security:
+    :param end_dt:
+    :param start_dt:
+    :param count:
+    :param fields:
+    :return:
+    """
+    end_dt = to_date_str(end_dt)
+    start_dt = to_date_str(start_dt)
+    return JQDataClient.instance().get_ticks(**locals())
+
+
+@assert_auth
+def get_baidu_factor(category=None, day=None, stock=None, province=None):
+    """
+    获取百度因子搜索量数据
+    :param category:数据类别，中证800的数据类别为"csi800"
+    :param stock: 一只股票或一个股票list。如果为空，则包含中证800所有的成分股。
+    :param day:日期，date、datetime或字符串类型。如果day为空，则返回最新的数据。
+    :param province:省份名称或省份代码，如北京或110000。如果为空，则返回PC端和手机端的数据汇总。
+    如果不为空，则返回指定省份的数据。
+    :return:
+    """
+    day = to_date_str(day)
+    stock = normal_security_code(stock)
+    return JQDataClient.instance().get_baidu_factor(**locals())
+
+
+@assert_auth
 def normalize_code(code):
     """
     归一化证券代码
@@ -255,10 +321,12 @@ def write_file(path, content, append=False):
         return f.write(content)
 
 
-__all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", 
+__all__ = [
+            "get_price", "get_trade_days", "get_all_trade_days", "get_extras",
             "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
-            "get_security_info", "get_money_flow", "get_fundamentals", "get_mtss", "get_future_contracts", 
-            "get_dominant_future", "normalize_code", "read_file", "write_file"]
+            "get_security_info", "get_money_flow", "get_locked_shares", "get_fundamentals", "get_mtss",
+            "get_future_contracts", "get_dominant_future", "normalize_code", "get_baidu_factor",
+            "get_billboard_list", "get_ticks", "read_file", "write_file"]
 
 
 

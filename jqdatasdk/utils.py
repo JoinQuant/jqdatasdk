@@ -131,6 +131,31 @@ def convert_security(s):
         raise ParamsError("security's type should be Security or list")
 
 
+def normal_security_code(code):
+    """
+
+    :param code:"000001.XSHE"
+    :return: "000001"
+    """
+    if is_str(code):
+        if "." in code:
+            return code.split(".")[0]
+        else:
+            return code
+    elif is_list(code):
+        res = []
+        for i in code:
+            if "." in i:
+                res.append(i.split(".")[0])
+            else:
+                res.append(i)
+        return res
+    elif code is None:
+        return code
+    else:
+        raise ParamsError("security type is invalid! type is {}".format(type(code)))
+
+
 def to_date(date):
     """
     >>> convert_date('2015-1-1')

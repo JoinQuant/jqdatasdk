@@ -29,6 +29,8 @@ __all__ = [
     "get_security_info",
     "get_money_flow",
     "get_fundamentals",
+    "get_billboard_list",
+    "get_locked_shares",
     "get_mtss",
     "get_future_contracts",
     "get_dominant_future",
@@ -44,7 +46,9 @@ __all__ = [
     "valuation",
     "macro",
     "alpha101",
-    "alpha191"
+    "alpha191",
+    "get_baidu_factor",
+    "get_ticks",
 ]
 
 

@@ -112,6 +112,20 @@ jqdatasdk.get_price("000001.XSHE")
   查询股票、基金的融资融券数据
 
   ​
+  
+  
+- get_billbord_list
+
+  查询股票龙虎榜数据
+
+  ​
+  
+  
+- get_locked_shares
+
+  查询股票限售解禁股数据
+
+  ​
 
 
 - get_future_contracts
@@ -120,17 +134,27 @@ jqdatasdk.get_price("000001.XSHE")
 
   ​
 
+
 - get_dominant_future
 
   查询主力合约对应的标的
 
   ​
+  
+  
+- get_ticks
+
+  查询股票、基金的tick数据
+
+  ​
+  
 
 - normalize_code
 
   归一化证券编码
 
   ​
+
 
 - macro.run_query
 
@@ -151,3 +175,7 @@ jqdatasdk.get_price("000001.XSHE")
   查询短周期价量特征 191 Alphas 因子数据，具体因子解释见官网API https://www.joinquant.com/data/dict/alpha191
 
   ​
+  
+- baidu_factor
+
+  查询股票某日百度搜索量数据
