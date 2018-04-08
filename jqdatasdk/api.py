@@ -72,6 +72,29 @@ def get_fundamentals(query_object, date=None, statDate=None):
 
 
 @assert_auth
+def get_fundamentals_continuously(query_object, end_date=None, count=None):
+    """
+    查询财务数据，详细的数据字段描述在 https://www.joinquant.com/data/dict/fundamentals 中查看
+    :param query_object:一个sqlalchemy.orm.query.Query对象
+    :param end_date:查询日期, 一个字符串(格式类似’2015-10-15’)或者datetime.date/datetime.datetime对象, 可以是None, 使用默认日期
+    :param count:获取 end_date 前 count 个日期的数据
+    :return:返回一个 pandas.Panel
+    """
+    assert count, "count is required"
+    from .finance_service import get_fundamentals_sql
+    if end_date is None:
+        date = datetime.date.today()
+        from .calendar_service import CalendarService
+        trade_days = CalendarService.get_all_trade_days()
+        date = list(filter(lambda item: item < date, trade_days))[-1]
+    elif end_date:
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        date = min(to_date(end_date), yesterday)
+    sql = get_fundamentals_sql(query_object, end_date, count)
+    return JQDataClient.instance().get_fundamentals_continuously(sql=sql)
+
+
+@assert_auth
 def get_billboard_list(stock_list=None, start_date=None, end_date=None, count=None):
     """
     获取指定日期区间内的龙虎榜数据
@@ -134,6 +157,17 @@ def get_industry_stocks(industry_code, date=today()):
 
 
 @assert_auth
+def get_industries(name=None):
+    """
+    按照行业分类获取行业列表
+    :param name:行业代码
+    :return:pandas.DataFrame, 各column分别为行业代码、行业名称、开始日期
+    """
+    assert name, "name is required"
+    return JQDataClient.instance().get_industries(**locals())
+
+
+@assert_auth
 def get_concept_stocks(concept_code, date=today()):
     """
     获取在给定日期一个概念板块的所有股票，概念板块分类列表见 https://www.joinquant.com/data/dict/plateData
@@ -145,6 +179,15 @@ def get_concept_stocks(concept_code, date=today()):
     assert concept_code, "concept_code is required"
     date = to_date_str(date)
     return JQDataClient.instance().get_concept_stocks(**locals())
+
+
+@assert_auth
+def get_concepts():
+    """
+    获取概念板块
+    :return:pandas.DataFrame, 各column分别为概念代码、概念名称、开始日期
+    """
+    return JQDataClient.instance().get_concepts(**locals())
 
 
 @assert_auth
@@ -237,6 +280,24 @@ def get_mtss(security_list, start_date=None, end_date=None, fields=None, count=N
 
 
 @assert_auth
+def get_margincash_stocks():
+    """
+    返回上交所、深交所最近一次披露的的可融资标的列表的list
+    :return: list
+    """
+    return JQDataClient.instance().get_margincash_stocks(**locals())
+
+
+@assert_auth
+def get_marginsec_stocks():
+    """
+    返回上交所、深交所最近一次披露的的可融券标的列表的list
+    :return:list
+    """
+    return JQDataClient.instance().get_marginsec_stocks(**locals())
+
+
+@assert_auth
 def get_future_contracts(underlying_symbol, dt=None):
     """
     获取某期货品种在策略当前日期的可交易合约标的列表
@@ -325,9 +386,10 @@ def write_file(path, content, append=False):
 
 
 __all__ = [
-            "get_price", "get_trade_days", "get_all_trade_days", "get_extras",
+            "get_price", "get_trade_days", "get_all_trade_days", "get_extras", "get_fundamentals_continuously"
             "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
             "get_security_info", "get_money_flow", "get_locked_shares", "get_fundamentals", "get_mtss",
+            "get_concepts", "get_industries", "get_margincash_stocks", "get_marginsec_stocks",
             "get_future_contracts", "get_dominant_future", "normalize_code", "get_baidu_factor",
             "get_billboard_list", "get_ticks", "read_file", "write_file"]
 

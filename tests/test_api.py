@@ -412,6 +412,54 @@ def test_get_fundamentals():
     pass
 
 
+def test_get_fundamentals_continuously():
+    # with date
+    df = get_fundamentals_continuously(
+        query(income.pubDate).filter(income.code == '000001.XSHE'), datetime.date(2015, 1, 1), 10)
+    assert isinstance(df, pd.Panel)
+    assert len(df.major_axis) == 10
+    assert '000001.XSHE' in list(df['pubDate'])
+    assert list(df.major_axis) == ['2014-12-18', '2014-12-19', '2014-12-22', '2014-12-23', '2014-12-24',
+                                   '2014-12-25', '2014-12-26', '2014-12-29', '2014-12-30', '2014-12-31']
+
+    # yearly
+    df = get_fundamentals_continuously(query(valuation.day, balance.code, cash_flow.code, income.code,
+                                             indicator.code).
+                                       filter(cash_flow.code.in_(['000001.XSHE', '000002.XSHE'])),
+                                              datetime.date(2015, 1, 1), 60)
+    assert isinstance(df, pd.Panel)
+    assert len(df.major_axis) == 60
+    assert list(df.minor_axis) == ['000001.XSHE', '000002.XSHE']
+    store = get_calendar_store()
+    trade_days = store.get_trade_days_between(datetime.date(2014, 10, 9), datetime.date(2015, 1, 1))
+    assert list(df.major_axis) == [str(t) for t in trade_days]
+
+    # indicator
+    df = get_fundamentals_continuously(query(indicator).filter(indicator.code == '000001.XSHE'), '2015-10-15', 10)
+    assert isinstance(df, pd.Panel)
+    assert len(df.major_axis) == 10
+    assert list(df['inc_net_profit_to_shareholders_annual']) == ['000001.XSHE']
+    assert list(df['inc_net_profit_to_shareholders_annual']['000001.XSHE']) == [5.81 for i in range(0, 10)]
+
+
+def test_get_industries():
+    df = get_industries('sw_l1')
+    assert len(df.index) > 0
+
+
+def test_get_concepts():
+    df = get_concepts()
+    assert len(df.index) > 0
+
+
+def test_get_margincash_stocks():
+    assert len(get_margincash_stocks('2016-12-01')) > 0
+
+
+def test_get_marginsec_stocks():
+    assert len(get_marginsec_stocks('2016-12-01')) > 0
+
+
 def test_get_dominant_future():
     if_ = get_dominant_future('IF', datetime.datetime(2016, 9, 12, 10, 0))
     assert if_ == 'IF1609.CCFX'
@@ -532,7 +580,8 @@ def test_baidu_factor():
         get_baidu_factor(day="2017-11-20")
 
 if __name__ == "__main__":
-
+    # auth("15168322754", "joinquant@2017")
+    auth("18600230136", "123456", "101.200.217.122")
     glo = globals()
     if len(sys.argv) >= 2:
         func = sys.argv[1]
