@@ -81,17 +81,26 @@ def get_fundamentals_continuously(query_object, end_date=None, count=None):
     :return:返回一个 pandas.Panel
     """
     assert count, "count is required"
-    from .finance_service import get_fundamentals_sql
+    from .finance_service import get_continuously_query_to_sql, fundamentals_non_redundant_continuously_query_to_sql
+    from .calendar_service import CalendarService
+
     if end_date is None:
-        date = datetime.date.today()
-        from .calendar_service import CalendarService
-        trade_days = CalendarService.get_all_trade_days()
-        date = list(filter(lambda item: item < date, trade_days))[-1]
+        end_date = datetime.date.today()
     elif end_date:
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
-        date = min(to_date(end_date), yesterday)
-    sql = get_fundamentals_sql(query_object, end_date, count)
-    return JQDataClient.instance().get_fundamentals_continuously(sql=sql)
+        end_date = min(to_date(end_date), yesterday)
+
+    trade_days = CalendarService.get_previous_trade_day_list(end_date, count)
+    # sql = get_continuously_query_to_sql(query_object, trade_days)
+    sql = fundamentals_non_redundant_continuously_query_to_sql(query_object, trade_days)
+    df = JQDataClient.instance().get_fundamentals_continuously(sql=sql)
+    df3 = df.copy()
+    df3["multi"] = df["day"] + "_" + df["code"]
+    df3 = df3.drop_duplicates("multi")
+    del df3["multi"]
+    df3 = df3.set_index(["code", "day"])
+    pan = df3.to_panel()
+    return pan
 
 
 @assert_auth
@@ -280,7 +289,7 @@ def get_mtss(security_list, start_date=None, end_date=None, fields=None, count=N
 
 
 @assert_auth
-def get_margincash_stocks():
+def get_margincash_stocks(dt=None):
     """
     返回上交所、深交所最近一次披露的的可融资标的列表的list
     :return: list
@@ -289,7 +298,7 @@ def get_margincash_stocks():
 
 
 @assert_auth
-def get_marginsec_stocks():
+def get_marginsec_stocks(dt=None):
     """
     返回上交所、深交所最近一次披露的的可融券标的列表的list
     :return:list
@@ -386,7 +395,7 @@ def write_file(path, content, append=False):
 
 
 __all__ = [
-            "get_price", "get_trade_days", "get_all_trade_days", "get_extras", "get_fundamentals_continuously"
+            "get_price", "get_trade_days", "get_all_trade_days", "get_extras", "get_fundamentals_continuously",
             "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
             "get_security_info", "get_money_flow", "get_locked_shares", "get_fundamentals", "get_mtss",
             "get_concepts", "get_industries", "get_margincash_stocks", "get_marginsec_stocks",

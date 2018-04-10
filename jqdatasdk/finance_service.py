@@ -3,6 +3,7 @@ from sqlalchemy.orm.query import Query
 import re
 from .utils import *
 from .finance_tables import *
+from .fundamentals_non_redundant_tables_gen import *
 FUNDAMENTAL_RESULT_LIMIT = 10000
 
 
@@ -130,6 +131,101 @@ def get_fundamentals_sql(query_object, date=None, statDate=None):
         sql = re.sub(r'(cash_flow_statement|balance_sheet|income_statement|financial_indicator|'
                      r'financial_indicator_acc|income_statement_acc|cash_flow_statement_acc)\.`?day`?\b',
                      r'\1.statDate', sql)
+    return sql
+
+
+def fundamentals_non_redundant_continuously_query_to_sql(query, trade_day):
+    '''
+    根据传入的查询对象和起始时间生成sql
+    trade_day是要查询的交易日列表
+    '''
+    limit = min(FUNDAMENTAL_RESULT_LIMIT, query._limit or FUNDAMENTAL_RESULT_LIMIT)
+    offset = query._offset
+    query._offset = None
+    query._limit = None
+
+    def get_table_class(tablename):
+        for t in (BalanceSheet, CashFlowStatement, FinancialIndicator,
+                  IncomeStatement, StockValuation, BankIndicatorAcc, SecurityIndicatorAcc,
+                  InsuranceIndicatorAcc):
+            if t.__tablename__ == tablename:
+                return t
+
+    def get_tables_from_sql(sql):
+        m = re.findall(
+            r'cash_flow_statement|balance_sheet|financial_indicator|'
+            r'income_statement|stock_valuation|bank_indicator_acc|security_indicator_acc|'
+            r'insurance_indicator_acc', sql)
+        return list(set(m))
+    # 从query对象获取表对象
+    tablenames = get_tables_from_sql(str(query.statement))
+    tables = [get_table_class(name) for name in tablenames]
+    query = query.filter(StockValuation.day.in_(trade_day))
+    # 根据stock valuation 表的code和day字段筛选
+    for table in tables:
+            if table is not StockValuation:
+                query = query.filter(StockValuation.code == table.code)
+                query = query.filter(StockValuation.day >= table.periodStart)
+                query = query.filter(StockValuation.day <= table.periodEnd)
+
+    # 连表
+    for table in tables[1:]:
+        query = query.filter(table.code == tables[0].code)
+
+    # 恢复 offset, limit
+    query = query.offset(offset)
+    query = query.limit(limit)
+    sql = compile_query(query)
+    # 默认添加查询code和day作为panel索引
+    sql = sql.replace('SELECT ', 'SELECT DISTINCT stock_valuation.day AS day,stock_valuation.code as code, ')
+    return sql
+
+
+def get_continuously_query_to_sql(query, trade_day):
+    '''
+    根据传入的查询对象和起始时间生成sql
+    trade_day是要查询的交易日列表
+    '''
+
+    limit = min(FUNDAMENTAL_RESULT_LIMIT, query._limit or FUNDAMENTAL_RESULT_LIMIT)
+    offset = query._offset
+    query._offset = None
+    query._limit = None
+
+    def get_table_class(tablename):
+        for t in (BalanceSheet, CashFlowStatement, FinancialIndicator,
+                  IncomeStatementDay, StockValuation, BankIndicatorAcc, SecurityIndicatorAcc,
+                  InsuranceIndicatorAcc):
+            if t.__tablename__ == tablename:
+                return t
+
+    def get_tables_from_sql(sql):
+        m = re.findall(
+            r'cash_flow_statement|balance_sheet|financial_indicator|'
+            r'income_statement|stock_valuation|bank_indicator_acc|security_indicator_acc|'
+            r'insurance_indicator_acc', sql)
+        return list(set(m))
+    # 从query对象获取表对象
+    tablenames = get_tables_from_sql(str(query.statement))
+    tables = [get_table_class(name) for name in tablenames]
+    query = query.filter(StockValuation.day.in_(trade_day))
+    # 根据stock valuation 表的code和day字段筛选
+    for table in tables:
+            if table is StockValuation:
+                query = query.filter(StockValuation.code == table.code)
+                query = query.filter(StockValuation.day >= table.periodStart)
+                query = query.filter(StockValuation.day <= table.periodEnd)
+
+    # 连表
+    for table in tables[1:]:
+        query = query.filter(table.code == tables[0].code)
+
+    # 恢复 offset, limit
+    query = query.offset(offset)
+    query = query.limit(limit)
+    sql = compile_query(query)
+    # 默认添加查询code和day作为panel索引
+    sql = sql.replace('SELECT ', 'SELECT DISTINCT stock_valuation.day AS day,stock_valuation.code as code, ')
     return sql
 
 

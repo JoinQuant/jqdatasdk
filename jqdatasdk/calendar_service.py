@@ -32,6 +32,21 @@ class CalendarService(object):
         return get_all_trade_days()
 
     @classmethod
+    def get_previous_trade_day_list(cls, date, n):
+        """
+        返回指定日期的前n日交易日list
+        :param date: 指定日期
+        :param n: 前n日
+        :return: list
+        """
+        date = to_date(date)
+        all_trade_days = cls.get_all_trade_days()
+        temp = filter(lambda item: item < date, all_trade_days)
+        lst = sorted(temp)
+        date = [to_date_str(i) for i in lst[-n:]]
+        return date
+
+    @classmethod
     def get_previous_trade_date(cls, date):
         """
         返回指定日期的最近一个交易日
