@@ -3,7 +3,6 @@ from sqlalchemy.orm.query import Query
 import re
 from .utils import *
 from .finance_tables import *
-from .fundamentals_non_redundant_tables_gen import *
 FUNDAMENTAL_RESULT_LIMIT = 10000
 
 
@@ -134,11 +133,16 @@ def get_fundamentals_sql(query_object, date=None, statDate=None):
     return sql
 
 
-def fundamentals_non_redundant_continuously_query_to_sql(query, trade_day):
+def fundamentals_redundant_continuously_query_to_sql(query, trade_day):
     '''
     根据传入的查询对象和起始时间生成sql
     trade_day是要查询的交易日列表
     '''
+
+    from fundamentals_tables_gen import (
+        BalanceSheet, IncomeStatement, CashFlowStatement, FinancialIndicator,
+        BankIndicatorAcc, SecurityIndicatorAcc, InsuranceIndicatorAcc, StockValuation)
+
     limit = min(FUNDAMENTAL_RESULT_LIMIT, query._limit or FUNDAMENTAL_RESULT_LIMIT)
     offset = query._offset
     query._offset = None
@@ -153,8 +157,8 @@ def fundamentals_non_redundant_continuously_query_to_sql(query, trade_day):
 
     def get_tables_from_sql(sql):
         m = re.findall(
-            r'cash_flow_statement|balance_sheet|financial_indicator|'
-            r'income_statement|stock_valuation|bank_indicator_acc|security_indicator_acc|'
+            r'cash_flow_statement_day|balance_sheet_day|financial_indicator_day|'
+            r'income_statement_day|stock_valuation|bank_indicator_acc|security_indicator_acc|'
             r'insurance_indicator_acc', sql)
         return list(set(m))
     # 从query对象获取表对象
@@ -165,8 +169,10 @@ def fundamentals_non_redundant_continuously_query_to_sql(query, trade_day):
     for table in tables:
             if table is not StockValuation:
                 query = query.filter(StockValuation.code == table.code)
-                query = query.filter(StockValuation.day >= table.periodStart)
-                query = query.filter(StockValuation.day <= table.periodEnd)
+                if hasattr(table, 'day'):
+                    query = query.filter(StockValuation.day == table.day)
+                else:
+                    query = query.filter(StockValuation.day == table.statDate)
 
     # 连表
     for table in tables[1:]:
@@ -175,6 +181,7 @@ def fundamentals_non_redundant_continuously_query_to_sql(query, trade_day):
     # 恢复 offset, limit
     query = query.offset(offset)
     query = query.limit(limit)
+    # query = query.subquery()
     sql = compile_query(query)
     # 默认添加查询code和day作为panel索引
     sql = sql.replace('SELECT ', 'SELECT DISTINCT stock_valuation.day AS day,stock_valuation.code as code, ')
@@ -188,6 +195,7 @@ def get_continuously_query_to_sql(query, trade_day):
     '''
 
     limit = min(FUNDAMENTAL_RESULT_LIMIT, query._limit or FUNDAMENTAL_RESULT_LIMIT)
+    # limit = min(1e5, query._limit or 1e5)
     offset = query._offset
     query._offset = None
     query._limit = None

@@ -430,9 +430,6 @@ def test_get_fundamentals_continuously():
     assert isinstance(df, pd.Panel)
     assert len(df.major_axis) == 60
     assert list(df.minor_axis) == ['000001.XSHE', '000002.XSHE']
-    store = get_calendar_store()
-    trade_days = store.get_trade_days_between(datetime.date(2014, 10, 9), datetime.date(2015, 1, 1))
-    assert list(df.major_axis) == [str(t) for t in trade_days]
 
     # indicator
     df = get_fundamentals_continuously(query(indicator).filter(indicator.code == '000001.XSHE'), '2015-10-15', 10)
@@ -580,8 +577,7 @@ def test_baidu_factor():
         get_baidu_factor(day="2017-11-20")
 
 if __name__ == "__main__":
-    # auth("15168322754", "joinquant@2017")
-    auth("18600230136", "123456", "101.200.217.122")
+
     glo = globals()
     if len(sys.argv) >= 2:
         func = sys.argv[1]

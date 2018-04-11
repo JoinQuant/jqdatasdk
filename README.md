@@ -74,10 +74,22 @@ jqdatasdk.get_price("000001.XSHE")
   查询指定行业在指定交易日的成分股
 
   ​
+  
+- get_industries
+
+  查询行业列表
+
+  ​
 
 - get_concept_stocks
 
   查询指定概念在指定交易日的成分股
+
+  ​
+  
+- get_concepts
+
+  查询概念列表
 
   ​
 
@@ -105,6 +117,12 @@ jqdatasdk.get_price("000001.XSHE")
   查询财务数据，包含估值表、利润表、现金流量表、资产负债表、银行专项指标、证券专项指标、保险专项指标
 
   ​
+  
+- get_fundamentals_continuously 
+
+  查询多日的财务数据
+
+  ​
 
 
 - get_mtss
@@ -124,6 +142,18 @@ jqdatasdk.get_price("000001.XSHE")
 - get_locked_shares
 
   查询股票限售解禁股数据
+
+  ​
+  
+- get_margincash_stocks 
+
+  获取融资标的列表
+
+  ​
+  
+- get_marginsec_stocks  
+
+  获取融券标的列表
 
   ​
 

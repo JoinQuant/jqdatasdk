@@ -60,6 +60,24 @@ def check_no_join(query):
         raise Exception("only a table is allowed to query every time")
 
 
+def remove_duplicated_tables(sql):
+    """
+    去除sql中from重复的表名
+    from a, b, a  --》 from a, b
+    :param sql:
+    :return: sql
+    """
+    if isinstance(sql, unicode):
+        sql = sql.encode("utf-8")
+
+    assert isinstance(sql, str), "sql类型有误"
+    table_names = re.findall("from(.*?) where", sql, re.S) or re.findall("FROM(.*?)WHERE", sql, re.S)
+    assert table_names, "未从sql语句中发现对应表名"
+    unique_table_names = list(set(table_names[0].strip().replace(" ", "").split(",")))
+    unique_sql = sql.replace(table_names[0], " " + ",".join(unique_table_names) + " ")
+    return unique_sql
+
+
 def compile_query(query):
     """ 把一个 sqlalchemy query object 编译成mysql风格的 sql 语句 """
     from sqlalchemy.sql import compiler

@@ -81,7 +81,7 @@ def get_fundamentals_continuously(query_object, end_date=None, count=None):
     :return:返回一个 pandas.Panel
     """
     assert count, "count is required"
-    from .finance_service import get_continuously_query_to_sql, fundamentals_non_redundant_continuously_query_to_sql
+    from .finance_service import fundamentals_redundant_continuously_query_to_sql
     from .calendar_service import CalendarService
 
     if end_date is None:
@@ -91,14 +91,14 @@ def get_fundamentals_continuously(query_object, end_date=None, count=None):
         end_date = min(to_date(end_date), yesterday)
 
     trade_days = CalendarService.get_previous_trade_day_list(end_date, count)
-    # sql = get_continuously_query_to_sql(query_object, trade_days)
-    sql = fundamentals_non_redundant_continuously_query_to_sql(query_object, trade_days)
+    sql = fundamentals_redundant_continuously_query_to_sql(query_object, trade_days)
+    sql = remove_duplicated_tables(sql)
     df = JQDataClient.instance().get_fundamentals_continuously(sql=sql)
     df3 = df.copy()
     df3["multi"] = df["day"] + "_" + df["code"]
     df3 = df3.drop_duplicates("multi")
     del df3["multi"]
-    df3 = df3.set_index(["code", "day"])
+    df3 = df3.set_index(["day", "code"])
     pan = df3.to_panel()
     return pan
 
