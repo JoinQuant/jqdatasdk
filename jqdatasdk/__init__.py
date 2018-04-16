@@ -52,6 +52,7 @@ __all__ = [
     "macro",
     "alpha101",
     "alpha191",
+    "technical_analysis",
     "get_baidu_factor",
     "get_ticks",
 ]
