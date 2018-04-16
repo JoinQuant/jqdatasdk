@@ -520,6 +520,21 @@ def test_alpha191():
     assert len(alpha191.alpha_010("000001.XSHE", end_date="2017-03-10")) > 0
 
 
+def test_ta():
+    security_list = "000001.XSHE"
+    check_date = "2017-10-30"
+    timeperiod = 20
+    assert security_list in technical_analysis.ACCER(security_list, check_date, N=10).keys()
+    assert len(technical_analysis.BIAS_QL(security_list, check_date, N=4, M=8)) == 2
+    assert len(technical_analysis.Bollinger_Bands(security_list, check_date, timeperiod, nbdevup=2, nbdevdn=2)) == 3
+
+    security_list = ["000001.XSHE", "600000.XSHG"]
+    data = technical_analysis.BIAS_36(security_list, check_date,  M=12)
+    assert len(data) == 3
+    assert isinstance(data, tuple)
+    assert isinstance(data[0], dict) and data[0].keys() == security_list
+
+
 def test_ticks():
     assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=100)) == 100
     assert get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10,)

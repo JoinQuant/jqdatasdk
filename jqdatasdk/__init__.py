@@ -8,6 +8,7 @@ from .finance_service import *
 from .macro import macro
 from . import alpha101
 from . import alpha191
+from . import technical_analysis
 
 
 def auth(username, password, host="39.107.190.114", port=7000):
