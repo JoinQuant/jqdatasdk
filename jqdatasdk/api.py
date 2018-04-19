@@ -332,20 +332,20 @@ def get_dominant_future(underlying_symbol, dt=None):
 
 
 @assert_auth
-def get_ticks(security, end_dt=None, start_dt=None, count=None, fields=None):
+def get_ticks(security, start_dt=None, end_dt=None, count=None, fields=None):
     """
     获取tick数据
     :param security: 股票or期货标的代码,仅限单只
-    :param end_dt: 截止日期
     :param start_dt: 开始日期
+    :param end_dt: 截止日期
     :param count: 统计个数
-    :param fields: 期货：【datetime current high low volume money position a1_v a1_p b1_v b1_p】
-                    股票：【datetime current high low volume money a1_v-a5_v a1_p-a5_p b1_v-b5_v b1_p-b5_p】
-                    为None时，默认返回datetime-money字段
+    :param fields: 期货：[time current high low volume money position a1_v a1_p b1_v b1_p]
+                    股票：[time current high low volume money a1_v-a5_v a1_p-a5_p b1_v-b5_v b1_p-b5_p]
+                    为None时，默认返回对应类型的所有字段
     :return:
     """
-    end_dt = to_date_str(end_dt)
     start_dt = to_date_str(start_dt)
+    end_dt = to_date_str(end_dt)
     return JQDataClient.instance().get_ticks(**locals())
 
 
