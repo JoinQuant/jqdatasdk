@@ -13,8 +13,7 @@ from . import technical_analysis
 
 def auth(username, password, host="39.107.190.114", port=7000):
     from .client import JQDataClient
-    c = JQDataClient(host=host, port=port, username=username, password=password)
-    c.ensure_auth()
+    JQDataClient.set_auth_params(host=host, port=port, username=username, password=password)
 
 
 __all__ = [
