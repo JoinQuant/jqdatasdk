@@ -1,6 +1,5 @@
 # coding: utf-8
 import sys
-from jqdatasdk import *
 import unittest
 import datetime
 import os
@@ -13,8 +12,7 @@ import pytest
 log = logging
 
 
-auth("18600230136", "123456", "101.200.217.122")
-
+execfile("/home/server/etc/jqdatasdk/import_test_account.py")
 
 def test_get_index_stocks():
     assert len(get_index_stocks('000300.XSHG')) == 300
