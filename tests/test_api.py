@@ -254,9 +254,6 @@ def test_get_price2():
     # 所有cell都应该是nan
     assert np.array_equal(df.isnull().values, np.full(df.shape, True))
 
-    df = get_price('000001.XSHE', start_date='2000-01-01', end_date='2018-01-01')
-    assert len(df.index) == len(get_all_trade_days())
-
     assert get_price('000001.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq=None).iloc[[0, -2, -1]].to_csv() == """\
 ,open,close,high,low,volume,money
 2005-01-04,6.59,6.52,6.59,6.46,1760832.0,11465603.0
@@ -383,12 +380,11 @@ def test_finance_basic():
 
 def test_pd_datetime():
     df = get_all_securities()
-    assert 2872 == len(df[df['start_date'] < datetime.date(2016, 1, 1)].index)
-    assert 2872 == len(df[df['start_date'] < datetime.date(2016, 1, 1)].index)
+    assert 2873 == len(df[df['start_date'] < str(datetime.date(2016, 1, 1))].index)
+    assert 2873 == len(df[df['start_date'] < str(datetime.date(2016, 1, 1))].index)
 
     df = get_price('000001.XSHE')
-    assert 5 == len(df[df.index < '2015-01-10'].index)
-    assert 5 == len(df[df.index < datetime.datetime(2015, 1, 10)].index)
+    assert 5 == len(df[df.index < str(datetime.datetime(2015, 1, 10))].index)
     pass
 
 
@@ -508,6 +504,23 @@ def test_get_future_contracts():
     pass
 
 
+def test_get_all_trade_days():
+    days = get_all_trade_days()
+    assert len(days) > 3000
+
+
+def test_get_trade_days():
+    days = get_trade_days("2005-01-01", "2016-12-30")
+    assert len(days) == 2915
+
+
+def test_get_money_flow():
+    df = get_money_flow("000001.XSHE", "2010-01-01", "2015-12-30")
+    assert len(df) == 1385
+    assert df.iloc[10].net_amount_xl == -449.96
+    assert len(set(df.sec_code)) == 1
+
+
 def test_alpha101():
     assert len(alpha101.alpha_001('2017-03-10', '000300.XSHG')) > 0
     assert len(alpha101.alpha_101('2017-03-10', index='all')) > 0
@@ -535,9 +548,9 @@ def test_ta():
 
 def test_ticks():
     assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=100)) == 100
-    assert get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10,)
+    assert get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10, 7)
     assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10)) == 10
-    assert get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"]).shape == (10,)
+    assert get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"]).shape == (10, 10)
 
 
 def test_billboard_list():
@@ -589,8 +602,8 @@ def test_baidu_factor():
     with pytest.raises(Exception, message="目前只支持中证800的搜索量，代码为csi800"):
         get_baidu_factor(day="2017-11-20")
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     glo = globals()
     if len(sys.argv) >= 2:
         func = sys.argv[1]
