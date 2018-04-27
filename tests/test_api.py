@@ -546,6 +546,12 @@ def test_ta():
     assert isinstance(data[0], dict) and data[0].keys() == security_list
 
 
+def test_macro():
+    q = query(macro.MAC_INDUSTRY_AREA_AGR_OUTPUT_VALUE_YEAR).filter(macro.MAC_INDUSTRY_AREA_AGR_OUTPUT_VALUE_YEAR.stat_year=='2014')
+    df = macro.run_query(q)
+    assert len(df) == 31
+
+
 def test_ticks():
     assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=100)) == 100
     assert get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10, 7)
