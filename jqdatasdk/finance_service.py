@@ -139,7 +139,7 @@ def fundamentals_redundant_continuously_query_to_sql(query, trade_day):
     trade_day是要查询的交易日列表
     '''
 
-    from fundamentals_tables_gen import (
+    from .fundamentals_tables_gen import (
         BalanceSheet, IncomeStatement, CashFlowStatement, FinancialIndicator,
         BankIndicatorAcc, SecurityIndicatorAcc, InsuranceIndicatorAcc, StockValuation)
 

@@ -67,10 +67,7 @@ def remove_duplicated_tables(sql):
     :param sql:
     :return: sql
     """
-    if isinstance(sql, unicode):
-        sql = sql.encode("utf-8")
-
-    assert isinstance(sql, str), "sql类型有误"
+    assert isinstance(sql, six.string_types), "sql类型有误"
     table_names = re.findall("from(.*?) where", sql, re.S) or re.findall("FROM(.*?)WHERE", sql, re.S)
     assert table_names, "未从sql语句中发现对应表名"
     unique_table_names = list(set(table_names[0].strip().replace(" ", "").split(",")))
