@@ -12,6 +12,9 @@ logging.basicConfig()
 import pytest
 log = logging
 
+with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
+    exec(f.read())
+
 
 def test_get_index_stocks():
     assert len(get_index_stocks('000300.XSHG')) == 300
