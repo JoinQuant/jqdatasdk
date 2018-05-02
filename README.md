@@ -24,6 +24,12 @@ jqdatasdk.get_price("000001.XSHE")
 
 
 
+#### 申请试用
+
+如果您想试用该数据包接口，请联系我们的运营周言（微信:18141907163），添加时请备注jqdatasdk。
+
+
+
 #### 支持的接口
 
 > 各API接口的含义及说明见官网：https://www.joinquant.com/api
@@ -74,7 +80,7 @@ jqdatasdk.get_price("000001.XSHE")
   查询指定行业在指定交易日的成分股
 
   ​
-  
+
 - get_industries
 
   查询行业列表
@@ -86,7 +92,7 @@ jqdatasdk.get_price("000001.XSHE")
   查询指定概念在指定交易日的成分股
 
   ​
-  
+
 - get_concepts
 
   查询概念列表
@@ -117,7 +123,7 @@ jqdatasdk.get_price("000001.XSHE")
   查询财务数据，包含估值表、利润表、现金流量表、资产负债表、银行专项指标、证券专项指标、保险专项指标
 
   ​
-  
+
 - get_fundamentals_continuously 
 
   查询多日的财务数据
@@ -130,27 +136,25 @@ jqdatasdk.get_price("000001.XSHE")
   查询股票、基金的融资融券数据
 
   ​
-  
-  
+
 - get_billbord_list
 
   查询股票龙虎榜数据
 
   ​
-  
-  
+
 - get_locked_shares
 
   查询股票限售解禁股数据
 
   ​
-  
+
 - get_margincash_stocks 
 
   获取融资标的列表
 
   ​
-  
+
 - get_marginsec_stocks
 
   获取融券标的列表
@@ -170,14 +174,12 @@ jqdatasdk.get_price("000001.XSHE")
   查询主力合约对应的标的
 
   ​
-  
-  
+
 - get_ticks
 
   查询股票、期货的tick数据
 
   ​
-  
 
 - normalize_code
 
@@ -199,24 +201,22 @@ jqdatasdk.get_price("000001.XSHE")
   查询WorldQuant 101 Alphas 因子数据，具体因子解释见官网API https://www.joinquant.com/data/dict/alpha101
 
   ​
-  
 
 
 - alpha191
 
   查询短周期价量特征 191 Alphas 因子数据，具体因子解释见官网API https://www.joinquant.com/data/dict/alpha191
-  
+
   ​
-  
 
 - technical_analysis
 
   技术分析指标，具体因子解释见官网API https://www.joinquant.com/data/dict/technicalanalysis
-  
+
   ​
-  
-  
-  
+
+  ​
+
 - baidu_factor
 
   查询股票某日百度搜索量数据
