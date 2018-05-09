@@ -12,7 +12,7 @@ logging.basicConfig()
 import pytest
 log = logging
 
-with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
+with open("/home/server/etc/jqdatasdk/import_test_account.py") as f:
     exec(f.read())
 
 
@@ -256,8 +256,8 @@ def test_get_price2():
     # 所有cell都应该是nan
     assert np.array_equal(df.isnull().values, np.full(df.shape, True))
 
-    df = get_price('000001.XSHE', start_date='2000-01-01', end_date='2018-01-01')
-    assert len(df.index) == len(get_all_trade_days())
+    df = get_price('000001.XSHG', start_date='2000-01-01', end_date='2018-01-01')
+    assert len(df.index) == len(get_trade_days(end_date="2018-01-01", count=10000))
 
     assert get_price('000001.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq=None).iloc[[0, -2, -1]].to_csv() == """\
 ,open,close,high,low,volume,money
@@ -385,12 +385,12 @@ def test_finance_basic():
 
 def test_pd_datetime():
     df = get_all_securities()
-    assert 2872 == len(df[df['start_date'] < datetime.date(2016, 1, 1)].index)
-    assert 2872 == len(df[df['start_date'] < datetime.date(2016, 1, 1)].index)
+    assert 2873 == len(df[df['start_date'] < "2016-01-01"].index)
+    assert 2873 == len(df[df['start_date'] < "2016-01-01"].index)
 
     df = get_price('000001.XSHE')
     assert 5 == len(df[df.index < '2015-01-10'].index)
-    assert 5 == len(df[df.index < datetime.datetime(2015, 1, 10)].index)
+    assert 5 == len(df[df.index < "2015-01-10"].index)
     pass
 
 
@@ -535,11 +535,17 @@ def test_ta():
     assert isinstance(data[0], dict) and [i for i in data[0].keys()] == security_list
 
 
+def test_macro():
+    q = query(macro.MAC_INDUSTRY_AREA_AGR_OUTPUT_VALUE_YEAR).filter(macro.MAC_INDUSTRY_AREA_AGR_OUTPUT_VALUE_YEAR.stat_year=='2014')
+    df = macro.run_query(q)
+    assert len(df) == 31
+
+
 def test_ticks():
     assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=100)) == 100
-    assert get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10,)
+    assert get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10, 7)
     assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10)) == 10
-    assert get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"]).shape == (10,)
+    assert get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"]).shape == (10, 10)
 
 
 def test_billboard_list():
