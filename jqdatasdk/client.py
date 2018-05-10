@@ -9,6 +9,7 @@ from os import path
 import platform
 import sys
 import threading
+import socket
 
 
 thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
@@ -44,6 +45,7 @@ class JQDataClient(object):
         self.client = None
         self.inited = False
         self.retry_cnt = retry_cnt
+        self.not_auth = True
 
     @classmethod
     def set_auth_params(cls, **params):
@@ -61,7 +63,9 @@ class JQDataClient(object):
                 self._threading_local._instance = None
                 raise self.get_error(response)
             else:
-                print("auth success")
+                if self.not_auth:
+                    print("auth success")
+                    self.not_auth = False
 
     def _reset(self):
         if self.client:
@@ -111,7 +115,7 @@ class JQDataClient(object):
                 self._reset()
                 err = e
                 raise
-            except thriftpy.transport.TTransportException as e:
+            except (thriftpy.transport.TTransportException, socket.error) as e:
                 self._reset()
                 err = e
                 time.sleep(idx * 2)
