@@ -28,8 +28,10 @@ class CalendarService(object):
 
     @classmethod
     def get_all_trade_days(cls):
-        from .api import get_all_trade_days
-        return get_all_trade_days()
+        if not cls.all_trade_days:
+            from .api import get_all_trade_days
+            cls.all_trade_days = get_all_trade_days()
+        return cls.all_trade_days
 
     @classmethod
     def get_previous_trade_day_list(cls, date, n):
@@ -63,6 +65,5 @@ class CalendarService(object):
 
 get_trade_days = CalendarService.get_trade_days
 get_all_trade_days = CalendarService.get_all_trade_days
-
 
 

@@ -105,7 +105,7 @@ def get_fundamentals_sql(query_object, date=None, statDate=None):
                 # 所以如果传入的非交易日, 就需要取得前一个交易日
                 assert table is StockValuation
                 if trade_day_not_after_stat_date is None:
-                    trade_day_not_after_stat_date = get_trade_day_not_after(stat_date)
+                    trade_day_not_after_stat_date = CalendarService.get_previous_trade_date(stat_date)
                 query_object = query_object.filter(table.day == trade_day_not_after_stat_date)
 
     # 连表

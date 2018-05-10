@@ -12,7 +12,7 @@ logging.basicConfig()
 import pytest
 log = logging
 
-with open("/home/server/etc/jqdatasdk/import_test_account.py") as f:
+with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
     exec(f.read())
 
 
@@ -410,6 +410,30 @@ def test_get_fundamentals():
     with pytest.raises(Exception) as e:
         get_fundamentals(query(income.day).limit(10), date='2016-07-01', statDate='2016-07-01')
     pass
+
+
+def test_get_fundamentals2():
+    q = query(
+        valuation.code,
+        indicator.statDate,
+        indicator.roe,
+        balance.total_assets / balance.total_owner_equities,
+        income.total_operating_revenue / balance.total_assets,
+        indicator.net_profit_margin,
+        indicator.gross_profit_margin,
+        valuation.pe_ratio,
+        indicator.inc_net_profit_year_on_year,
+        indicator.inc_total_revenue_year_on_year,
+        indicator.inc_operation_profit_year_on_year,
+        indicator.inc_revenue_year_on_year,
+        indicator.operating_expense_to_total_revenue,
+        indicator.ga_expense_to_total_revenue,
+        indicator.financing_expense_to_total_revenue,
+        valuation.pb_ratio
+    ).filter(
+        valuation.code == '000895.XSHE'
+    )
+    df = get_fundamentals(q, statDate='2017')
 
 
 def test_get_fundamentals_continuously():
