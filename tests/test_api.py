@@ -474,10 +474,12 @@ def test_get_concepts():
 
 
 def test_get_margincash_stocks():
+    get_margincash_stocks()
     assert len(get_margincash_stocks('2016-12-01')) > 0
 
 
 def test_get_marginsec_stocks():
+    get_marginsec_stocks()
     assert len(get_marginsec_stocks('2016-12-01')) > 0
 
 
