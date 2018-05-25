@@ -102,10 +102,10 @@ class JQDataClient(object):
                 response = self.client.query(request)
                 if response.status:
                     buffer = response.msg
-                    if six.PY2:
-                        file.write(buffer)
-                    else:
-                        file.write(bytes(buffer, "ascii"))
+                    if six.PY3:
+                        if type(buffer) is str:
+                            buffer = bytes(buffer, "ascii")
+                    file.write(buffer)
                     file.seek(0)
                     result = pd.read_pickle(file.name)
                 else:
