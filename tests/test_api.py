@@ -558,7 +558,7 @@ def test_ta():
     data = technical_analysis.BIAS_36(security_list, check_date,  M=12)
     assert len(data) == 3
     assert isinstance(data, tuple)
-    assert isinstance(data[0], dict) and [i for i in data[0].keys()] == security_list
+    assert isinstance(data[0], dict) and sorted([i for i in data[0].keys()]) == security_list
 
 
 def test_macro():
