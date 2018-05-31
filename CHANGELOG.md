@@ -1,3 +1,6 @@
+# 2018-05-31
+- 修复了查询get_fundamentals_continuously的bug
+
 # 2018-05-28
 - 修复了测试用例test_ta的bug
 

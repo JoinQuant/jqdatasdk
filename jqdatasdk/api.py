@@ -90,7 +90,7 @@ def get_fundamentals_continuously(query_object, end_date=None, count=None):
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         end_date = min(to_date(end_date), yesterday)
 
-    trade_days = CalendarService.get_previous_trade_day_list(end_date, count)
+    trade_days = CalendarService.get_trade_days(end_date=end_date, count=count)
     sql = fundamentals_redundant_continuously_query_to_sql(query_object, trade_days)
     sql = remove_duplicated_tables(sql)
     df = JQDataClient.instance().get_fundamentals_continuously(sql=sql)
@@ -394,8 +394,7 @@ def write_file(path, content, append=False):
         return f.write(content)
 
 
-__all__ = [
-            "get_price", "get_trade_days", "get_all_trade_days", "get_extras", "get_fundamentals_continuously",
+__all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", "get_fundamentals_continuously",
             "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
             "get_security_info", "get_money_flow", "get_locked_shares", "get_fundamentals", "get_mtss",
             "get_concepts", "get_industries", "get_margincash_stocks", "get_marginsec_stocks",

@@ -1,5 +1,4 @@
 # coding=utf-8
-from .client import JQDataClient
 from .utils import *
 
 
@@ -9,22 +8,18 @@ class CalendarService(object):
 
     @classmethod
     def get_trade_days(cls, start_date=None, end_date=None, count=None):
-        if not cls.all_trade_days:
-            start_date = to_date_str(start_date)
-            end_date = to_date_str(end_date)
-            lst = JQDataClient.instance().get_trade_days(**locals())
-            return [to_date(item) for item in lst]
+        if start_date and count:
+            raise ParamsError("start_date 参数与 count 参数只能二选一")
+        if not (count is None or count > 0):
+            raise ParamsError("count 参数需要大于 0 或者为 None")
+        start_date = to_date(start_date)
+        end_date = to_date(end_date) or today()
+        if start_date:
+            return [d for d in cls.get_all_trade_days() if start_date <= d <= end_date]
+        elif count:
+            return [d for d in cls.get_all_trade_days() if d <= end_date][-count:]
         else:
-            start_date = to_date(start_date)
-            end_date = to_date(end_date)
-            start_idx, end_idx = 0, len(cls.all_trade_days)
-            if start_date:
-                assert start_date in cls.all_trade_days
-                start_idx = cls.all_trade_days.index(start_date)
-            if end_date:
-                assert end_date in cls.all_trade_days
-                end_idx = cls.all_trade_days.index(end_date)
-            return cls.all_trade_days[start_idx:end_idx]
+            raise ParamsError("start_date 参数与 count 参数必须输入一个")
 
     @classmethod
     def get_all_trade_days(cls):
@@ -32,21 +27,6 @@ class CalendarService(object):
             from .api import get_all_trade_days
             cls.all_trade_days = get_all_trade_days()
         return cls.all_trade_days
-
-    @classmethod
-    def get_previous_trade_day_list(cls, date, n):
-        """
-        返回指定日期的前n日交易日list
-        :param date: 指定日期
-        :param n: 前n日
-        :return: list
-        """
-        date = to_date(date)
-        all_trade_days = cls.get_all_trade_days()
-        temp = filter(lambda item: item < date, all_trade_days)
-        lst = sorted(temp)
-        date = [to_date_str(i) for i in lst[-n:]]
-        return date
 
     @classmethod
     def get_previous_trade_date(cls, date):
