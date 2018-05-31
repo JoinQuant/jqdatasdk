@@ -84,12 +84,6 @@ def get_fundamentals_continuously(query_object, end_date=None, count=None):
     from .finance_service import fundamentals_redundant_continuously_query_to_sql
     from .calendar_service import CalendarService
 
-    if end_date is None:
-        end_date = datetime.date.today()
-    elif end_date:
-        yesterday = datetime.date.today() - datetime.timedelta(days=1)
-        end_date = min(to_date(end_date), yesterday)
-
     trade_days = CalendarService.get_trade_days(end_date=end_date, count=count)
     sql = fundamentals_redundant_continuously_query_to_sql(query_object, trade_days)
     sql = remove_duplicated_tables(sql)
