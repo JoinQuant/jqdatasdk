@@ -1,32 +1,57 @@
+![logo](logo.png)
+
 ### jqdatasdk
 
 >jqdatasdk是提供给用户获取聚宽金融数据的SDK。用户可以在自己搭建的环境中获取聚宽提供的金融数据，除了需要验证之外，其余的功能特性与官网的投资研究模块保持一致。
 
-  
+
 
 #### 安装
 
+- 方式一：pip install git+https://github.com/JoinQuant/jqdatasdk.git
+- 方式二：python setup.py install
+
+
+
+#### 升级
 
 ```
-pip install git+https://github.com/JoinQuant/jqdatasdk.git
+pip install -U git+https://github.com/JoinQuant/jqdatasdk.git
 ```
-
 
 
 
 #### 使用简介
 
+例如：获取平安银行2017-01-01到2017-12-31的所有日行情数据
+
 ```
 import jqdatasdk
 jqdatasdk.auth(username, password)
-jqdatasdk.get_price("000001.XSHE")
+jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31")
+```
+
+结果显示：
+
+```
+             open  close   high    low       volume         money
+2017-01-03   8.98   9.03   9.05   8.96   46650858.0  4.205952e+08
+2017-01-04   9.02   9.03   9.05   9.01   45584521.0  4.115034e+08
+2017-01-05   9.04   9.04   9.05   9.02   34936662.0  3.157697e+08
+2017-01-06   9.04   9.00   9.04   8.98   36334775.0  3.271764e+08
+2017-01-09   9.00   9.02   9.04   8.98   36631757.0  3.299946e+08
+2017-01-10   9.02   9.02   9.03   9.01   24454945.0  2.205751e+08
+2017-01-11   9.01   9.01   9.04   9.00   30783091.0  2.775532e+08
+2017-01-12   9.00   9.02   9.04   9.00   43421325.0  3.918694e+08
+2017-01-13   9.01   9.03   9.06   8.99   44059912.0  3.976019e+08
+...
 ```
 
 
 
-#### 申请试用
+#### 试用
 
-如果您想试用该数据包接口，请联系我们的运营周言（微信:18141907163），添加时请备注jqdatasdk。
+如果您想试用该数据包接口，请联系我们的运营（微信:jqdata01），添加时请备注jqdatasdk。
 
 
 
@@ -212,8 +237,6 @@ jqdatasdk.get_price("000001.XSHE")
 - technical_analysis
 
   技术分析指标，具体因子解释见官网API https://www.joinquant.com/data/dict/technicalanalysis
-
-  ​
 
   ​
 
