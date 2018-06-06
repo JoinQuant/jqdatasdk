@@ -1,3 +1,6 @@
+# 2018-06-06
+- 支持pyinstall调用jqdatasdk
+
 # 2018-05-31
 - 修复了查询get_fundamentals_continuously的bug
 

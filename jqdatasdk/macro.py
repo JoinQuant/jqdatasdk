@@ -19,12 +19,11 @@ class Macro(object):
     def __load_table_names(self):
         import os
         tables_dir = os.path.join(sys.modules["ROOT_DIR"], 'macro_tables')
-        if not os.path.exists(tables_dir):
-            return
         names = []
-        for table_file in os.listdir(tables_dir):
-            if table_file.endswith('.py') and not table_file.startswith('__'):
-                names.append(table_file[:-3])
+        if os.path.exists(tables_dir):
+            for table_file in os.listdir(tables_dir):
+                if table_file.endswith('.py') and not table_file.startswith('__'):
+                    names.append(table_file[:-3])
         return names
 
     def run_query(self, query_object):
