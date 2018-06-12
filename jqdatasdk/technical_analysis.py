@@ -248,7 +248,7 @@ def BIAS_QL(security_list, check_date, N=6, M=6):
 
 
 @assert_auth
-def BIAS_36(security_list, check_date,  M=6):
+def BIAS_36(security_list, check_date, M=6):
     '''
     计算公式：
         BIAS36:MA(CLOSE,3)-MA(CLOSE,6);

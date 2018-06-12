@@ -29,7 +29,8 @@ class JQDataClient(object):
     def instance(cls):
         _instance = getattr(cls._threading_local, '_instance', None)
         if _instance is None:
-            _instance = JQDataClient(**cls._auth_params)
+            if cls._auth_params:
+                _instance = JQDataClient(**cls._auth_params)
             cls._threading_local._instance = _instance
         return _instance
 

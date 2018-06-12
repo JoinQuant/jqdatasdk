@@ -9,6 +9,8 @@ from .macro import macro
 from . import alpha101
 from . import alpha191
 from . import technical_analysis
+from .fin import *
+from . import fin
 
 
 def auth(username, password, host="39.107.190.114", port=7000):
@@ -56,5 +58,8 @@ __all__ = [
     "get_baidu_factor",
     "get_ticks",
 ]
+
+__all__.extend(fin.__all__)
+
 
 
