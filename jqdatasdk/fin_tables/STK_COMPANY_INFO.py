@@ -58,8 +58,5 @@ class STK_COMPANY_INFO(Base):
     lawfirm = Column(String(200), comment="律师事务所")
     agent = Column(String(100), comment="总经理")
     comments = Column(String(300), comment="备注")
-    status = Column(TINYINT(display_width=4), default=0, comment="是否同步,0:未同步,1:已同步")
-    addTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="插入时间")
-    modTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="最后修改时间")
 
 
