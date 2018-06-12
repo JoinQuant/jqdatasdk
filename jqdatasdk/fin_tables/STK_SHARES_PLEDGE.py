@@ -32,6 +32,3 @@ class STK_SHARES_PLEDGE(Base):
     unpledged_number = Column(DECIMAL(20, 4), comment="质押解除数量")
     unpledged_detail = Column(String(1000), comment="解除质押说明")
     is_buy_back = Column(String(1), comment="是否质押式回购交易")
-    # status = Column(TINYINT(display_width=4), default=0, comment="是否同步,0:未同步,1:已同步")
-    # addTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="插入时间")
-    # modTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="最后修改时间")

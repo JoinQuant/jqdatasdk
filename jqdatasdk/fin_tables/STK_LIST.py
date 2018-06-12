@@ -28,7 +28,3 @@ class STK_LIST(Base):
     par_value = Column(DECIMAL(20, 4), comment="面值")
     state_id = Column(Integer, comment="上市状态编码")
     state = Column(String(32), comment="上市状态")
-    # status = Column(TINYINT(display_width=4), default=0, comment="是否同步,0:未同步,1:已同步")
-    # addTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="插入时间")
-    # modTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="最后修改时间")
-
