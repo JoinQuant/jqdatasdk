@@ -27,7 +27,7 @@ setup(
     name="jqdatasdk",
     version=version,
     description="jqdatasdk<easy utility for getting financial market data of China>",
-    packages=["jqdatasdk", "jqdatasdk.macro_tables"],
+    packages=["jqdatasdk", "jqdatasdk.macro_tables", "jqdatasdk.fin_tables"],
     author="JoinQuant",
     author_email="xlx@joinquant.com",
     maintainer="wangchaoyang",
