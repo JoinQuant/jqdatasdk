@@ -24,7 +24,7 @@ class STK_EMPLOYEE_INFO(Base):
     graduate_rate = Column(DECIMAL(10, 4), comment="研究生以上人员比例(%)")
     college_rate = Column(DECIMAL(10, 4), comment="大学专科以上人员比例(%)")
     middle_rate = Column(DECIMAL(10, 4), comment="中专及以下人员比例(%)")
-    status = Column(TINYINT(display_width=4), default=0, comment="是否同步,0:未同步,1:已同步")
-    addTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="插入时间")
-    modTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="最后修改时间")
+    # status = Column(TINYINT(display_width=4), default=0, comment="是否同步,0:未同步,1:已同步")
+    # addTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="插入时间")
+    # modTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="最后修改时间")
 

@@ -23,8 +23,8 @@ class STK_NAME_HISTORY(Base):
     start_date = Column(Date, comment="开始日期")
     pub_date = Column(Date, comment="公布日期")
     reason = Column(String(255), comment="变更原因")
-    status = Column(TINYINT(display_width=4), default=0, comment="是否同步,0:未同步,1:已同步")
-    addTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="插入时间")
-    modTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="最后修改时间")
+    # status = Column(TINYINT(display_width=4), default=0, comment="是否同步,0:未同步,1:已同步")
+    # addTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="插入时间")
+    # modTime = Column(TIMESTAMP, default=datetime.datetime.now, comment="最后修改时间")
 
 
