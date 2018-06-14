@@ -9,9 +9,9 @@ Base = declarative_base()
 metadata = Base.metadata
 
 
-class STK_LIMITED_SHARES_UNLIMITED_DATE(Base):
+class STK_LIMITED_SHARES_UNLIMIT(Base):
 
-    __tablename__ = "STK_LIMITED_SHARES_UNLIMITED_DATE"
+    __tablename__ = "STK_LIMITED_SHARES_UNLIMIT"
 
     id = Column(Integer, primary_key=True)
     company_id = Column(Integer, nullable=False, comment="公司ID")

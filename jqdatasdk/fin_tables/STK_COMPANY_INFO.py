@@ -56,5 +56,5 @@ class STK_COMPANY_INFO(Base):
     industry_2 = Column(String(60), comment="行业大类")
     cpafirm = Column(String(200), comment="会计师事务所")
     lawfirm = Column(String(200), comment="律师事务所")
-    agent = Column(String(100), comment="总经理")
+    ceo = Column(String(100), comment="总经理")
     comments = Column(String(300), comment="备注")

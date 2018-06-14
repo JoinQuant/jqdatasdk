@@ -16,7 +16,7 @@ class STK_CAPITAL_CHANGE(Base):
     id = Column(Integer, primary_key=True)
     company_id = Column(Integer, nullable=False, comment="公司ID")
     company_name = Column(String(100), nullable=False, comment="公司名称")
-    stock_code = Column(String(12), nullable=False, comment="股票代码")
+    code = Column(String(12), nullable=False, comment="股票代码")
     change_date = Column(Date, nullable=False, comment="变动日期")
     pub_date = Column(Date, nullable=False, comment="公告日期")
     change_reason_id = Column(Integer, comment="变动原因编码")
