@@ -20,6 +20,9 @@ from setuptools import (
 with open(join(dirname(__file__), 'VERSION.txt'), 'rb') as f:
     version = f.read().decode('ascii').strip()
 
+with open(join(dirname(__file__), 'README.md'), 'rb') as f:
+    long_description = f.read().decode('utf-8')
+
 requirements = [str(ir.req) for ir in parse_requirements("requirements.txt", session=False)]
 
 
@@ -35,6 +38,8 @@ setup(
     license='Apache License v2',
     package_data={'': ['*.*']},
     url="https://www.joinquant.com/data",
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     install_requires=requirements,
     zip_safe=False,
     platforms=["all"],
