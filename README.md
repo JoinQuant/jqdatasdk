@@ -8,7 +8,7 @@
 
 #### 安装
 
-- 方式一：pip install git+https://github.com/JoinQuant/jqdatasdk.git
+- 方式一：pip install git+https://github.com/JoinQuant/jqdatasdk.git -i https://mirrors.aliyun.com/pypi/simple/
 - 方式二：python setup.py install
 
 
