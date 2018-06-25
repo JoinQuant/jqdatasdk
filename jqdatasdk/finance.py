@@ -7,7 +7,7 @@ from .utils import *
 import sys
 
 
-class Macro(object):
+class Finance(object):
     RESULT_ROWS_LIMIT = 3000
 
     def __init__(self, disable_join=False):
@@ -18,7 +18,7 @@ class Macro(object):
 
     def __load_table_names(self):
         import os
-        tables_dir = os.path.join(sys.modules["ROOT_DIR"], 'macro_tables')
+        tables_dir = os.path.join(sys.modules["ROOT_DIR"], 'fin_tables')
         names = []
         if os.path.exists(tables_dir):
             for table_file in os.listdir(tables_dir):
@@ -38,11 +38,11 @@ class Macro(object):
         query_object = query_object.limit(limit)
 
         sql = compile_query(query_object)
-        df = JQDataClient.instance().macro_query(sql=sql)
+        df = JQDataClient.instance().fin_query(sql=sql)
         return df
 
     def __load_table_class(self, table_name):
-        table_module = __import__('jqdatasdk.macro_tables.' + table_name, fromlist=[table_name])
+        table_module = __import__('jqdatasdk.fin_tables.' + table_name, fromlist=[table_name])
         return getattr(table_module, table_name)
 
     # def __getattribute__(self, key):
@@ -54,6 +54,6 @@ class Macro(object):
     #     return v
 
 
-macro = Macro()
+finance = Finance()
 
 
