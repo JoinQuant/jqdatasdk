@@ -623,6 +623,18 @@ def test_baidu_factor():
     with pytest.raises(Exception, message="目前只支持中证800的搜索量，代码为csi800"):
         get_baidu_factor(day="2017-11-20")
 
+
+def test_finance_tables():
+    # lazy load table of finance
+    assert len(finance.__dict__) == 2
+    finance.STK_LIST
+    assert len(finance.__dict__) > 30
+    assert finance.STK_LIST != None
+    assert finance.STK_MONEY_FLOW != None
+    with pytest.raises(Exception, message='finance 没有该表'):
+        finance.STK
+
+
 if __name__ == "__main__":
 
     glo = globals()
@@ -637,7 +649,3 @@ if __name__ == "__main__":
             if i.startswith("test") and callable(glo[i]):
                 print ("run: %s" % i)
                 glo[i]()
-
-
-
-
