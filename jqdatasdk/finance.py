@@ -55,7 +55,7 @@ class Finance(object):
                     ]}
         """
         import datetime
-        from sqlalchemy import Date, Column, DateTime, Integer, Numeric, SmallInteger, String, Table, Text, text
+        from sqlalchemy import Date, Column, DateTime, Integer, INTEGER, Numeric, SmallInteger, String, Table, Text, text
         from sqlalchemy.dialects.mysql import TINYINT, TIMESTAMP, DECIMAL
 
         data = JQDataClient.instance().get_table_orm(db=self.db_name, table=table_name)
