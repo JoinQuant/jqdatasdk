@@ -11,6 +11,8 @@ import pandas as pd
 logging.basicConfig()
 import pytest
 log = logging
+from pandas.tslib import Timestamp
+
 
 with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
     exec(f.read())
@@ -571,6 +573,7 @@ def test_ticks():
     assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=100)) == 100
     assert get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10, 7)
     assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10)) == 10
+    assert get_ticks("SM1809.XZCE", '2018-07-06', '2018-07-07').iloc[3][0] == Timestamp('2018-07-06 09:00:01.500000')
     assert get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"]).shape == (10, 10)
 
 
