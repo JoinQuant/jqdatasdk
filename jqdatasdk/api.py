@@ -228,7 +228,7 @@ def get_all_trade_days():
     :return 包含所有交易日的 numpy.ndarray, 每个元素为一个 datetime.date 类型.
     """
     data = JQDataClient.instance().get_all_trade_days()
-    return data
+    return [to_date(i.item()) for i in data]
 
 
 @assert_auth
@@ -241,7 +241,7 @@ def get_trade_days(start_date=None, end_date=None, count=None):
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
     data = JQDataClient.instance().get_trade_days(**locals())
-    return data
+    return [to_date(i.item()) for i in data]
 
 
 @assert_auth

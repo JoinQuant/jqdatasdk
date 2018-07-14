@@ -25,8 +25,7 @@ class CalendarService(object):
     def get_all_trade_days(cls):
         if not cls.all_trade_days:
             from .api import get_all_trade_days
-            days = get_all_trade_days()
-            cls.all_trade_days = [to_date(i) for i in days]
+            cls.all_trade_days = get_all_trade_days() 
         return cls.all_trade_days
         
 
