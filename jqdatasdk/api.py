@@ -228,7 +228,9 @@ def get_all_trade_days():
     :return 包含所有交易日的 numpy.ndarray, 每个元素为一个 datetime.date 类型.
     """
     data = JQDataClient.instance().get_all_trade_days()
-    return [to_date(i.item()) for i in data]
+    if str(data.dtype) != "object":
+        data = data.astype(datetime.datetime)
+    return data
 
 
 @assert_auth
@@ -240,8 +242,10 @@ def get_trade_days(start_date=None, end_date=None, count=None):
     """
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
-    data = JQDataClient.instance().get_trade_days(**locals())
-    return [to_date(i.item()) for i in data]
+    data =  JQDataClient.instance().get_trade_days(**locals())
+    if str(data.dtype) != "object":
+        data = data.astype(datetime.datetime)
+    return data
 
 
 @assert_auth
@@ -370,6 +374,30 @@ def normalize_code(code):
     return JQDataClient.instance().normalize_code(**locals())
 
 
+@assert_auth
+def get_factor_values(securities, factors, start_date=None, end_date=None, count=None):
+    """
+    获取因子数据
+    返回字典类型
+    :return:
+    """
+
+    securities = convert_security(securities)
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    if (not count) and (not start_date):
+            start_date = "2015-01-01"
+    if count and start_date:
+        raise ParamsError("(start_date, count) only one param is required")
+    return JQDataClient.instance().get_factor_values(**locals())
+
+@assert_auth
+def get_index_weights(index_id, date=None):
+    assert index_id, "index_id is required"
+    date = to_date_str(date)
+    return JQDataClient.instance().get_index_weights(**locals())
+
+
 def read_file(path):
     """
     读取文件
@@ -393,8 +421,4 @@ __all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", "g
             "get_security_info", "get_money_flow", "get_locked_shares", "get_fundamentals", "get_mtss",
             "get_concepts", "get_industries", "get_margincash_stocks", "get_marginsec_stocks",
             "get_future_contracts", "get_dominant_future", "normalize_code", "get_baidu_factor",
-            "get_billboard_list", "get_ticks", "read_file", "write_file"]
-
-
-
-
+            "get_billboard_list", "get_ticks", "read_file", "write_file", "get_factor_values", "get_index_weights"]

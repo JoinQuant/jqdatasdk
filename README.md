@@ -243,3 +243,9 @@ jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31
 - baidu_factor
 
   查询股票某日百度搜索量数据
+
+
+- get_factor_values
+
+  获取质量因子、基础因子、情绪因子、成长因子、风险因子、每股因子等数百个因子数据，详细的因子列表请参考https://www.joinquant.com/help/api/help?name=factor_values
+

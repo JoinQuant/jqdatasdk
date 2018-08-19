@@ -57,6 +57,8 @@ __all__ = [
     "get_baidu_factor",
     "get_ticks",
     "finance",
+    "get_factor_values",
+    "get_index_weights",
 ]
 
 # __all__.extend(fin.__all__)

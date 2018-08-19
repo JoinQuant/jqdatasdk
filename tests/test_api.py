@@ -15,8 +15,7 @@ from pandas.tslib import Timestamp
 
 
 with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
-    exec(f.read())
-
+   exec(f.read())
 
 def test_get_index_stocks():
     assert len(get_index_stocks('000300.XSHG')) == 300
@@ -72,7 +71,7 @@ def test_get_concept_stocks():
     assert len(get_concept_stocks('gn001', date=datetime.date(2015, 5, 5))) > 0
     assert len(get_concept_stocks('GN001', date=datetime.date(2016, 1, 1))) > 0
     assert len(get_concept_stocks('GN075')) > 0
-    assert len(get_concept_stocks('GN116', datetime.date(2012, 6, 5)))
+    assert len(get_concept_stocks('GN116', datetime.date(2012, 6, 5))) == 0
     assert len(get_concept_stocks('GN146', datetime.date(2015, 1, 1)))
     assert len(get_concept_stocks('GN201', datetime.date.today()))
     assert get_concept_stocks("GN116", datetime.date(2005, 1, 1)) == []
@@ -181,9 +180,10 @@ def round_df(df, decimal):
 
 
 def test_get_price():
-
+    # 传入两个重复股票
+    get_price(['000001.XSHE', '000001.XSHE'], start_date=datetime.date(2015, 1, 1), end_date=datetime.date(2015, 2, 1), frequency='daily', fields=(u'open', 'close', 'paused'))
     day_columns = 'open close high low volume money pre_close high_limit low_limit paused avg factor'.split()
-
+    
     get_price('000300.XSHG')
     get_price(u'000300.XSHG')
     get_price('000001.XSHE', start_date=datetime.date(2015, 1, 1), end_date=datetime.date(
@@ -539,7 +539,7 @@ def test_get_future_contracts():
 
 
 def test_alpha101():
-    assert len(alpha101.alpha_001('2017-03-10', '000300.XSHG')) > 0
+    assert len(alpha101.alpha_001('2017-03-10', '000001.XSHG')) > 0
     assert len(alpha101.alpha_101('2017-03-10', index='all')) > 0
 
 
@@ -584,8 +584,8 @@ def test_billboard_list():
     assert len(df) > 0
     stock_list = set(list(df['code']))
     assert len(stock_list) > 71
-    assert '000776' in stock_list
-    assert '300017' in stock_list
+    assert '000776.XSHE' in stock_list
+    assert '300017.XSHE' in stock_list
     df = get_billboard_list(hs_300, None, '2017-5-10', 100)
     assert len(df) > 500
     df = get_billboard_list(None, None, '2017-5-10', 100)
@@ -631,11 +631,36 @@ def test_finance_tables():
     # lazy load table of finance
     assert len(finance.__dict__) == 2
     finance.STK_LIST
+    # finance查询不全是object类型
+    assert float in list(finance.run_query(query(finance.STK_LIST)).dtypes)
     assert len(finance.__dict__) > 30
     assert finance.STK_LIST != None
     assert finance.STK_MONEY_FLOW != None
     with pytest.raises(Exception, message='finance 没有该表'):
         finance.STK
+
+def test_get_factor_values():
+    assert len(get_factor_values("000001.XSHE", "AR", end_date="2017-03-04", count=10)) == 1
+    assert len(get_factor_values(["000001.XSHE", "000001.XSHE"], "AR", end_date="2017-03-04", count=10)) == 1
+    dct = get_factor_values(["000001.XSHE", "000002.XSHE"],
+                            ["AR", "Skewness60"],
+                            start_date="2017-03-01",
+                            end_date="2017-03-03")["Skewness60"]
+    assert dct.to_csv() == ",000001.XSHE,000002.XSHE\n2017-03-01,-0.033712,0.017125\n"\
+                           "2017-03-02,-0.032092,0.014074\n2017-03-03,0.024989,0.031561\n"
+    with pytest.raises(Exception, message="Invalid factors asdf"):
+        get_factor_values("000001.XSHE", "asdf", end_date="2017-03-04", count=10)
+    with pytest.raises(Exception):
+        get_factor_values("000001.XSHE", "asdf", start_date="2017-01-01", end_date="2017-03-04", count=10)
+
+
+def test_trade_days():
+    data1 = get_trade_days("2015-06-30")
+    assert str(data1.dtype) == "object"
+    assert type(data1) == np.ndarray
+    data2 = get_all_trade_days()
+    assert str(data2.dtype) == "object"
+    assert type(data2) == np.ndarray
 
 
 if __name__ == "__main__":
@@ -652,3 +677,4 @@ if __name__ == "__main__":
             if i.startswith("test") and callable(glo[i]):
                 print ("run: %s" % i)
                 glo[i]()
+
