@@ -34,7 +34,7 @@ jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31
 结果显示：
 
 ```
-             open  close   high    low       volume         money
+.            open  close   high    low       volume         money
 2017-01-03   8.98   9.03   9.05   8.96   46650858.0  4.205952e+08
 2017-01-04   9.02   9.03   9.05   9.01   45584521.0  4.115034e+08
 2017-01-05   9.04   9.04   9.05   9.02   34936662.0  3.157697e+08

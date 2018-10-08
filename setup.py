@@ -10,12 +10,10 @@ except ImportError:
     # for pip <= 9.0.3
     from pip.req import parse_requirements
 
-
 from setuptools import (
     find_packages,
     setup,
 )
-
 
 with open(join(dirname(__file__), 'VERSION.txt'), 'rb') as f:
     version = f.read().decode('ascii').strip()
@@ -24,7 +22,6 @@ with open(join(dirname(__file__), 'README.md'), 'rb') as f:
     long_description = f.read().decode('utf-8')
 
 requirements = [str(ir.req) for ir in parse_requirements("requirements.txt", session=False)]
-
 
 setup(
     name="jqdatasdk",
@@ -53,5 +50,3 @@ setup(
         'Programming Language :: Python :: 3.6'
     ],
 )
-
-
