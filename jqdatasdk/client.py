@@ -1,4 +1,5 @@
 # coding=utf-8
+import zlib
 from .utils import *
 from .api import *
 import thriftpy
@@ -47,6 +48,7 @@ class JQDataClient(object):
         self.inited = False
         self.retry_cnt = retry_cnt
         self.not_auth = True
+        self.compress = True
 
     @classmethod
     def set_auth_params(cls, **params):
@@ -55,17 +57,17 @@ class JQDataClient(object):
 
     def ensure_auth(self):
         if not self.inited:
-            if not self.username or self.username == "":
+            if not self.username:
                 raise RuntimeError("not inited")
             self.client = make_client(thrift.JqDataService, self.host, self.port)
             self.inited = True
-            response = self.client.auth(self.username, self.password)
+            response = self.client.auth(self.username, self.password, self.compress)
             if not response.status:
                 self._threading_local._instance = None
                 raise self.get_error(response)
             else:
                 if self.not_auth:
-                    print("auth success")
+                    print("auth success" + response.msg)
                     self.not_auth = False
 
     def _reset(self):
@@ -106,6 +108,8 @@ class JQDataClient(object):
                     if six.PY3:
                         if type(buffer) is str:
                             buffer = bytes(buffer, "ascii")
+                    if self.compress:
+                        buffer = zlib.decompress(buffer)
                     file.write(buffer)
                     file.seek(0)
                     result = pd.read_pickle(file.name)
@@ -138,5 +142,4 @@ class JQDataClient(object):
 
     def __getattr__(self, method):
         return lambda **kwargs: self(method, **kwargs)
-
 

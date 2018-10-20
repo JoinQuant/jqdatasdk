@@ -5,11 +5,10 @@ sys.modules["ROOT_DIR"] = os.path.abspath(os.path.dirname(__file__))
 
 from .api import *
 from .finance_service import *
-from .macro import macro
 from . import alpha101
 from . import alpha191
 from . import technical_analysis
-from .finance import finance
+from .table import macro, finance
 
 
 def auth(username, password, host="39.107.190.114", port=7000):
@@ -17,7 +16,11 @@ def auth(username, password, host="39.107.190.114", port=7000):
     JQDataClient.set_auth_params(host=host, port=port, username=username, password=password)
 
 
+__version__ = "1.5.0"
+
+
 __all__ = [
+    "__version__",
     "auth",
     "get_price",
     "get_trade_days",
@@ -59,9 +62,11 @@ __all__ = [
     "finance",
     "get_factor_values",
     "get_index_weights",
+    "get_bars",
+    "get_current_tick",
+    "get_fund_info",
+    "get_total_count",
+    "get_query_count",
 ]
 
 # __all__.extend(fin.__all__)
-
-
-

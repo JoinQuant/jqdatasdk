@@ -27,8 +27,8 @@ def test_get_index_stocks():
 
 def test_get_industry_stocks():
     assert len(get_industry_stocks('A01')) > 0
-    assert len(get_industry_stocks('C21', datetime.date(2010, 1, 1))) == 3
-    assert len(get_industry_stocks('C21', datetime.date(2015, 1, 1))) == 6
+    assert len(get_industry_stocks('C21', datetime.date(2010, 1, 1))) == 4
+    assert len(get_industry_stocks('C21', datetime.date(2015, 1, 1))) == 5
     assert len(get_industry_stocks("HY450", datetime.date(2015, 1, 1))) > 0
     assert len(get_industry_stocks("HY405", datetime.date(2015, 12, 12))) > 0
     assert len(get_industry_stocks("HY500", datetime.date(2012, 12, 12)))
@@ -663,6 +663,49 @@ def test_trade_days():
     assert type(data2) == np.ndarray
 
 
+def test_get_bars():
+    assert len(get_bars("000002.XSHE", end_dt="2018-10-19", count=10)) == 10
+    data = get_bars("000001.XSHE", count=5, end_dt="2018-10-15").tolist()
+    assert data == [(10.7, 10.79, 10.45, 10.45),
+                    (10.46, 10.7, 10.39, 10.56),
+                    (10.54, 10.66, 10.38, 10.45),
+                    (10.05, 10.16, 9.7, 9.86),
+                    (9.97, 10.34, 9.87, 10.3)]
+
+
+def test_get_fund_info():
+    assert get_fund_info("150008.OF")
+    assert get_fund_info("518880.OF") == {
+        'fund_asset_allocation_proportion': '',
+        'fund_custodian_fee': '',
+        'fund_establishment_day': '2013-07-18',
+        'fund_management_fee': '',
+        'fund_manager': u'\u534e\u5b89\u57fa\u91d1\u7ba1\u7406\u6709\u9650\u516c\u53f8',
+        'fund_name': u'\u534e\u5b89\u6613\u5bcc\u9ec4\u91d1\u4ea4\u6613\u578b\u5f00\u653e\u5f0f\u8bc1\u5238\u6295\u8d44\u57fa\u91d1',
+        'fund_share': 1908040847.0,
+        'fund_size': '',
+        'fund_status': '',
+        'fund_type': u'\u8d35\u91d1\u5c5e',
+        'heavy_hold_bond': [],
+        'heavy_hold_bond_proportion': '',
+        'heavy_hold_stocks': [],
+        'heavy_hold_stocks_proportion': ''
+    }
+
+
+def test_get_current_tick():
+    assert type(get_current_tick('000002.XSHE')) == pd.Series
+    assert len(get_current_tick('000001.XSHE')) == 28
+
+
+def test_get_total_count():
+    assert type(get_total_count()) == float
+
+
+def test_get_query_count():
+    assert type(get_query_count()) == float
+
+
 if __name__ == "__main__":
 
     glo = globals()
@@ -677,4 +720,3 @@ if __name__ == "__main__":
             if i.startswith("test") and callable(glo[i]):
                 print ("run: %s" % i)
                 glo[i]()
-

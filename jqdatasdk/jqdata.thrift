@@ -13,12 +13,13 @@ struct St_Query_Rsp {
 
 struct St_Query_Req {
     1:required string method_name,
-    2:required binary params
+    2:required binary params,
+    5:optional bool compress
 }
 
 service JqDataService {
     St_Query_Rsp query(1:St_Query_Req rsp),
-    St_Query_Rsp auth(1:string username, 2:string password),
+    St_Query_Rsp auth(1:string username, 2:string password, 5:bool compress),
 }
 
 

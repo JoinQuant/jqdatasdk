@@ -1,3 +1,13 @@
+# 2018-10-20
+- 添加接口
+    + 查询程序版本
+    + get_bars
+    + get_current_tick
+    + get_fund_info
+    + get_total_count
+    + get_query_count
+- 修复已知问题
+
 # 2018-08-15
 - 修复get_all_trade_days和官网返回数据不一样的bug
 - 因子数据上线
