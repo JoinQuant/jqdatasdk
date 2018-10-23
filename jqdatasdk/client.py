@@ -12,7 +12,6 @@ import sys
 import threading
 import socket
 
-
 thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
 thrift_path = path.abspath(thrift_path)
 module_name = path.splitext(path.basename(thrift_path))[0]
@@ -142,4 +141,5 @@ class JQDataClient(object):
 
     def __getattr__(self, method):
         return lambda **kwargs: self(method, **kwargs)
+
 
