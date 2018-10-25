@@ -333,7 +333,7 @@ def get_dominant_future(underlying_symbol, date=None):
 def get_ticks(security, start_dt=None, end_dt=None, count=None, fields=None):
     """
     获取tick数据
-    :param security: 股票or期货标的代码，可传入多支
+    :param security: 股票or期货标的代码,仅限单只
     :param start_dt: 开始日期
     :param end_dt: 截止日期
     :param count: 统计个数
@@ -345,6 +345,13 @@ def get_ticks(security, start_dt=None, end_dt=None, count=None, fields=None):
     start_dt = to_date_str(start_dt)
     end_dt = to_date_str(end_dt)
     return JQDataClient.instance().get_ticks(**locals())
+
+
+@assert_auth
+def get_ticks_engine(security, start_dt=None, end_dt=None, count=None, fields=None):
+    start_dt = to_date_str(start_dt)
+    end_dt = to_date_str(end_dt)
+    return JQDataClient.instance().get_ticks_engine(**locals())
 
 
 @assert_auth
@@ -426,7 +433,7 @@ def get_industry(security, date=None):
 @assert_auth
 def get_bars(security, count, unit="1d", fields=("open", "high", "low", "close"), include_now=False, end_dt=None, fq_ref_date=None):
     """
-    获取历史数据(包含快照数据), 可查询多个标的多个数据字段
+    获取历史数据(包含快照数据), 可查询单个标的多个数据字段
 
     :param security 股票代码
     :param count 大于0的整数，表示获取bar的个数。如果行情数据的bar不足count个，返回的长度则小于count个数。
@@ -439,10 +446,19 @@ def get_bars(security, count, unit="1d", fields=("open", "high", "low", "close")
     """
     assert security, "security is required"
     security = convert_security(security)
+    assert isinstance(security, six.string_types), "security's type must be string"
+    end_dt = to_date_str(end_dt)
+    return JQDataClient.instance().get_bars(**locals())
+
+
+@assert_auth
+def get_bars_engine(security, count, unit="1d", fields=("open", "high", "low", "close"), include_now=False, end_dt=None, fq_ref_date=None):
+    security = convert_security(security)
     if not (isinstance(security, six.string_types) or isinstance(security, (tuple, list))):
         raise Exception('security 必须是字符串 或者 字符串数组')
     end_dt = to_date_str(end_dt)
-    return JQDataClient.instance().get_bars(**locals())
+    return JQDataClient.instance().get_bars_engine(**locals())
+
 
 @assert_auth
 def get_current_tick(security):
@@ -453,10 +469,18 @@ def get_current_tick(security):
     :return:
     """
     assert security, "security is required"
+    assert isinstance(security, six.string_types), "security's type must be string"
+    security = convert_security(security)
+    return JQDataClient.instance().get_current_tick(**locals())
+
+
+@assert_auth
+def get_current_tick_engine(security):
+    assert security, "security is required"
     if not (isinstance(security, six.string_types) or isinstance(security, (tuple, list))):
         raise Exception('security 必须是字符串 或者 字符串数组')
     security = convert_security(security)
-    return JQDataClient.instance().get_current_tick(**locals())
+    return JQDataClient.instance().get_current_tick_engine(**locals())
 
 
 @assert_auth
