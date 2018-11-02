@@ -5,8 +5,8 @@ from .client import JQDataClient
 
 
 @assert_auth
-def get_price(security, start_date=None, end_date=None, frequency='daily', 
-    fields=None, skip_paused=False, fq='pre', count=None):
+def get_price(security, start_date=None, end_date=None, frequency='daily',
+              fields=None, skip_paused=False, fq='pre', count=None):
     """
     获取一支或者多只证券的行情数据
 
@@ -23,10 +23,21 @@ def get_price(security, start_date=None, end_date=None, frequency='daily',
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
     if (not count) and (not start_date):
-            start_date = "2015-01-01"
+        start_date = "2015-01-01"
     if count and start_date:
         raise ParamsError("(start_date, count) only one param is required")
     return JQDataClient.instance().get_price(**locals())
+
+
+@assert_auth
+def get_price_engine(security, start_date=None, end_date=None,
+                     frequency='daily', fields=None, skip_paused=False,
+                     fq='pre', count=None, pre_factor_ref_date=None):
+    security = convert_security(security)
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    pre_factor_ref_date = to_date_str(end_date)
+    return JQDataClient.instance().get_price_engine(**locals())
 
 
 @assert_auth
@@ -242,7 +253,7 @@ def get_trade_days(start_date=None, end_date=None, count=None):
     """
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
-    data =  JQDataClient.instance().get_trade_days(**locals())
+    data = JQDataClient.instance().get_trade_days(**locals())
     if str(data.dtype) != "object":
         data = data.astype(datetime.datetime)
     return data
@@ -395,7 +406,7 @@ def get_factor_values(securities, factors, start_date=None, end_date=None, count
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
     if (not count) and (not start_date):
-            start_date = "2015-01-01"
+        start_date = "2015-01-01"
     if count and start_date:
         raise ParamsError("(start_date, count) only one param is required")
     return JQDataClient.instance().get_factor_values(**locals())
@@ -431,7 +442,8 @@ def get_industry(security, date=None):
 
 
 @assert_auth
-def get_bars(security, count, unit="1d", fields=("open", "high", "low", "close"), include_now=False, end_dt=None, fq_ref_date=None):
+def get_bars(security, count, unit="1d", fields=("open", "high", "low", "close"), include_now=False, end_dt=None,
+             fq_ref_date=None):
     """
     获取历史数据(包含快照数据), 可查询单个标的多个数据字段
 
@@ -452,8 +464,10 @@ def get_bars(security, count, unit="1d", fields=("open", "high", "low", "close")
 
 
 @assert_auth
-def get_bars_engine(security, count, unit="1d", fields=("open", "high", "low", "close"), include_now=False, end_dt=None, fq_ref_date=None):
+def get_bars_engine(security, count, unit="1d", fields=("open", "high", "low", "close"), include_now=False, end_dt=None,
+                    fq_ref_date=None):
     security = convert_security(security)
+    fq_ref_date = to_date_str(fq_ref_date)
     if not (isinstance(security, six.string_types) or isinstance(security, (tuple, list))):
         raise Exception('security 必须是字符串 或者 字符串数组')
     end_dt = to_date_str(end_dt)
@@ -514,6 +528,43 @@ def get_query_count():
     return JQDataClient.instance().get_query_count(**locals())
 
 
+@assert_auth
+def history_engine(end_dt, count, unit='1d', field='avg', security_list=None,
+                   df=True, skip_paused=False, fq='pre', pre_factor_ref_date=None):
+    security_list = convert_security(security_list)
+    end_dt = to_date_str(end_dt)
+    pre_factor_ref_date = to_date_str(pre_factor_ref_date)
+    return JQDataClient.instance().history_engine(**locals())
+
+
+@assert_auth
+def attribute_history_engine(end_dt, security, count, unit='1d',
+                             fields=('open', 'close', 'high', 'low', 'volume', 'money'),
+                             skip_paused=True,
+                             df=True,
+                             fq='pre',
+                             pre_factor_ref_date=None):
+    security = convert_security(security)
+    end_dt = to_date_str(end_dt)
+    pre_factor_ref_date = to_date_str(pre_factor_ref_date)
+    return JQDataClient.instance().attribute_history_engine(**locals())
+
+
+@assert_auth
+def get_powerrate_engine(security, date=None):
+    """
+    查询复权因子
+
+    :param security 代码，string or list
+    :param date 日期，默认空，取当日数据
+    :return 一个股票代码返回str，多个股票代码返回dict，
+            str: 日期，状态，复权因子
+    """
+    security = convert_security(security)
+    date = to_date_str(date)
+    return JQDataClient.instance().get_powerrate_engine(**locals())
+
+
 def read_file(path):
     """
     读取文件
@@ -533,9 +584,11 @@ def write_file(path, content, append=False):
 
 
 __all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", "get_fundamentals_continuously",
-            "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
-            "get_security_info", "get_money_flow", "get_locked_shares", "get_fundamentals", "get_mtss",
-            "get_concepts", "get_industries", "get_margincash_stocks", "get_marginsec_stocks",
-            "get_future_contracts", "get_dominant_future", "normalize_code", "get_baidu_factor",
-            "get_billboard_list", "get_ticks", "read_file", "write_file", "get_factor_values", "get_index_weights",
-            "get_bars", "get_current_tick", "get_fund_info", "get_total_count", "get_query_count",]
+           "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
+           "get_security_info", "get_money_flow", "get_locked_shares", "get_fundamentals", "get_mtss",
+           "get_concepts", "get_industries", "get_margincash_stocks", "get_marginsec_stocks",
+           "get_future_contracts", "get_dominant_future", "normalize_code", "get_baidu_factor",
+           "get_billboard_list", "get_ticks", "read_file", "write_file", "get_factor_values", "get_index_weights",
+           "get_bars", "get_current_tick", "get_fund_info", "get_total_count", "get_query_count", "get_price_engine",
+           "history_engine", "attribute_history_engine", "get_bars_engine", "get_ticks_engine",
+           "get_current_tick_engine", "get_powerrate_engine",]

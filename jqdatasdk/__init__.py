@@ -67,6 +67,13 @@ __all__ = [
     "get_fund_info",
     "get_total_count",
     "get_query_count",
+    "get_price_engine",
+    "history_engine",
+    "attribute_history_engine",
+    "get_bars_engine",
+    "get_ticks_engine",
+    "get_current_tick_engine",
+    "get_powerrate_engine",
 ]
 
 # __all__.extend(fin.__all__)
