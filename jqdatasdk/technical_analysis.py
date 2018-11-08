@@ -1,5 +1,5 @@
 # coding=utf-8
-from .utils import assert_auth
+from .utils import assert_auth, to_date_str
 from .client import JQDataClient
 import sys
 
@@ -22,6 +22,7 @@ def ATR(security_list, check_date, timeperiod=14):
             字典(dict)：键(key)为股票代码，值(value)为数据。
         '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -47,6 +48,7 @@ def BIAS(security_list, check_date, N1=6, N2=12, N3=24):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -69,6 +71,7 @@ def CCI(security_list, check_date, N=14):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -96,6 +99,7 @@ def KDJ(security_list, check_date, N=9, M1=3, M2=3):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -116,6 +120,7 @@ def MFI(security_list, check_date, timeperiod=14):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -134,6 +139,7 @@ def MTM(security_list, check_date, timeperiod=12):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -152,6 +158,7 @@ def ROC(security_list, check_date, timeperiod=12):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -173,6 +180,7 @@ def RSI(security_list, check_date, N1=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -192,6 +200,7 @@ def ACCER(security_list, check_date, N=8):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -222,6 +231,7 @@ def ADTM(security_list, check_date, N=23, M=8):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -244,6 +254,7 @@ def BIAS_QL(security_list, check_date, N=6, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -267,6 +278,7 @@ def BIAS_36(security_list, check_date, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -295,6 +307,7 @@ def DKX(security_list, check_date, M=10):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -320,6 +333,7 @@ def KD(security_list, check_date, N=9, M1=3, M2=3):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -345,6 +359,7 @@ def LWR(security_list, check_date, N=9, M1=3, M2=3):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -382,6 +397,7 @@ def MARSI(security_list, check_date, M1=10, M2=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -404,6 +420,7 @@ def OSC(security_list, check_date, N=20, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -432,6 +449,7 @@ def SKDJ(security_list, check_date, N=9, M=3):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -457,6 +475,7 @@ def UDL(security_list, check_date, N1=3, N2=5, N3=10, N4=20, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -479,6 +498,7 @@ def WR(security_list, check_date, N=10, N1=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -498,6 +518,7 @@ def CYF(security_list, check_date, N=21):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -518,6 +539,7 @@ def FSL(security_list, check_date):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -539,6 +561,7 @@ def TAPI(index_stock, security_list, check_date, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -563,6 +586,7 @@ def CHO(security_list, check_date, N1=10, N2=20, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -587,6 +611,7 @@ def CYE(security_list, check_date):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -618,6 +643,7 @@ def DBQR(index_stock, security_list, check_date, N=5, M1=10, M2=20, M3=60):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -641,6 +667,7 @@ def DMA(security_list, check_date, N1=10, N2=50, M=10):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -668,6 +695,7 @@ def DMI(security_list, check_date, N=14,  MM=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -690,6 +718,7 @@ def DPO(security_list, check_date, N=20,  M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -716,6 +745,7 @@ def EMV(security_list, check_date, N=14, M=9):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -742,6 +772,7 @@ def GDX(security_list, check_date, N=30, M=9):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -769,6 +800,7 @@ def JLHB(security_list, check_date, N=7, M=5):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -797,6 +829,7 @@ def JS(security_list, check_date, N=5, M1=5, M2=10, M3=20):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -822,6 +855,7 @@ def MACD(security_list, check_date, SHORT=12, LONG=26, MID=9):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -847,6 +881,7 @@ def QACD(security_list, check_date, N1=12, N2=26, M=9):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -871,6 +906,7 @@ def QR(index_stock, security_list, check_date, N=21):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -892,6 +928,7 @@ def TRIX(security_list, check_date, N=12, M=9):
         字典(dict)：键(key)为股票代码，值(value)为TRIX和MATRIX。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -919,6 +956,7 @@ def UOS(security_list, check_date, N1=7, N2=14, N3=28, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -944,6 +982,7 @@ def VMACD(security_list, check_date, SHORT=12, LONG=26, MID=9):
         字典(dict)：键(key)为股票代码，值(value)为DIF, DEA和MACD。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -966,6 +1005,7 @@ def VPT(security_list, check_date, N=51, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -988,6 +1028,7 @@ def WVAD(security_list, check_date, N=24, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1006,6 +1047,7 @@ def PSY(security_list, check_date, timeperiod=12):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1034,6 +1076,7 @@ def VR(security_list, check_date, N=26, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1055,6 +1098,7 @@ def BRAR(security_list, check_date, N=26):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1088,6 +1132,7 @@ def CR(security_list, check_date, N=26, M1=10, M2=20, M3=40, M4=62):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1112,6 +1157,7 @@ def CYR(security_list, check_date, N=13, M=5):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1135,6 +1181,7 @@ def MASS(security_list, check_date, N1=9, N2=25, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1156,6 +1203,7 @@ def PCNT(security_list, check_date, M=5):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1175,6 +1223,7 @@ def OBV(security_list, check_date, timeperiod=30):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1199,6 +1248,7 @@ def AMO(security_list, check_date, M1=5, M2=10):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1220,6 +1270,7 @@ def CCL(futures_list, check_date, M=5):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1247,6 +1298,7 @@ def DBLB(index_stock, security_list, check_date, N=5, M=5):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1269,6 +1321,7 @@ def DBQRV(index_stock, security_list, check_date, N=5):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1290,6 +1343,7 @@ def HSL(security_list, check_date, N=5):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1314,6 +1368,7 @@ def VOL(security_list, check_date, M1=5, M2=10):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1341,6 +1396,7 @@ def VRSI(security_list, check_date, N1=6, N2=12, N3=24):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1363,6 +1419,7 @@ def BBI(security_list, check_date, timeperiod1=3, timeperiod2=6, timeperiod3=12,
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1382,6 +1439,7 @@ def MA(security_list, check_date, timeperiod=5):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1401,6 +1459,7 @@ def EXPMA(security_list, check_date, timeperiod=12):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1420,6 +1479,7 @@ def HMA(security_list, check_date, timeperiod=12):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1439,6 +1499,7 @@ def LMA(security_list, check_date, timeperiod=12):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1460,6 +1521,7 @@ def VMA(security_list, check_date, timeperiod=12):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1485,6 +1547,7 @@ def ALLIGAT(security_list, check_date, timeperiod=21):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1506,6 +1569,7 @@ def AMV(security_list, check_date, timeperiod=13):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1532,6 +1596,7 @@ def BBIBOLL(security_list, check_date, N=11, M=6):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1557,6 +1622,7 @@ def Bollinger_Bands(security_list, check_date, timeperiod=20, nbdevup=2, nbdevdn
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1582,6 +1648,7 @@ def ENE(security_list, check_date, N=25, M1=6, M2=6):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1617,6 +1684,7 @@ def MIKE(security_list, check_date, timeperiod=10):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1636,6 +1704,7 @@ def PBX(security_list, check_date, timeperiod=9):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1667,6 +1736,7 @@ def XS(security_list, check_date, timeperiod=13):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1699,6 +1769,7 @@ def XS2(security_list, check_date, N=102, M=7):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1717,6 +1788,7 @@ def EMA(security_list, check_date, timeperiod=30):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1737,6 +1809,7 @@ def SMA(security_list, check_date, N=7, M=1):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1780,6 +1853,7 @@ def BDZX(security_list, check_date, timeperiod=40):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1813,6 +1887,7 @@ def CDP_STD(security_list, check_date, timeperiod=2):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1840,6 +1915,7 @@ def CJDX(security_list, check_date, timeperiod=16):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1881,6 +1957,7 @@ def CYHT(security_list, check_date, timeperiod=60):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1916,6 +1993,7 @@ def JAX(security_list, check_date, timeperiod=30):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1943,6 +2021,7 @@ def JFZX(security_list, check_date, timeperiod=30):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1990,6 +2069,7 @@ def LHXJ(security_list, check_date, timeperiod=100):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2020,6 +2100,7 @@ def LYJH(security_list, check_date, M=80, M1=50):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2063,6 +2144,7 @@ def TBP_STD(security_list, check_date, timeperiod=30):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2090,6 +2172,7 @@ def ZBCD(security_list, check_date, timeperiod=10):
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2124,6 +2207,7 @@ def SG_SMX(index_stock, security_list, check_date, N=50):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2148,6 +2232,7 @@ def XDT(index_stock, security_list, check_date, P1=5, P2=10):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2173,6 +2258,7 @@ def SG_LB(index_stock, security_list, check_date):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2204,6 +2290,7 @@ def SG_PF(index_stock, security_list, check_date):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2232,6 +2319,7 @@ def ZLMM(security_list, check_date):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2267,6 +2355,7 @@ def RAD(index_stock, security_list, check_date, D=3, S=30, M=30):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2294,6 +2383,7 @@ def SHT(security_list, check_date, N=5):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2320,6 +2410,7 @@ def CYW(security_list, check_date):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2340,6 +2431,7 @@ def CYS(security_list, check_date):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2360,6 +2452,7 @@ def ZSDB(index_stock, check_date):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2381,6 +2474,7 @@ def AROON(security_list, check_date, N=25):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2406,6 +2500,7 @@ def CFJT(security_list, check_date, MM=200):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2424,6 +2519,7 @@ def ZX(security_list, check_date):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -2445,6 +2541,7 @@ def PUCU(security_list, check_date, N=24):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     '''
     func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 

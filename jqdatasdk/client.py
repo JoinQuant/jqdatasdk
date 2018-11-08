@@ -66,7 +66,7 @@ class JQDataClient(object):
                 raise self.get_error(response)
             else:
                 if self.not_auth:
-                    print("auth success" + response.msg)
+                    print("auth success %s" % response.msg)
                     self.not_auth = False
 
     def _reset(self):

@@ -1,9 +1,9 @@
 # coding: utf-8
+import os
 import sys
 from jqdatasdk import *
 import unittest
 import datetime
-import os
 import six
 import logging
 import numpy as np
@@ -562,6 +562,8 @@ def test_ta():
     assert isinstance(data, tuple)
     assert isinstance(data[0], dict) and sorted([i for i in data[0].keys()]) == security_list
 
+    assert technical_analysis.CCI("000001.XSHE", datetime.date(2018, 10, 8)) == {'000001.XSHE': 54.263565891472524}
+
 
 def test_macro():
     q = query(macro.MAC_INDUSTRY_AREA_AGR_OUTPUT_VALUE_YEAR).filter(macro.MAC_INDUSTRY_AREA_AGR_OUTPUT_VALUE_YEAR.stat_year=='2014')
@@ -639,6 +641,7 @@ def test_finance_tables():
     with pytest.raises(Exception, message='finance 没有该表'):
         finance.STK
 
+
 def test_get_factor_values():
     assert len(get_factor_values("000001.XSHE", "AR", end_date="2017-03-04", count=10)) == 1
     assert len(get_factor_values(["000001.XSHE", "000001.XSHE"], "AR", end_date="2017-03-04", count=10)) == 1
@@ -665,24 +668,24 @@ def test_trade_days():
 
 def test_get_bars():
     assert len(get_bars("000002.XSHE", end_dt="2018-10-19", count=10)) == 10
-    data = get_bars("000001.XSHE", count=5, end_dt="2018-10-15").tolist()
-    assert data == [(10.7, 10.79, 10.45, 10.45),
-                    (10.46, 10.7, 10.39, 10.56),
-                    (10.54, 10.66, 10.38, 10.45),
-                    (10.05, 10.16, 9.7, 9.86),
-                    (9.97, 10.34, 9.87, 10.3)]
+    assert get_bars("000001.XSHE", count=5, end_dt="2018-10-15").to_csv() == (
+        ',open,high,low,close\n0,10.7,10.79,10.45,10.45\n1,10.46,10.7,10.39,10.56\n'
+        '2,10.54,10.66,10.38,10.45\n3,10.05,10.16,9.7,9.86\n4,9.97,10.34,9.87,10.3\n'
+    )
+
 
 
 def test_get_fund_info():
     assert get_fund_info("150008.OF")
-    assert get_fund_info("518880.OF") == {
+    df = get_fund_info("518880.OF")
+    df.pop("fund_share")
+    assert df == {
         'fund_asset_allocation_proportion': '',
         'fund_custodian_fee': '',
         'fund_establishment_day': '2013-07-18',
         'fund_management_fee': '',
         'fund_manager': u'\u534e\u5b89\u57fa\u91d1\u7ba1\u7406\u6709\u9650\u516c\u53f8',
         'fund_name': u'\u534e\u5b89\u6613\u5bcc\u9ec4\u91d1\u4ea4\u6613\u578b\u5f00\u653e\u5f0f\u8bc1\u5238\u6295\u8d44\u57fa\u91d1',
-        'fund_share': 1908040847.0,
         'fund_size': '',
         'fund_status': '',
         'fund_type': u'\u8d35\u91d1\u5c5e',
@@ -694,8 +697,76 @@ def test_get_fund_info():
 
 
 def test_get_current_tick():
-    assert type(get_current_tick('000002.XSHE')) == pd.Series
-    assert len(get_current_tick('000001.XSHE')) == 28
+    assert type(get_current_tick('000002.XSHE')) == pd.DataFrame
+    assert len(get_current_tick('000001.XSHE')) == 1
+    assert get_current_tick('600535.XSHG').columns.tolist() == [
+        'datetime', 'current', 'high', 'low', 'volume', 'money',
+        'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p',
+        'a4_v', 'a5_p', 'a5_v', 'b1_p', 'b1_v', 'b2_p', 'b2_v',
+        'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v'
+    ]
+
+
+def test_get_price_engine():
+    df = get_price_engine(["000001.XSHE", "000002.XSHE"], end_date='2018-10-01', count=1, fq=None)
+    assert type(df) == pd.core.panel.Panel
+    assert df.minor_xs("000001.XSHE").to_json() == ('{"close":{"1538092800000":11.05},"high":{"1538092800000":11.27},'
+                                    '"low":{"1538092800000":10.78},"money":{"1538092800000":2331358288.9600000381},'
+                                    '"open":{"1538092800000":10.78},"volume":{"1538092800000":211024267.0}}')
+    assert get_price_engine(["000001.XSHE", "000002.XSHE"], end_date='2018-10-01', count=1, fq='post',
+                            pre_factor_ref_date='2018-10-01').minor_xs("000001.XSHE").to_csv() == (
+',close,high,low,money,open,volume\n2018-09-28,1298.24,1324.09,1266.52,2331358288.96,1266.52,1796135.0\n')
+
+
+def test_history_engine():
+    assert history_engine("2018-10-01",5, security_list=["000001.XSHE", "600360.XSHG"],
+                          pre_factor_ref_date='2018-10-01').to_csv() == (
+',000001.XSHE,600360.XSHG\n2018-09-21,10.51,''6.09\n2018-09-25,10.55,6.12\n2018-09-26,10.74,6.15\n2018-09-27,10.7,5.99\n2018-09-28,11.05,5.95\n')
+
+
+def test_attribute_history_engine():
+    assert attribute_history_engine("2018-10-01","600360.XSHG",5,pre_factor_ref_date='2018-10-01').to_csv() == (
+',open,close,high,low,volume,money\n2018-09-21,6.07,6.12,6.14,6.02,8063165.0,49144137.0\n2018-09-25,6.11,6.12,6.17,'
+'6.07,5200100.0,31811127.0\n2018-09-26,6.12,6.14,6.2,6.1,7534100.0,46317036.0\n2018-09-27,6.13,5.91,6.13,5.84,11052'
+'861.0,66220858.0\n2018-09-28,5.91,5.97,5.99,5.91,4979800.0,29647440.0\n')
+
+
+def test_get_bars_engine():
+    df = get_bars_engine('000006.XSHE',end_dt='2018-10-26',count=5, fq_ref_date='2018-11-07')
+    assert type(df) == np.ndarray
+    assert df.tolist() == [(4.6, 4.92, 4.51, 4.88),
+                           (4.92, 5.18, 4.91, 5.07),
+                           (5.11, 5.24, 5.0, 5.05),
+                           (5.06, 5.12, 4.97, 5.08),
+                           (4.86, 5.04, 4.8, 5.02)]
+    assert df.tolist() == get_bars_engine(
+        '000006.XSHE',end_dt='2018-10-26',count=5, fq_ref_date=datetime.date(2018, 11, 7)).tolist()
+
+
+def test_get_ticks_engine():
+    df = get_ticks_engine('600535.XSHG', end_dt='2018-10-10', count=1)
+    assert type(df) == np.ndarray
+    assert df.tolist() == [(20181009150001.0, 21.8299, 22.54, 21.72, 48981.0,
+                            107742440.0, 21.8299, 16.0, 21.85, 360.0, 21.86, 10.0,
+                            21.87, 210.0, 21.89, 5.0, 21.82, 74.0, 21.81, 115.0,
+                            21.8, 15.0, 21.79, 143.0, 21.78, 48.0)]
+    df1 =  get_ticks_engine(['600535.XSHG','000007.XSHE'], end_dt='2018-10-10', count=1)
+    assert type(df1) == dict
+    assert df1["600535.XSHG"] == df
+
+
+def test_get_current_tick_engine():
+    df = get_current_tick_engine(['000002.XSHE', '600358.XSHG'])
+    assert type(df) == dict
+    assert str(type(df["000002.XSHE"])) == "<class 'jqdata.models.tick.Tick'>"
+
+
+def test_get_powerrate_engine():
+    assert get_powerrate_engine('000005.XSHE', '2018-10-08') == "2018-10-08,0,10.223"
+    assert get_powerrate_engine(["000001.XSHE", '000005.XSHE'], "2018-05-04") == {
+        '000001.XSHE': '2018-05-04,0,115.716',
+        '000005.XSHE': '2018-05-04,0,10.223'
+    }
 
 
 def test_get_total_count():
