@@ -551,7 +551,7 @@ def attribute_history_engine(end_dt, security, count, unit='1d',
 
 
 @assert_auth
-def get_powerrate_engine(security, date=None):
+def get_daily_info_engine(security, date=None):
     """
     查询复权因子
 
@@ -562,7 +562,7 @@ def get_powerrate_engine(security, date=None):
     """
     security = convert_security(security)
     date = to_date_str(date)
-    return JQDataClient.instance().get_powerrate_engine(**locals())
+    return JQDataClient.instance().get_daily_info_engine(**locals())
 
 
 def read_file(path):
@@ -591,4 +591,4 @@ __all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", "g
            "get_billboard_list", "get_ticks", "read_file", "write_file", "get_factor_values", "get_index_weights",
            "get_bars", "get_current_tick", "get_fund_info", "get_total_count", "get_query_count", "get_price_engine",
            "history_engine", "attribute_history_engine", "get_bars_engine", "get_ticks_engine",
-           "get_current_tick_engine", "get_powerrate_engine",]
+           "get_current_tick_engine", "get_daily_info_engine",]

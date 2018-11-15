@@ -73,7 +73,7 @@ __all__ = [
     "get_bars_engine",
     "get_ticks_engine",
     "get_current_tick_engine",
-    "get_powerrate_engine",
+    "get_daily_info_engine",
 ]
 
 # __all__.extend(fin.__all__)
