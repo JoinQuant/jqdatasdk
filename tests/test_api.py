@@ -631,7 +631,7 @@ def test_baidu_factor():
 
 def test_finance_tables():
     # lazy load table of finance
-    assert len(finance.__dict__) == 2
+    # assert len(finance.__dict__) == 2
     finance.STK_LIST
     # finance查询不全是object类型
     assert float in list(finance.run_query(query(finance.STK_LIST)).dtypes)
@@ -672,7 +672,6 @@ def test_get_bars():
         ',open,high,low,close\n0,10.7,10.79,10.45,10.45\n1,10.46,10.7,10.39,10.56\n'
         '2,10.54,10.66,10.38,10.45\n3,10.05,10.16,9.7,9.86\n4,9.97,10.34,9.87,10.3\n'
     )
-
 
 
 def test_get_fund_info():
@@ -761,20 +760,27 @@ def test_get_current_tick_engine():
     assert str(type(df["000002.XSHE"])) == "<class 'jqdata.models.tick.Tick'>"
 
 
-def test_get_powerrate_engine():
-    assert get_powerrate_engine('000005.XSHE', '2018-10-08') == "2018-10-08,0,10.223"
-    assert get_powerrate_engine(["000001.XSHE", '000005.XSHE'], "2018-05-04") == {
-        '000001.XSHE': '2018-05-04,0,115.716',
-        '000005.XSHE': '2018-05-04,0,10.223'
+def test_get_daily_info_engine():
+    assert get_daily_info_engine("164810.XSHE", "2018-11-20") == {
+        'factor': {'164810.XSHE': 1.0},
+        'high_limit': {'164810.XSHE': 1.089},
+        'is_trading': {'164810.XSHE': True},
+        'low_limit': {'164810.XSHE': 0.891},
+    }
+    assert get_daily_info_engine(("000001.XSHE", "TF1906.CCFX"), "2018-10-23") == {
+        'factor': {'000001.XSHE': 117.488, 'TF1906.CCFX': None},
+        'high_limit': {'000001.XSHE': 12.27, 'TF1906.CCFX': 100.315},
+        'is_trading': {'000001.XSHE': True, 'TF1906.CCFX': True},
+        'low_limit': {'000001.XSHE': 10.04, 'TF1906.CCFX': 95.615},
     }
 
 
-def test_get_total_count():
-    assert type(get_total_count()) == float
-
-
 def test_get_query_count():
-    assert type(get_query_count()) == float
+    assert type(get_query_count()) == dict
+    data = get_query_count(None)
+    assert "total" in data and "spare" in data
+    assert type(get_query_count("total")) == float
+    assert type(get_query_count("spare")) == float
 
 
 if __name__ == "__main__":

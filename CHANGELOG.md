@@ -4,7 +4,6 @@
     + get_bars
     + get_current_tick
     + get_fund_info
-    + get_total_count
     + get_query_count
 - 修复已知问题
 

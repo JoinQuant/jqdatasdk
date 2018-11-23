@@ -513,18 +513,16 @@ def get_fund_info(security, date=None):
 
 
 @assert_auth
-def get_total_count():
+def get_query_count(field=None):
     """
-    查询当日可请求条数
-    """
-    return JQDataClient.instance().get_total_count(**locals())
+    查询当日可请求条数/剩余请求条数
 
-
-@assert_auth
-def get_query_count():
+    :param field
+        默认为None，返回当日可请求条数/剩余请求条数，字典格式
+        "total", 返回当日可请求条数, int格式
+        "spare", 返回当日剩余请求条数, int格式
     """
-    查询当日生于可请求条数
-    """
+    assert field in ["total", "spare", None], "field参数必须为total,spare,None中的一个"
     return JQDataClient.instance().get_query_count(**locals())
 
 
@@ -589,6 +587,6 @@ __all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", "g
            "get_concepts", "get_industries", "get_margincash_stocks", "get_marginsec_stocks",
            "get_future_contracts", "get_dominant_future", "normalize_code", "get_baidu_factor",
            "get_billboard_list", "get_ticks", "read_file", "write_file", "get_factor_values", "get_index_weights",
-           "get_bars", "get_current_tick", "get_fund_info", "get_total_count", "get_query_count", "get_price_engine",
+           "get_bars", "get_current_tick", "get_fund_info", "get_query_count", "get_price_engine",
            "history_engine", "attribute_history_engine", "get_bars_engine", "get_ticks_engine",
            "get_current_tick_engine", "get_daily_info_engine",]

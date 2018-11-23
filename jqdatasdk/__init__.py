@@ -65,7 +65,6 @@ __all__ = [
     "get_bars",
     "get_current_tick",
     "get_fund_info",
-    "get_total_count",
     "get_query_count",
     "get_price_engine",
     "history_engine",
