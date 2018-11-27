@@ -41,7 +41,7 @@ class CalendarService(object):
         if date not in cls.get_all_trade_days():
             temp = filter(lambda item: item < date, cls.all_trade_days)
             temp = list(temp)
-            return temp[-1]
+            return temp[-1] if temp else date
         return date
 
 
