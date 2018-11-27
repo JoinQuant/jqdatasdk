@@ -33,8 +33,8 @@ setup(
     packages=["jqdatasdk"],
     author="JoinQuant",
     author_email="xlx@joinquant.com",
-    maintainer="wangchaoyang",
-    maintainer_email="wangchaoyang@joinquant.com",
+    maintainer="tech_data",
+    maintainer_email="tech_data@joinquant.com",
     license='Apache License v2',
     package_data={'': ['*.*']},
     url="https://www.joinquant.com/data",
@@ -53,5 +53,3 @@ setup(
         'Programming Language :: Python :: 3.6'
     ],
 )
-
-
