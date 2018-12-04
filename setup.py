@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+import re
 import sys
 from os.path import dirname, join
 
@@ -17,8 +18,8 @@ from setuptools import (
 )
 
 
-with open(join(dirname(__file__), 'VERSION.txt'), 'rb') as f:
-    version = f.read().decode('ascii').strip()
+with open(join(dirname(__file__), 'jqdatasdk', '__init__.py'), 'r') as f:
+    version = re.match(r".*__version__ = \"(.*?)\"", f.read(), re.S).group(1)
 
 with open(join(dirname(__file__), 'README.md'), 'rb') as f:
     long_description = f.read().decode('utf-8')

@@ -5,6 +5,9 @@
     + get_current_tick
     + get_fund_info
     + get_query_count
+    + get_industry
+    + get_industries
+- 数据压缩传输
 - 修复已知问题
 
 # 2018-08-15

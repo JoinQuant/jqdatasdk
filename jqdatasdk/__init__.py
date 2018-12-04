@@ -29,6 +29,7 @@ __all__ = [
     "get_index_stocks",
     "get_industry_stocks",
     "get_industries",
+    "get_industry",
     "get_concept_stocks",
     "get_concepts",
     "get_all_securities",
