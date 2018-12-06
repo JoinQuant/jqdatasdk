@@ -470,6 +470,10 @@ def test_get_industries():
     assert len(df.index) > 0
 
 
+def test_get_industry():
+    df = get_industry("000001.XSHE", date="2018-12-03")
+    assert set(df["000001.XSHE"].keys()) == set(['sw_l1', 'sw_l2', 'sw_l3', 'zjw', 'jq_l2', 'jq_l1',])
+
 def test_get_concepts():
     df = get_concepts()
     assert len(df.index) > 0
@@ -704,6 +708,10 @@ def test_get_current_tick():
         'a4_v', 'a5_p', 'a5_v', 'b1_p', 'b1_v', 'b2_p', 'b2_v',
         'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v'
     ]
+    assert get_current_tick(get_dominant_future('AP')).columns.tolist() == [
+        'datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+        'a1_p', 'a1_v', 'b1_p', 'b1_v'
+    ]
 
 
 def test_get_price_engine():
@@ -781,6 +789,23 @@ def test_get_query_count():
     assert "total" in data and "spare" in data
     assert type(get_query_count("total")) == float
     assert type(get_query_count("spare")) == float
+
+
+def test_opt_tables():
+    assert opt.run_query(query(opt.OPT_DAILY_PRICE).limit(10)).columns.tolist() == [
+        'id', 'code', 'exchange_code', 'date', 'pre_settle', 'pre_close',
+        'open', 'high', 'low', 'close', 'change_pct_close', 'settle_price',
+        'change_pct_settle', 'volume', 'money', 'position'
+    ]
+    assert len(opt.run_query(query(opt.OPT_ADJUSTMENT).limit(10))) == 10
+    assert opt.run_query(query(
+            opt.OPT_EXERCISE_INFO
+        ).filter(
+            opt.OPT_EXERCISE_INFO.underlying_symbol=='510050.XSHG'
+        ).filter(
+            opt.OPT_EXERCISE_INFO.exercise_date=='2015-05-27'
+        )).to_csv() == (',id,underlying_symbol,underlying_name,exercise_date,contract_type,exercise_number\n'
+        '0,3,510050.XSHG,50ETF,2015-05-27,CO,7333\n1,4,510050.XSHG,50ETF,2015-05-27,PO,1897\n')
 
 
 if __name__ == "__main__":

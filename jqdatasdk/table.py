@@ -92,5 +92,14 @@ class Macro(DBTable):
         return JQDataClient.instance().macro_query(sql=sql)
 
 
+class OPT(DBTable):
+
+    db_name = "opt"
+
+    def get_data(self, sql):
+        return JQDataClient.instance().opt_query(sql=sql)
+
+
 finance = Finance()
 macro = Macro()
+opt = OPT()

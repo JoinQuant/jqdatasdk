@@ -8,7 +8,7 @@ from .finance_service import *
 from . import alpha101
 from . import alpha191
 from . import technical_analysis
-from .table import macro, finance
+from .table import macro, finance, opt
 
 
 def auth(username, password, host="39.107.190.114", port=7000):
@@ -74,6 +74,7 @@ __all__ = [
     "get_ticks_engine",
     "get_current_tick_engine",
     "get_daily_info_engine",
+    "opt",
 ]
 
 # __all__.extend(fin.__all__)
