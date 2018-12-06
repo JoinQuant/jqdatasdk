@@ -806,6 +806,7 @@ def test_opt_tables():
             opt.OPT_EXERCISE_INFO.exercise_date=='2015-05-27'
         )).to_csv() == (',id,underlying_symbol,underlying_name,exercise_date,contract_type,exercise_number\n'
         '0,3,510050.XSHG,50ETF,2015-05-27,CO,7333\n1,4,510050.XSHG,50ETF,2015-05-27,PO,1897\n')
+    assert opt.run_query(query(opt.OPT_CONTRACT_INFO.code).limit(10)).columns.tolist() == ["code"]
 
 
 if __name__ == "__main__":

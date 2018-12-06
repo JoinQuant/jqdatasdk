@@ -4,4 +4,4 @@ pandas>=0.16.2
 SQLAlchemy>=1.2.8
 thriftpy>=0.3.9
 pymysql>=0.7.6
-msgpack-python>=0.4.7
+msgpack>=0.4.7
