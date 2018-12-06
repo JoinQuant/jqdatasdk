@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+import re
 import sys
 from os.path import dirname, join
 
@@ -17,8 +18,8 @@ from setuptools import (
 )
 
 
-with open(join(dirname(__file__), 'VERSION.txt'), 'rb') as f:
-    version = f.read().decode('ascii').strip()
+with open(join(dirname(__file__), 'jqdatasdk', '__init__.py'), 'r') as f:
+    version = re.match(r".*__version__ = \"(.*?)\"", f.read(), re.S).group(1)
 
 with open(join(dirname(__file__), 'README.md'), 'rb') as f:
     long_description = f.read().decode('utf-8')
@@ -30,11 +31,11 @@ setup(
     name="jqdatasdk",
     version=version,
     description="jqdatasdk<easy utility for getting financial market data of China>",
-    packages=["jqdatasdk", "jqdatasdk.macro_tables"],
+    packages=["jqdatasdk"],
     author="JoinQuant",
     author_email="xlx@joinquant.com",
-    maintainer="wangchaoyang",
-    maintainer_email="wangchaoyang@joinquant.com",
+    maintainer="tech_data",
+    maintainer_email="tech_data@joinquant.com",
     license='Apache License v2',
     package_data={'': ['*.*']},
     url="https://www.joinquant.com/data",
@@ -53,5 +54,3 @@ setup(
         'Programming Language :: Python :: 3.6'
     ],
 )
-
-

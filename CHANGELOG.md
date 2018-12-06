@@ -1,3 +1,16 @@
+# 2018-12-06
+- 添加接口
+    + 查询程序版本
+    + get_bars
+    + get_current_tick
+    + get_fund_info
+    + get_query_count
+    + get_industry
+    + get_industries
+- 新上期权数据
+- 数据压缩传输
+- 修复已知问题
+
 # 2018-08-15
 - 修复get_all_trade_days和官网返回数据不一样的bug
 - 因子数据上线

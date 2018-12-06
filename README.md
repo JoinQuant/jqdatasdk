@@ -34,7 +34,7 @@ jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31
 结果显示：
 
 ```
-             open  close   high    low       volume         money
+.            open  close   high    low       volume         money
 2017-01-03   8.98   9.03   9.05   8.96   46650858.0  4.205952e+08
 2017-01-04   9.02   9.03   9.05   9.01   45584521.0  4.115034e+08
 2017-01-05   9.04   9.04   9.05   9.02   34936662.0  3.157697e+08
@@ -249,3 +249,17 @@ jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31
 
   获取质量因子、基础因子、情绪因子、成长因子、风险因子、每股因子等数百个因子数据，详细的因子列表请参考https://www.joinquant.com/help/api/help?name=factor_values
 
+
+- get_bars
+
+  获取历史数据(包含快照数据)，可查询单个标的多个数据字段，返回数据格式为 DataFrame
+
+
+- get_current_tick
+
+  获取最新的tick数据，返回数据格式为DataFrame格式
+
+
+- get_fund_info
+
+  基金基础信息数据接口，获取单个基金的基本信息

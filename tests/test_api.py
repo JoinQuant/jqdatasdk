@@ -1,9 +1,9 @@
 # coding: utf-8
+import os
 import sys
 from jqdatasdk import *
 import unittest
 import datetime
-import os
 import six
 import logging
 import numpy as np
@@ -27,8 +27,8 @@ def test_get_index_stocks():
 
 def test_get_industry_stocks():
     assert len(get_industry_stocks('A01')) > 0
-    assert len(get_industry_stocks('C21', datetime.date(2010, 1, 1))) == 3
-    assert len(get_industry_stocks('C21', datetime.date(2015, 1, 1))) == 6
+    assert len(get_industry_stocks('C21', datetime.date(2010, 1, 1))) == 4
+    assert len(get_industry_stocks('C21', datetime.date(2015, 1, 1))) == 5
     assert len(get_industry_stocks("HY450", datetime.date(2015, 1, 1))) > 0
     assert len(get_industry_stocks("HY405", datetime.date(2015, 12, 12))) > 0
     assert len(get_industry_stocks("HY500", datetime.date(2012, 12, 12)))
@@ -470,6 +470,10 @@ def test_get_industries():
     assert len(df.index) > 0
 
 
+def test_get_industry():
+    df = get_industry("000001.XSHE", date="2018-12-03")
+    assert set(df["000001.XSHE"].keys()) == set(['sw_l1', 'sw_l2', 'sw_l3', 'zjw', 'jq_l2', 'jq_l1',])
+
 def test_get_concepts():
     df = get_concepts()
     assert len(df.index) > 0
@@ -562,6 +566,8 @@ def test_ta():
     assert isinstance(data, tuple)
     assert isinstance(data[0], dict) and sorted([i for i in data[0].keys()]) == security_list
 
+    assert technical_analysis.CCI("000001.XSHE", datetime.date(2018, 10, 8)) == {'000001.XSHE': 54.263565891472524}
+
 
 def test_macro():
     q = query(macro.MAC_INDUSTRY_AREA_AGR_OUTPUT_VALUE_YEAR).filter(macro.MAC_INDUSTRY_AREA_AGR_OUTPUT_VALUE_YEAR.stat_year=='2014')
@@ -629,7 +635,7 @@ def test_baidu_factor():
 
 def test_finance_tables():
     # lazy load table of finance
-    assert len(finance.__dict__) == 2
+    # assert len(finance.__dict__) == 2
     finance.STK_LIST
     # finance查询不全是object类型
     assert float in list(finance.run_query(query(finance.STK_LIST)).dtypes)
@@ -638,6 +644,7 @@ def test_finance_tables():
     assert finance.STK_MONEY_FLOW != None
     with pytest.raises(Exception, message='finance 没有该表'):
         finance.STK
+
 
 def test_get_factor_values():
     assert len(get_factor_values("000001.XSHE", "AR", end_date="2017-03-04", count=10)) == 1
@@ -663,6 +670,145 @@ def test_trade_days():
     assert type(data2) == np.ndarray
 
 
+def test_get_bars():
+    assert len(get_bars("000002.XSHE", end_dt="2018-10-19", count=10)) == 10
+    assert get_bars("000001.XSHE", count=5, end_dt="2018-10-15").to_csv() == (
+        ',open,high,low,close\n0,10.7,10.79,10.45,10.45\n1,10.46,10.7,10.39,10.56\n'
+        '2,10.54,10.66,10.38,10.45\n3,10.05,10.16,9.7,9.86\n4,9.97,10.34,9.87,10.3\n'
+    )
+
+
+def test_get_fund_info():
+    assert get_fund_info("150008.OF")
+    df = get_fund_info("518880.OF")
+    df.pop("fund_share")
+    assert df == {
+        'fund_asset_allocation_proportion': '',
+        'fund_custodian_fee': '',
+        'fund_establishment_day': '2013-07-18',
+        'fund_management_fee': '',
+        'fund_manager': u'\u534e\u5b89\u57fa\u91d1\u7ba1\u7406\u6709\u9650\u516c\u53f8',
+        'fund_name': u'\u534e\u5b89\u6613\u5bcc\u9ec4\u91d1\u4ea4\u6613\u578b\u5f00\u653e\u5f0f\u8bc1\u5238\u6295\u8d44\u57fa\u91d1',
+        'fund_size': '',
+        'fund_status': '',
+        'fund_type': u'\u8d35\u91d1\u5c5e',
+        'heavy_hold_bond': [],
+        'heavy_hold_bond_proportion': '',
+        'heavy_hold_stocks': [],
+        'heavy_hold_stocks_proportion': ''
+    }
+
+
+def test_get_current_tick():
+    assert type(get_current_tick('000002.XSHE')) == pd.DataFrame
+    assert len(get_current_tick('000001.XSHE')) == 1
+    assert get_current_tick('600535.XSHG').columns.tolist() == [
+        'datetime', 'current', 'high', 'low', 'volume', 'money',
+        'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p',
+        'a4_v', 'a5_p', 'a5_v', 'b1_p', 'b1_v', 'b2_p', 'b2_v',
+        'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v'
+    ]
+    assert get_current_tick(get_dominant_future('AP')).columns.tolist() == [
+        'datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+        'a1_p', 'a1_v', 'b1_p', 'b1_v'
+    ]
+
+
+def test_get_price_engine():
+    df = get_price_engine(["000001.XSHE", "000002.XSHE"], end_date='2018-10-01', count=1, fq=None)
+    assert type(df) == pd.core.panel.Panel
+    assert df.minor_xs("000001.XSHE").to_json() == ('{"close":{"1538092800000":11.05},"high":{"1538092800000":11.27},'
+                                    '"low":{"1538092800000":10.78},"money":{"1538092800000":2331358288.9600000381},'
+                                    '"open":{"1538092800000":10.78},"volume":{"1538092800000":211024267.0}}')
+    assert get_price_engine(["000001.XSHE", "000002.XSHE"], end_date='2018-10-01', count=1, fq='post',
+                            pre_factor_ref_date='2018-10-01').minor_xs("000001.XSHE").to_csv() == (
+',close,high,low,money,open,volume\n2018-09-28,1298.24,1324.09,1266.52,2331358288.96,1266.52,1796135.0\n')
+
+
+def test_history_engine():
+    assert history_engine("2018-10-01",5, security_list=["000001.XSHE", "600360.XSHG"],
+                          pre_factor_ref_date='2018-10-01').to_csv() == (
+',000001.XSHE,600360.XSHG\n2018-09-21,10.51,''6.09\n2018-09-25,10.55,6.12\n2018-09-26,10.74,6.15\n2018-09-27,10.7,5.99\n2018-09-28,11.05,5.95\n')
+
+
+def test_attribute_history_engine():
+    assert attribute_history_engine("2018-10-01","600360.XSHG",5,pre_factor_ref_date='2018-10-01').to_csv() == (
+',open,close,high,low,volume,money\n2018-09-21,6.07,6.12,6.14,6.02,8063165.0,49144137.0\n2018-09-25,6.11,6.12,6.17,'
+'6.07,5200100.0,31811127.0\n2018-09-26,6.12,6.14,6.2,6.1,7534100.0,46317036.0\n2018-09-27,6.13,5.91,6.13,5.84,11052'
+'861.0,66220858.0\n2018-09-28,5.91,5.97,5.99,5.91,4979800.0,29647440.0\n')
+
+
+def test_get_bars_engine():
+    df = get_bars_engine('000006.XSHE',end_dt='2018-10-26',count=5, fq_ref_date='2018-11-07')
+    assert type(df) == np.ndarray
+    assert df.tolist() == [(4.6, 4.92, 4.51, 4.88),
+                           (4.92, 5.18, 4.91, 5.07),
+                           (5.11, 5.24, 5.0, 5.05),
+                           (5.06, 5.12, 4.97, 5.08),
+                           (4.86, 5.04, 4.8, 5.02)]
+    assert df.tolist() == get_bars_engine(
+        '000006.XSHE',end_dt='2018-10-26',count=5, fq_ref_date=datetime.date(2018, 11, 7)).tolist()
+
+
+def test_get_ticks_engine():
+    df = get_ticks_engine('600535.XSHG', end_dt='2018-10-10', count=1)
+    assert type(df) == np.ndarray
+    assert df.tolist() == [(20181009150001.0, 21.8299, 22.54, 21.72, 48981.0,
+                            107742440.0, 21.8299, 16.0, 21.85, 360.0, 21.86, 10.0,
+                            21.87, 210.0, 21.89, 5.0, 21.82, 74.0, 21.81, 115.0,
+                            21.8, 15.0, 21.79, 143.0, 21.78, 48.0)]
+    df1 =  get_ticks_engine(['600535.XSHG','000007.XSHE'], end_dt='2018-10-10', count=1)
+    assert type(df1) == dict
+    assert df1["600535.XSHG"] == df
+
+
+def test_get_current_tick_engine():
+    df = get_current_tick_engine(['000002.XSHE', '600358.XSHG'])
+    assert type(df) == dict
+    assert str(type(df["000002.XSHE"])) == "<class 'jqdata.models.tick.Tick'>"
+
+
+def test_get_daily_info_engine():
+    assert get_daily_info_engine("164810.XSHE", "2018-11-20") == {
+        'factor': {'164810.XSHE': 1.0},
+        'high_limit': {'164810.XSHE': 1.089},
+        'is_trading': {'164810.XSHE': True},
+        'low_limit': {'164810.XSHE': 0.891},
+    }
+    assert get_daily_info_engine(("000001.XSHE", "TF1906.CCFX"), "2018-10-23") == {
+        'factor': {'000001.XSHE': 117.488, 'TF1906.CCFX': None},
+        'high_limit': {'000001.XSHE': 12.27, 'TF1906.CCFX': 100.315},
+        'is_trading': {'000001.XSHE': True, 'TF1906.CCFX': True},
+        'low_limit': {'000001.XSHE': 10.04, 'TF1906.CCFX': 95.615},
+    }
+
+
+def test_get_query_count():
+    assert type(get_query_count()) == dict
+    data = get_query_count(None)
+    assert "total" in data and "spare" in data
+    assert type(get_query_count("total")) == float
+    assert type(get_query_count("spare")) == float
+
+
+def test_opt_tables():
+    assert opt.run_query(query(opt.OPT_DAILY_PRICE).limit(10)).columns.tolist() == [
+        'id', 'code', 'exchange_code', 'date', 'pre_settle', 'pre_close',
+        'open', 'high', 'low', 'close', 'change_pct_close', 'settle_price',
+        'change_pct_settle', 'volume', 'money', 'position'
+    ]
+    assert len(opt.run_query(query(opt.OPT_ADJUSTMENT).limit(10))) == 10
+    assert opt.run_query(query(
+            opt.OPT_EXERCISE_INFO
+        ).filter(
+            opt.OPT_EXERCISE_INFO.underlying_symbol=='510050.XSHG'
+        ).filter(
+            opt.OPT_EXERCISE_INFO.exercise_date=='2015-05-27'
+        )).to_csv() == (',id,underlying_symbol,underlying_name,exercise_date,contract_type,exercise_number\n'
+        '0,3,510050.XSHG,50ETF,2015-05-27,CO,7333\n1,4,510050.XSHG,50ETF,2015-05-27,PO,1897\n')
+    assert opt.run_query(query(opt.OPT_CONTRACT_INFO.code).limit(10)).columns.tolist() == ["code"]
+
+
 if __name__ == "__main__":
 
     glo = globals()
@@ -677,4 +823,3 @@ if __name__ == "__main__":
             if i.startswith("test") and callable(glo[i]):
                 print ("run: %s" % i)
                 glo[i]()
-

@@ -5,8 +5,8 @@ from .client import JQDataClient
 
 
 @assert_auth
-def get_price(security, start_date=None, end_date=None, frequency='daily', 
-    fields=None, skip_paused=False, fq='pre', count=None):
+def get_price(security, start_date=None, end_date=None, frequency='daily',
+              fields=None, skip_paused=False, fq='pre', count=None):
     """
     获取一支或者多只证券的行情数据
 
@@ -23,10 +23,21 @@ def get_price(security, start_date=None, end_date=None, frequency='daily',
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
     if (not count) and (not start_date):
-            start_date = "2015-01-01"
+        start_date = "2015-01-01"
     if count and start_date:
         raise ParamsError("(start_date, count) only one param is required")
     return JQDataClient.instance().get_price(**locals())
+
+
+@assert_auth
+def get_price_engine(security, start_date=None, end_date=None,
+                     frequency='daily', fields=None, skip_paused=False,
+                     fq='pre', count=None, pre_factor_ref_date=None):
+    security = convert_security(security)
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    pre_factor_ref_date = to_date_str(end_date)
+    return JQDataClient.instance().get_price_engine(**locals())
 
 
 @assert_auth
@@ -242,7 +253,7 @@ def get_trade_days(start_date=None, end_date=None, count=None):
     """
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
-    data =  JQDataClient.instance().get_trade_days(**locals())
+    data = JQDataClient.instance().get_trade_days(**locals())
     if str(data.dtype) != "object":
         data = data.astype(datetime.datetime)
     return data
@@ -305,7 +316,7 @@ def get_marginsec_stocks(dt=None):
 
 
 @assert_auth
-def get_future_contracts(underlying_symbol, dt=None):
+def get_future_contracts(underlying_symbol, date=None):
     """
     获取某期货品种在策略当前日期的可交易合约标的列表
 
@@ -313,20 +324,20 @@ def get_future_contracts(underlying_symbol, dt=None):
     :return 某期货品种在策略当前日期的可交易合约标的列表
     """
     assert underlying_symbol, "underlying_symbol is required"
-    dt = to_date_str(dt)
-    return JQDataClient.instance().get_future_contracts(**locals())
+    dt = to_date_str(date)
+    return JQDataClient.instance().get_future_contracts(underlying_symbol=underlying_symbol, dt=dt)
 
 
 @assert_auth
-def get_dominant_future(underlying_symbol, dt=None):
+def get_dominant_future(underlying_symbol, date=None):
     """
     获取主力合约对应的标的
 
-    :param security 期货合约品种，如 ‘AG’(白银)
+    :param underlying_symbol 期货合约品种，如 ‘AG’(白银)
     :return 主力合约对应的期货合约
     """
-    dt = to_date_str(dt)
-    return JQDataClient.instance().get_dominant_future(**locals())
+    dt = to_date_str(date)
+    return JQDataClient.instance().get_dominant_future(underlying_symbol=underlying_symbol, dt=dt)
 
 
 @assert_auth
@@ -345,6 +356,13 @@ def get_ticks(security, start_dt=None, end_dt=None, count=None, fields=None):
     start_dt = to_date_str(start_dt)
     end_dt = to_date_str(end_dt)
     return JQDataClient.instance().get_ticks(**locals())
+
+
+@assert_auth
+def get_ticks_engine(security, start_dt=None, end_dt=None, count=None, fields=None):
+    start_dt = to_date_str(start_dt)
+    end_dt = to_date_str(end_dt)
+    return JQDataClient.instance().get_ticks_engine(**locals())
 
 
 @assert_auth
@@ -368,6 +386,7 @@ def get_baidu_factor(category=None, day=None, stock=None, province=None):
 def normalize_code(code):
     """
     归一化证券代码
+
     :param code 如000001
     :return 证券代码的全称 如000001.XSHE
     """
@@ -378,6 +397,7 @@ def normalize_code(code):
 def get_factor_values(securities, factors, start_date=None, end_date=None, count=None):
     """
     获取因子数据
+
     返回字典类型
     :return:
     """
@@ -386,16 +406,161 @@ def get_factor_values(securities, factors, start_date=None, end_date=None, count
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
     if (not count) and (not start_date):
-            start_date = "2015-01-01"
+        start_date = "2015-01-01"
     if count and start_date:
         raise ParamsError("(start_date, count) only one param is required")
     return JQDataClient.instance().get_factor_values(**locals())
 
+
 @assert_auth
 def get_index_weights(index_id, date=None):
+    """
+    获取指数成分股权重
+
+    :param index_id 必选参数，代表指数的标准形式代码
+    :param date 可选参数， 查询权重信息的日期
+    :return
+    """
     assert index_id, "index_id is required"
     date = to_date_str(date)
     return JQDataClient.instance().get_index_weights(**locals())
+
+
+@assert_auth
+def get_industry(security, date=None):
+    """
+    查询股票所属行业
+
+    :param security 标的代码
+    :date 查询的日期，默认为空
+    :return 字典格式
+    """
+    assert security, "security is required"
+    security = convert_security(security)
+    date = to_date_str(date)
+    return JQDataClient.instance().get_industry(**locals())
+
+
+@assert_auth
+def get_bars(security, count, unit="1d", fields=("open", "high", "low", "close"), include_now=False, end_dt=None,
+             fq_ref_date=None):
+    """
+    获取历史数据(包含快照数据), 可查询单个标的多个数据字段
+
+    :param security 股票代码
+    :param count 大于0的整数，表示获取bar的个数。如果行情数据的bar不足count个，返回的长度则小于count个数。
+    :param unit bar的时间单位, 支持如下周期：'1m', '5m', '15m', '30m', '60m', '120m', '1d', '1w', '1M'。'1w' 表示一周，‘1M' 表示一月。
+    :param fields 获取数据的字段， 支持如下值：'date', 'open', 'close', 'high', 'low', 'volume', 'money'
+    :param include_now 取值True 或者False。 表示是否包含当前bar, 比如策略时间是9:33，unit参数为5m， 如果 include_now=True,则返回9:30-9:33这个分钟 bar。
+    :param end_dt: 查询的截止时间
+    :param fq_ref_date: 复权基准日期，为None时为不复权数据
+    :return numpy.ndarray格式
+    """
+    assert security, "security is required"
+    security = convert_security(security)
+    assert isinstance(security, six.string_types), "security's type must be string"
+    end_dt = to_date_str(end_dt)
+    return JQDataClient.instance().get_bars(**locals())
+
+
+@assert_auth
+def get_bars_engine(security, count, unit="1d", fields=("open", "high", "low", "close"), include_now=False, end_dt=None,
+                    fq_ref_date=None):
+    security = convert_security(security)
+    fq_ref_date = to_date_str(fq_ref_date)
+    if not (isinstance(security, six.string_types) or isinstance(security, (tuple, list))):
+        raise Exception('security 必须是字符串 或者 字符串数组')
+    end_dt = to_date_str(end_dt)
+    return JQDataClient.instance().get_bars_engine(**locals())
+
+
+@assert_auth
+def get_current_tick(security):
+    """
+    获取最新的 tick 数据
+
+    :param security 标的代码
+    :return:
+    """
+    assert security, "security is required"
+    assert isinstance(security, six.string_types), "security's type must be string"
+    security = convert_security(security)
+    return JQDataClient.instance().get_current_tick(**locals())
+
+
+@assert_auth
+def get_current_tick_engine(security):
+    assert security, "security is required"
+    if not (isinstance(security, six.string_types) or isinstance(security, (tuple, list))):
+        raise Exception('security 必须是字符串 或者 字符串数组')
+    security = convert_security(security)
+    return JQDataClient.instance().get_current_tick_engine(**locals())
+
+
+@assert_auth
+def get_fund_info(security, date=None):
+    """
+    基金基础信息数据接口
+
+    :param security 基金代码
+    :param date 查询日期
+    :return 字典格式
+    """
+    assert security, "security is required"
+    security = convert_security(security)
+    date = to_date_str(date)
+    return JQDataClient.instance().get_fund_info(**locals())
+
+
+@assert_auth
+def get_query_count(field=None):
+    """
+    查询当日可请求条数/剩余请求条数
+
+    :param field
+        默认为None，返回当日可请求条数/剩余请求条数，字典格式
+        "total", 返回当日可请求条数, int格式
+        "spare", 返回当日剩余请求条数, int格式
+    """
+    assert field in ["total", "spare", None], "field参数必须为total,spare,None中的一个"
+    return JQDataClient.instance().get_query_count(**locals())
+
+
+@assert_auth
+def history_engine(end_dt, count, unit='1d', field='avg', security_list=None,
+                   df=True, skip_paused=False, fq='pre', pre_factor_ref_date=None):
+    security_list = convert_security(security_list)
+    end_dt = to_date_str(end_dt)
+    pre_factor_ref_date = to_date_str(pre_factor_ref_date)
+    return JQDataClient.instance().history_engine(**locals())
+
+
+@assert_auth
+def attribute_history_engine(end_dt, security, count, unit='1d',
+                             fields=('open', 'close', 'high', 'low', 'volume', 'money'),
+                             skip_paused=True,
+                             df=True,
+                             fq='pre',
+                             pre_factor_ref_date=None):
+    security = convert_security(security)
+    end_dt = to_date_str(end_dt)
+    pre_factor_ref_date = to_date_str(pre_factor_ref_date)
+    return JQDataClient.instance().attribute_history_engine(**locals())
+
+
+@assert_auth
+def get_daily_info_engine(security, date=None):
+    """
+    查询复权因子
+
+    :param security 代码，string or list
+    :param date 日期，默认空，取当日数据
+    :return 一个股票代码返回str，多个股票代码返回dict，
+            str: 日期，状态，复权因子
+    """
+    security = convert_security(security)
+    date = to_date_str(date)
+    return JQDataClient.instance().get_daily_info_engine(**locals())
 
 
 def read_file(path):
@@ -417,8 +582,11 @@ def write_file(path, content, append=False):
 
 
 __all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", "get_fundamentals_continuously",
-            "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
-            "get_security_info", "get_money_flow", "get_locked_shares", "get_fundamentals", "get_mtss",
-            "get_concepts", "get_industries", "get_margincash_stocks", "get_marginsec_stocks",
-            "get_future_contracts", "get_dominant_future", "normalize_code", "get_baidu_factor",
-            "get_billboard_list", "get_ticks", "read_file", "write_file", "get_factor_values", "get_index_weights"]
+           "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
+           "get_security_info", "get_money_flow", "get_locked_shares", "get_fundamentals", "get_mtss",
+           "get_concepts", "get_industries", "get_margincash_stocks", "get_marginsec_stocks",
+           "get_future_contracts", "get_dominant_future", "normalize_code", "get_baidu_factor",
+           "get_billboard_list", "get_ticks", "read_file", "write_file", "get_factor_values", "get_index_weights",
+           "get_bars", "get_current_tick", "get_fund_info", "get_query_count", "get_price_engine",
+           "history_engine", "attribute_history_engine", "get_bars_engine", "get_ticks_engine",
+           "get_current_tick_engine", "get_daily_info_engine","get_industry"]

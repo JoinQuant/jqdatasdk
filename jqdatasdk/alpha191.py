@@ -1115,7 +1115,7 @@ def alpha_074(code, end_date=None, fq=None):
 
 
 @assert_auth
-def alpha_075(code,benchmark='000300.XSHG',end_date=None):
+def alpha_075(code,benchmark='000300.XSHG',end_date=None, fq=None):
     """
     公式:
        BANCHMARKINDEXCLOSE<BANCHMARKINDEXOPEN,50)/COUNT(BANCHMARKINDEXCLOSE<BANCHMARKIN DEXOPEN,50)
@@ -2224,7 +2224,7 @@ def alpha_148(code, end_date=None, fq=None):
 
 
 @assert_auth
-def alpha_149(code,benchmark='000300.XSHG',end_date=None):
+def alpha_149(code,benchmark='000300.XSHG',end_date=None, fq=None):
     """
     公式:
        REGBETA(FILTER(CLOSE/DELAY(CLOSE,1)-1,BANCHMARKINDEXCLOSE<DELAY(BANCHMARKINDEXCLOSE,1)),FILTER(BANCHMARKINDEXCLOSE/DELAY(BANCHMARKINDEXCLOSE,1)-1,BANCHMARKINDEXCLOSE<DELAY(BANCHMARKINDEXCLOSE,1)),252)
@@ -2703,7 +2703,7 @@ def alpha_180(code, end_date=None, fq=None):
 
 
 @assert_auth
-def alpha_181(code,benchmark='000300.XSHG',end_date=None):
+def alpha_181(code,benchmark='000300.XSHG',end_date=None, fq=None):
     """
     公式:
        SUM(((CLOSE/DELAY(CLOSE,1)-1)-MEAN((CLOSE/DELAY(CLOSE,1)-1),20))-(BANCHMARKINDEXCLOSE-MEAN(BANCHMARKINDEXCLOSE,20))^2,20)/SUM((BANCHMARKINDEXCLOSE-MEAN(BANCHMARKINDEXCLOSE,20))^3)
@@ -2719,7 +2719,7 @@ def alpha_181(code,benchmark='000300.XSHG',end_date=None):
 
 
 @assert_auth
-def alpha_182(code, benchmark='000300.XSHG', end_date=None):
+def alpha_182(code, benchmark='000300.XSHG', end_date=None, fq=None):
     """
     公式:
        COUNT((CLOSE>OPEN&BANCHMARKINDEXCLOSE>BANCHMARKINDEXOPEN)OR(CLOSE<OPEN&BANCHMARKINDEXCLOSE<BANCHMARKINDEXOPEN),20)/20

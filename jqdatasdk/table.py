@@ -1,7 +1,7 @@
 # coding=utf-8
 
 """
-宏观经济数据
+财经/宏观经济数据
 """
 from .utils import *
 import sys
@@ -9,10 +9,12 @@ from .client import JQDataClient
 from sqlalchemy.types import *
 from sqlalchemy.ext.declarative import declarative_base
 
-class Finance(object):
+
+class DBTable(object):
+
     RESULT_ROWS_LIMIT = 3000
 
-    db_name = "finance"
+    db_name = None
 
     def __init__(self, disable_join=False):
         self.__disable_join = True
@@ -22,6 +24,9 @@ class Finance(object):
         self.__table_names = JQDataClient.instance().get_table_orm(db=self.db_name)
         for name in self.__table_names:
             setattr(self, name, None)
+
+    def get_data(self, sql):
+        raise NotImplementedError()
 
     @assert_auth
     def run_query(self, query_object):
@@ -35,25 +40,10 @@ class Finance(object):
         query_object = query_object.limit(limit)
 
         sql = compile_query(query_object)
-        df = JQDataClient.instance().fin_query(sql=sql)
+        df = self.get_data(sql=sql)
         return df
 
     def __load_table_class(self, table_name):
-        """
-        服务端返回结果示例：
-
-        data = {"name": "IDX_WEIGHT_MONTH", 
-                "columns": 
-                    [
-                        ("id", 'Column(Integer, primary_key=True)'), 
-                        ("index_code", 'Column(String(12), nullable=False, comment="指数代码")'), 
-                        ("end_date", 'Column(Date, nullable=False, comment="截止日期")'), 
-                        ("weight", 'Column(DECIMAL(10, 4), nullable=False, comment="权重")'), 
-                        ("status", 'Column(TINYINT(display_width=4), default=0, comment="是否同步,0:未同步,1:已同步")'), 
-                        ("addTime", 'Column(TIMESTAMP, default=datetime.datetime.now, comment="插入时间")'), 
-                        ("modTime", 'Column(TIMESTAMP, default=datetime.datetime.now, comment="最后修改时间")'), 
-                    ]}
-        """
         import datetime
         from sqlalchemy import Date, Column, DateTime, Integer, INTEGER, Numeric, SmallInteger, String, Table, Text, text
         from sqlalchemy.dialects.mysql import TINYINT, TIMESTAMP, DECIMAL
@@ -86,6 +76,30 @@ class Finance(object):
         return v
 
 
+class Finance(DBTable):
+
+    db_name = "finance"
+
+    def get_data(self, sql):
+        return JQDataClient.instance().fin_query(sql=sql)
+
+
+class Macro(DBTable):
+
+    db_name = "macro"
+
+    def get_data(self, sql):
+        return JQDataClient.instance().macro_query(sql=sql)
+
+
+class OPT(DBTable):
+
+    db_name = "opt"
+
+    def get_data(self, sql):
+        return JQDataClient.instance().opt_query(sql=sql)
+
+
 finance = Finance()
-
-
+macro = Macro()
+opt = OPT()
