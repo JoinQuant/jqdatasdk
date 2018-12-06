@@ -1,4 +1,4 @@
-# 2018-10-20
+# 2018-12-06
 - 添加接口
     + 查询程序版本
     + get_bars
@@ -7,6 +7,7 @@
     + get_query_count
     + get_industry
     + get_industries
+- 新上期权数据
 - 数据压缩传输
 - 修复已知问题
 
