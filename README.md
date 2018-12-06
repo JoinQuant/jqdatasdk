@@ -1,4 +1,4 @@
-![logo](logo.png)
+![logo](https://raw.githubusercontent.com/JoinQuant/jqdatasdk/master/logo.png)
 
 ### jqdatasdk
 
