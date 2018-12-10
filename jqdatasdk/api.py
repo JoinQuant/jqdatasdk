@@ -563,6 +563,16 @@ def get_daily_info_engine(security, date=None):
     return JQDataClient.instance().get_daily_info_engine(**locals())
 
 
+@assert_auth
+def get_last_price_engine(codes):
+    """获取标的的最新价格
+    :param codes 一支证券代码或者一个证券代码的list
+    :return 返回dict对象，如果传入的证券没有数据，不包含返回的dict
+    """
+    codes = convert_security(codes)
+    return JQDataClient.instance().get_last_price_engine(**locals())
+
+
 def read_file(path):
     """
     读取文件
@@ -589,4 +599,4 @@ __all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", "g
            "get_billboard_list", "get_ticks", "read_file", "write_file", "get_factor_values", "get_index_weights",
            "get_bars", "get_current_tick", "get_fund_info", "get_query_count", "get_price_engine",
            "history_engine", "attribute_history_engine", "get_bars_engine", "get_ticks_engine",
-           "get_current_tick_engine", "get_daily_info_engine","get_industry"]
+           "get_current_tick_engine", "get_daily_info_engine","get_industry", "get_last_price_engine"]

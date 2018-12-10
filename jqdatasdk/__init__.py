@@ -75,6 +75,7 @@ __all__ = [
     "get_current_tick_engine",
     "get_daily_info_engine",
     "opt",
+    "get_last_price_engine"
 ]
 
 # __all__.extend(fin.__all__)
