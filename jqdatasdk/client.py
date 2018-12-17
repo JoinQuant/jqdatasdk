@@ -34,15 +34,16 @@ class JQDataClient(object):
             cls._threading_local._instance = _instance
         return _instance
 
-    def __init__(self, host, port, username="", password="", retry_cnt=30):
+    def __init__(self, host, port, username="", password="", token="", retry_cnt=10):
         assert host, "host is required"
         assert port, "port is required"
-        assert username, "username is required"
-        assert password, "password is required"
+        assert username or token, "username is required"
+        assert password or token, "password is required"
         self.host = host
         self.port = port
         self.username = username
         self.password = password
+        self.token = token
         self.client = None
         self.inited = False
         self.retry_cnt = retry_cnt
@@ -56,11 +57,14 @@ class JQDataClient(object):
 
     def ensure_auth(self):
         if not self.inited:
-            if not self.username:
+            if not self.username and not self.token:
                 raise RuntimeError("not inited")
             self.client = make_client(thrift.JqDataService, self.host, self.port)
             self.inited = True
-            response = self.client.auth(self.username, self.password, self.compress)
+            if self.username:
+                response = self.client.auth(self.username, self.password, self.compress)
+            else:
+                response = self.client.auth_by_token(self.token)
             if not response.status:
                 self._threading_local._instance = None
                 raise self.get_error(response)
@@ -122,7 +126,7 @@ class JQDataClient(object):
             except (thriftpy.transport.TTransportException, socket.error) as e:
                 self._reset()
                 err = e
-                time.sleep(idx * 2)
+                time.sleep(2)
                 continue
             except Exception as e:
                 self._reset()

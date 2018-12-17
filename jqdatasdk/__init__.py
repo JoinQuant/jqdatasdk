@@ -16,12 +16,18 @@ def auth(username, password, host="39.107.190.114", port=7000):
     JQDataClient.set_auth_params(host=host, port=port, username=username, password=password)
 
 
+def auth_by_token(token, host="39.107.190.114", port=7000):
+    from .client import JQDataClient
+    JQDataClient.set_auth_params(host=host, port=port, token=token)
+
+
 __version__ = "1.5.0"
 
 
 __all__ = [
     "__version__",
     "auth",
+    "auth_by_token",
     "get_price",
     "get_trade_days",
     "get_all_trade_days",
@@ -75,7 +81,7 @@ __all__ = [
     "get_current_tick_engine",
     "get_daily_info_engine",
     "opt",
-    "get_last_price_engine"
+    "get_last_price"
 ]
 
 # __all__.extend(fin.__all__)
