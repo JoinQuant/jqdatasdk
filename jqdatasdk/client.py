@@ -34,7 +34,7 @@ class JQDataClient(object):
             cls._threading_local._instance = _instance
         return _instance
 
-    def __init__(self, host, port, username="", password="", retry_cnt=30):
+    def __init__(self, host, port, username="", password="", retry_cnt=5):
         assert host, "host is required"
         assert port, "port is required"
         assert username, "username is required"

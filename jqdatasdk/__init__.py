@@ -16,7 +16,7 @@ def auth(username, password, host="39.107.190.114", port=7000):
     JQDataClient.set_auth_params(host=host, port=port, username=username, password=password)
 
 
-__version__ = "1.5.0"
+__version__ = "1.5.2"
 
 
 __all__ = [
