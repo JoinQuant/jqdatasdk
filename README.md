@@ -9,7 +9,7 @@
 #### 安装
 
 ```
-pip install jqdatasdk -i https://mirrors.aliyun.com/pypi/simple/`
+pip install jqdatasdk -i https://mirrors.aliyun.com/pypi/simple/
 ```
 
 #### 升级

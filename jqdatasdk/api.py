@@ -53,6 +53,7 @@ def get_extras(info, security_list, start_date=None, end_date=None, df=True, cou
     :param count 数量, 与 start_date 二选一, 不可同时使用, 必须大于 0
     :return <df=True>:pandas.DataFrame对象, 列索引是股票代号, 行索引是datetime.datetime；<df=False>:一个dict, key是基金代号, value是numpy.ndarray
     """
+    assert security_list, "security_list is required"
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
     security_list = convert_security(security_list)
@@ -460,6 +461,7 @@ def get_bars(security, count, unit="1d", fields=("open", "high", "low", "close")
     security = convert_security(security)
     assert isinstance(security, six.string_types), "security's type must be string"
     end_dt = to_date_str(end_dt)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_bars(**locals())
 
 
