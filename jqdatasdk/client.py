@@ -126,7 +126,7 @@ class JQDataClient(object):
             except (thriftpy.transport.TTransportException, socket.error) as e:
                 self._reset()
                 err = e
-                time.sleep(2)
+                time.sleep(idx * 2)
                 continue
             except Exception as e:
                 self._reset()
