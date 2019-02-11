@@ -684,13 +684,9 @@ def test_get_fund_info():
     df.pop("fund_share")
     assert df == {
         'fund_asset_allocation_proportion': '',
-        'fund_custodian_fee': '',
         'fund_establishment_day': '2013-07-18',
-        'fund_management_fee': '',
         'fund_manager': u'\u534e\u5b89\u57fa\u91d1\u7ba1\u7406\u6709\u9650\u516c\u53f8',
         'fund_name': u'\u534e\u5b89\u6613\u5bcc\u9ec4\u91d1\u4ea4\u6613\u578b\u5f00\u653e\u5f0f\u8bc1\u5238\u6295\u8d44\u57fa\u91d1',
-        'fund_size': '',
-        'fund_status': '',
         'fund_type': u'\u8d35\u91d1\u5c5e',
         'heavy_hold_bond': [],
         'heavy_hold_bond_proportion': '',
