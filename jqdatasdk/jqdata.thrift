@@ -8,6 +8,7 @@ enum DataType {
 struct St_Query_Rsp {
     1:required bool status,
     2:optional string msg,
+    5:optional string error
 }
 
 struct St_Query_Req {
