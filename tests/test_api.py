@@ -1,17 +1,15 @@
 # coding: utf-8
-import os
-import sys
-from jqdatasdk import *
-import unittest
+import time
 import datetime
-import six
 import logging
+import pytest
 import numpy as np
 import pandas as pd
-logging.basicConfig()
-import pytest
-log = logging
 from pandas.tslib import Timestamp
+from jqdatasdk import *
+
+logging.basicConfig()
+log = logging
 
 
 with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
@@ -387,13 +385,10 @@ def test_finance_basic():
 
 def test_pd_datetime():
     df = get_all_securities()
-    assert 2873 == len(df[df['start_date'] < "2016-01-01"].index)
-    assert 2873 == len(df[df['start_date'] < "2016-01-01"].index)
+    assert 2874 == df[df['start_date'] < "2016-01-01"].shape[0]
 
     df = get_price('000001.XSHE')
-    assert 5 == len(df[df.index < '2015-01-10'].index)
-    assert 5 == len(df[df.index < "2015-01-10"].index)
-    pass
+    assert 5 == df[df.index < '2015-01-10'].shape[0]
 
 
 def test_log():
@@ -549,6 +544,7 @@ def test_alpha101():
 
 def test_alpha191():
     assert len(alpha191.alpha_001("000001.XSHE", end_date="2017-03-10")) > 0
+    time.sleep(1)
     assert len(alpha191.alpha_010("000001.XSHE", end_date="2017-03-10")) > 0
 
 
@@ -683,7 +679,6 @@ def test_get_fund_info():
     df = get_fund_info("518880.OF")
     df.pop("fund_share")
     assert df == {
-        'fund_asset_allocation_proportion': '',
         'fund_establishment_day': '2013-07-18',
         'fund_manager': u'\u534e\u5b89\u57fa\u91d1\u7ba1\u7406\u6709\u9650\u516c\u53f8',
         'fund_name': u'\u534e\u5b89\u6613\u5bcc\u9ec4\u91d1\u4ea4\u6613\u578b\u5f00\u653e\u5f0f\u8bc1\u5238\u6295\u8d44\u57fa\u91d1',
@@ -772,7 +767,7 @@ def test_get_daily_info_engine():
         'low_limit': {'164810.XSHE': 0.891},
     }
     assert get_daily_info_engine(("000001.XSHE", "TF1906.CCFX"), "2018-10-23") == {
-        'factor': {'000001.XSHE': 117.488, 'TF1906.CCFX': None},
+        'factor': {'000001.XSHE': 117.488, 'TF1906.CCFX': 1.0},
         'high_limit': {'000001.XSHE': 12.27, 'TF1906.CCFX': 100.315},
         'is_trading': {'000001.XSHE': True, 'TF1906.CCFX': True},
         'low_limit': {'000001.XSHE': 10.04, 'TF1906.CCFX': 95.615},
@@ -805,17 +800,39 @@ def test_opt_tables():
     assert opt.run_query(query(opt.OPT_CONTRACT_INFO.code).limit(10)).columns.tolist() == ["code"]
 
 
-if __name__ == "__main__":
+def test_get_factor_effect():
+    df = get_factor_effect("000001.XSHG", start_date="2015-01-01", end_date="2018-01-01", period="3M", factor="net_profit_growth_rate")
+    assert df[1].to_dict() == {datetime.date(2015, 1, 5): 0.0,
+                               datetime.date(2015, 3, 31): 0.3340836570512989,
+                               datetime.date(2015, 6, 30): 0.5978724949894281,
+                               datetime.date(2015, 9, 30): 0.1569389030772208,
+                               datetime.date(2015, 12, 31): 0.5417823806275872,
+                               datetime.date(2016, 3, 31): 0.2435673085124841,
+                               datetime.date(2016, 6, 30): 0.24821184261078844,
+                               datetime.date(2016, 9, 30): 0.3200094466839587,
+                               datetime.date(2016, 12, 31): 0.4179656688047624,
+                               datetime.date(2017, 3, 31): 0.414114425859037,
+                               datetime.date(2017, 6, 30): 0.2957341105172204,
+                               datetime.date(2017, 9, 30): 0.3424647387527804,
+                               datetime.date(2017, 12, 31): 0.21692615900766765
+                             }
 
-    glo = globals()
-    if len(sys.argv) >= 2:
-        func = sys.argv[1]
-        assert func.startswith("test") and func in glo
-        print ('run: %s' % func)
-        glo[func]()
-    else:
-        keys = list(glo.keys())
-        for i in keys:
-            if i.startswith("test") and callable(glo[i]):
-                print ("run: %s" % i)
-                glo[i]()
+
+def test_get_data():
+    df = get_data("get_price", security=['000001.XSHE', '000002.XSHE'], fields='close', start_date='2014-12-30',
+                        end_date='2015-01-06', fq=None)
+    df['close'].to_csv() == \
+""",000001.XSHE,000002.XSHE
+2014-12-30,15.5,12.64
+2014-12-31,15.84,13.9
+2015-01-05,16.02,14.91
+2015-01-06,15.78,14.36
+"""
+    for code in (1, '000001', 'SZ000001', '000001SZ', '000001.sz', '000001.XSHE'):
+        assert '000001.XSHE' == get_data("normalize_code", code=code)
+
+
+def test_api_limit():
+    alpha191.alpha_001("000001.XSHE", end_date="2018-03-10")
+    with pytest.raises(Exception) as e:
+        alpha191.alpha_001("000001.XSHE", end_date="2018-03-10")

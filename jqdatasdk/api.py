@@ -575,6 +575,37 @@ def get_last_price(codes):
     return JQDataClient.instance().get_last_price(**locals())
 
 
+@assert_auth
+def get_factor_effect(security, start_date, end_date, period, factor, group_num=5):
+    """获取因子分层回测效果
+    以因子值升序分组股票, 以period为周期，获取每组股票收益情况
+    :param security 一支指数代码
+    :param start_date 开始日期
+    :param end_date 结束日期
+    :param period 周期，xD, xW, xM > 几日, 几周, 几月
+    :param factor 因子名称
+    :param group_num 分组数；default 5
+    :return dataframe
+    """
+    security = convert_security(security)
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    assert group_num > 0, "group_num must be a positive numbe"
+    assert isinstance(security, six.string_types), "security must be a inde code" 
+    assert period[-1] in ["D", "W", "M"], "period must be end with one of (\"D\", \"W\", \"M\")"
+    return JQDataClient.instance().get_factor_effect(**locals())
+
+
+@assert_auth
+def get_data(api_name, **kwargs):
+    """通用接口
+    获取非run_query, alpha因子, technical_analysis查询的数据
+    :param apis_name 接口名称
+    :param kwargs 传入参数，且必须是关键字参数
+    """
+    assert api_name
+    return JQDataClient.instance().get_data(api_name=api_name, args=kwargs)
+
 def read_file(path):
     """
     读取文件
@@ -593,12 +624,15 @@ def write_file(path, content, append=False):
         return f.write(content)
 
 
-__all__ = ["get_price", "get_trade_days", "get_all_trade_days", "get_extras", "get_fundamentals_continuously",
-           "get_index_stocks", "get_industry_stocks", "get_concept_stocks", "get_all_securities",
-           "get_security_info", "get_money_flow", "get_locked_shares", "get_fundamentals", "get_mtss",
-           "get_concepts", "get_industries", "get_margincash_stocks", "get_marginsec_stocks",
-           "get_future_contracts", "get_dominant_future", "normalize_code", "get_baidu_factor",
-           "get_billboard_list", "get_ticks", "read_file", "write_file", "get_factor_values", "get_index_weights",
-           "get_bars", "get_current_tick", "get_fund_info", "get_query_count", "get_price_engine",
-           "history_engine", "attribute_history_engine", "get_bars_engine", "get_ticks_engine",
-           "get_current_tick_engine", "get_daily_info_engine","get_industry", "get_last_price"]
+__all__ = ["normalize_code", "attribute_history_engine", "history_engine",]
+
+def _collect_func():
+    funcs = []
+    for func in globals().keys():
+        if func.startswith("get"):
+            funcs.append(func)
+    return funcs
+
+__all__.extend(_collect_func())
+
+del _collect_func

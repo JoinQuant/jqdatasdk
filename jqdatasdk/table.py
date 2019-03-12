@@ -10,6 +10,12 @@ from sqlalchemy.types import *
 from sqlalchemy.ext.declarative import declarative_base
 
 
+__all__ = [
+    "finance",
+    "macro",
+    "opt",
+]
+
 class DBTable(object):
 
     RESULT_ROWS_LIMIT = 3000
