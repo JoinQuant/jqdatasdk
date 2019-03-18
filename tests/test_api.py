@@ -5,7 +5,6 @@ import logging
 import pytest
 import numpy as np
 import pandas as pd
-from pandas.tslib import Timestamp
 from jqdatasdk import *
 
 logging.basicConfig()
@@ -13,7 +12,7 @@ log = logging
 
 
 with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
-   exec(f.read())
+    exec(f.read())
 
 def test_get_index_stocks():
     assert len(get_index_stocks('000300.XSHG')) == 300
@@ -575,7 +574,7 @@ def test_ticks():
     assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=100)) == 100
     assert get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10, 7)
     assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10)) == 10
-    assert get_ticks("SM1809.XZCE", '2018-07-06', '2018-07-07').iloc[3][0] == Timestamp('2018-07-06 09:00:01.500000')
+    assert str(get_ticks("SM1809.XZCE", '2018-07-06', '2018-07-07').iloc[3][0]) == '2018-07-06 09:00:01.500000'
     assert get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"]).shape == (10, 10)
 
 
@@ -640,6 +639,26 @@ def test_finance_tables():
     assert finance.STK_MONEY_FLOW != None
     with pytest.raises(Exception, message='finance 没有该表'):
         finance.STK
+    df = finance.run_query(query(finance.STK_STATUS_CHANGE))
+    stk_status_change_columns = ["id", "company_id", "code", "name",
+                                 "pub_date", "change_date", "change_reason",
+                                 "change_type_id", "change_type", "comments",
+                                 "public_status_id", "public_status"]
+    assert set(stk_status_change_columns) - set(df.columns) == set()
+    df = finance.run_query(query(finance.STK_FIN_FORCAST))
+    stk_fin_forcast_columns = ["id", "company_id", "code", "name",
+                               "end_date", "report_type_id", "report_type",
+                               "pub_date", "type_id", "type", "profit_min",
+                               "profit_max", "profit_last", "profit_ratio_min",
+                               "profit_ratio_max", "content",]
+    assert set(stk_fin_forcast_columns) - set(df.columns) == set()
+    df = finance.run_query(query(finance.STK_LIST))
+    stk_list_columns = ["id", "code", "name", "short_name",
+                        "category", "exchange", "start_date",
+                        "end_date", "company_id", "company_name",
+                        "ipo_shares", "book_price", "par_value",
+                        "state_id", "state", "status"]
+    assert set(stk_list_columns) - set(df.columns) == set(["status"])
 
 
 def test_get_factor_values():

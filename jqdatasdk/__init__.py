@@ -21,7 +21,7 @@ def auth_by_token(token, host="39.107.190.114", port=7000):
     JQDataClient.set_auth_params(host=host, port=port, token=token)
 
 
-__version__ = "1.6.0"
+__version__ = "1.6.1"
 
 __all__ = ["auth", "auth_by_token", "alpha101", "alpha191", "technical_analysis", "__version__"]
 __all__.extend(api.__all__)
