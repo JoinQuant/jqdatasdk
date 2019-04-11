@@ -606,6 +606,12 @@ def get_data(api_name, **kwargs):
     assert api_name
     return JQDataClient.instance().get_data(api_name=api_name, args=kwargs)
 
+
+@assert_auth
+def get_all_factors():
+    return JQDataClient.instance().get_all_factors(**locals())
+
+
 def read_file(path):
     """
     读取文件

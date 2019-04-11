@@ -10,7 +10,6 @@ from jqdatasdk import *
 logging.basicConfig()
 log = logging
 
-
 with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
     exec(f.read())
 
@@ -320,7 +319,7 @@ def test_get_price2():
 
     print(get_price('000002.XSHE', end_date='2016-12-31', skip_paused=False)[-2:])
 
-    print(get_price([], end_date='2016-12-31', skip_paused=False)['open'][-2:])
+    # print(get_price([], end_date='2016-12-31', skip_paused=False)['open'][-2:])
 
 
 def test_get_price_minute():
@@ -763,10 +762,10 @@ def test_get_bars_engine():
 def test_get_ticks_engine():
     df = get_ticks_engine('600535.XSHG', end_dt='2018-10-10', count=1)
     assert type(df) == np.ndarray
-    assert df.tolist() == [(20181009150001.0, 21.8299, 22.54, 21.72, 48981.0,
-                            107742440.0, 21.8299, 16.0, 21.85, 360.0, 21.86, 10.0,
-                            21.87, 210.0, 21.89, 5.0, 21.82, 74.0, 21.81, 115.0,
-                            21.8, 15.0, 21.79, 143.0, 21.78, 48.0)]
+    assert df.tolist() == [(20181009150001.0, 21.83, 22.54, 21.72, 4898100.0,
+                            107742440.0, 21.83, 1600.0, 21.85, 36000.0, 21.86, 1000.0,
+                            21.87, 21000.0, 21.89, 500.0, 21.82, 7400.0, 21.81, 11500.0,
+                            21.8, 1500.0, 21.79, 14300.0, 21.78, 4800.0)]
     df1 =  get_ticks_engine(['600535.XSHG','000007.XSHE'], end_dt='2018-10-10', count=1)
     assert type(df1) == dict
     assert df1["600535.XSHG"] == df
@@ -797,8 +796,15 @@ def test_get_query_count():
     assert type(get_query_count()) == dict
     data = get_query_count(None)
     assert "total" in data and "spare" in data
-    assert type(get_query_count("total")) == float
-    assert type(get_query_count("spare")) == float
+    if type(get_query_count("total")) == int:
+        req = get_query_count("spare")
+        print(req)
+        data = get_trade_days(count=1)
+        assert get_query_count("spare") == req - 1
+        print("after query 1 row, %s" % get_query_count("spare"))
+    else:
+        assert type(get_query_count("total")) == float
+        assert type(get_query_count("spare")) == float
 
 
 def test_opt_tables():
@@ -851,7 +857,18 @@ def test_get_data():
         assert '000001.XSHE' == get_data("normalize_code", code=code)
 
 
-def test_api_limit():
-    alpha191.alpha_001("000001.XSHE", end_date="2018-03-10")
+def test_get_all_factors():
+    df = get_all_factors()
+    assert df.iloc[3].to_string() == (
+        "factor                EBITDA\nfactor_intro       "
+        "\u606f\u7a0e\u6298\u65e7\u644a\u9500\u524d\u5229\u6da6\n"
+        "category              basics\ncategory_intro    "
+        "\u57fa\u7840\u79d1\u76ee\u53ca\u884d\u751f\u7c7b\u56e0\u5b50"
+    )
+
+
+def test_timeout_error():
+    stocks = get_all_securities().index.tolist()
     with pytest.raises(Exception) as e:
-        alpha191.alpha_001("000001.XSHE", end_date="2018-03-10")
+        get_price(stocks, end_date="2019-04-01", count=10000)
+        pytest.fail("查询超时，请缩小查询范围后重试")

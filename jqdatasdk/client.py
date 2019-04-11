@@ -2,8 +2,8 @@
 import zlib
 from .utils import *
 from .api import *
-import thriftpy
-from thriftpy.rpc import make_client
+import thriftpy2 as thriftpy
+from thriftpy2.rpc import make_client
 import msgpack
 import time
 from os import path
@@ -78,6 +78,12 @@ class JQDataClient(object):
             self.client.close()
             self.client = None
         self.inited = False
+
+    def logout(self):
+        self._reset()
+        self._threading_local._instance = None
+        self.__class__._auth_params = {}
+        print("已退出")
 
     def get_error(self, response):
         err = None

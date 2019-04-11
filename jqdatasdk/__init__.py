@@ -9,21 +9,25 @@ from . import alpha101
 from . import alpha191
 from . import technical_analysis
 from .table import *
+from .client import JQDataClient
 
 
 def auth(username, password, host="39.107.190.114", port=7000):
-    from .client import JQDataClient
     JQDataClient.set_auth_params(host=host, port=port, username=username, password=password)
 
 
 def auth_by_token(token, host="39.107.190.114", port=7000):
-    from .client import JQDataClient
     JQDataClient.set_auth_params(host=host, port=port, token=token)
 
 
-__version__ = "1.6.1"
+def logout():
+    JQDataClient.instance().logout()
 
-__all__ = ["auth", "auth_by_token", "alpha101", "alpha191", "technical_analysis", "__version__"]
+
+__version__ = "1.6.2"
+
+
+__all__ = ["auth", "auth_by_token", "logout", "alpha101", "alpha191", "technical_analysis", "__version__"]
 __all__.extend(api.__all__)
 __all__.extend(finance_service.__all__)
 __all__.extend(table.__all__)

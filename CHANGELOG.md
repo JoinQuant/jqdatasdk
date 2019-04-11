@@ -1,3 +1,8 @@
+# 2019-04-11
+- thrift改为thrift2
+- 添加退出logout函数
+- 添加get\_all\_factors函数
+
 # 2019-03-18
 - MANIFEST.in添加md文件
 
