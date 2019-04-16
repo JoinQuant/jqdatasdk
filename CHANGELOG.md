@@ -1,7 +1,11 @@
+# 2019-04-16
+- 添加超对称数据库`ssymmetry`
+- 数据库查询默认查询条数改为5000
+
 # 2019-04-11
 - thrift改为thrift2
 - 添加退出logout函数
-- 添加get\_all\_factors函数
+- 添加get_all_factor函数
 
 # 2019-03-18
 - MANIFEST.in添加md文件

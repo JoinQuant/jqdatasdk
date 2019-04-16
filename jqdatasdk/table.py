@@ -14,11 +14,12 @@ __all__ = [
     "finance",
     "macro",
     "opt",
+    "ssymmetry",
 ]
 
 class DBTable(object):
 
-    RESULT_ROWS_LIMIT = 3000
+    RESULT_ROWS_LIMIT = 5000
 
     db_name = None
 
@@ -52,7 +53,7 @@ class DBTable(object):
     def __load_table_class(self, table_name):
         import datetime
         from sqlalchemy import Date, Column, DateTime, Integer, INTEGER, Numeric, SmallInteger, String, Table, Text, text
-        from sqlalchemy.dialects.mysql import TINYINT, TIMESTAMP, DECIMAL
+        from sqlalchemy.dialects.mysql import TINYINT, TIMESTAMP, DECIMAL, DOUBLE
 
         data = JQDataClient.instance().get_table_orm(db=self.db_name, table=table_name)
         dct = {}
@@ -106,6 +107,15 @@ class OPT(DBTable):
         return JQDataClient.instance().opt_query(sql=sql)
 
 
+class JqSsymmetry(DBTable):
+
+    db_name = "ssymmetry"
+
+    def get_data(self, sql):
+        return JQDataClient.instance().ssymmetry_query(sql=sql)
+
+
 finance = Finance()
 macro = Macro()
 opt = OPT()
+ssymmetry = JqSsymmetry()
