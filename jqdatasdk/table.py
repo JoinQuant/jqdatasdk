@@ -9,31 +9,28 @@ from .client import JQDataClient
 from sqlalchemy.types import *
 from sqlalchemy.ext.declarative import declarative_base
 
-
 __all__ = [
     "finance",
     "macro",
     "opt",
     "ssymmetry",
+    "bond",
+    "DBTable",
 ]
 
-class DBTable(object):
 
+class DBTable(object):
     RESULT_ROWS_LIMIT = 5000
 
-    db_name = None
-
-    def __init__(self, disable_join=False):
+    def __init__(self, db, disable_join=False):
         self.__disable_join = True
         self.__table_names = []
+        self.db_name = db
 
     def __load_table_names(self):
         self.__table_names = JQDataClient.instance().get_table_orm(db=self.db_name)
         for name in self.__table_names:
             setattr(self, name, None)
-
-    def get_data(self, sql):
-        raise NotImplementedError()
 
     @assert_auth
     def run_query(self, query_object):
@@ -47,12 +44,13 @@ class DBTable(object):
         query_object = query_object.limit(limit)
 
         sql = compile_query(query_object)
-        df = self.get_data(sql=sql)
+        df = JQDataClient.instance().db_query(db=self.db_name, sql=sql)
         return df
 
     def __load_table_class(self, table_name):
         import datetime
-        from sqlalchemy import Date, Column, DateTime, Integer, INTEGER, Numeric, SmallInteger, String, Table, Text, text
+        from sqlalchemy import Date, Column, DateTime, Integer, INTEGER, Numeric, SmallInteger, String, Table, Text, \
+            text
         from sqlalchemy.dialects.mysql import TINYINT, TIMESTAMP, DECIMAL, DOUBLE
 
         data = JQDataClient.instance().get_table_orm(db=self.db_name, table=table_name)
@@ -72,7 +70,7 @@ class DBTable(object):
         if key in self.__table_names:
             return getattr(self, key)
         else:
-            raise AttributeError("%r object has no attribute %r" % (self.__class__.__name__, key))
+            raise AttributeError("database %r has no table %r" % (self.db_name, key))
 
     def __getattribute__(self, key):
         v = object.__getattribute__(self, key)
@@ -83,39 +81,8 @@ class DBTable(object):
         return v
 
 
-class Finance(DBTable):
-
-    db_name = "finance"
-
-    def get_data(self, sql):
-        return JQDataClient.instance().fin_query(sql=sql)
-
-
-class Macro(DBTable):
-
-    db_name = "macro"
-
-    def get_data(self, sql):
-        return JQDataClient.instance().macro_query(sql=sql)
-
-
-class OPT(DBTable):
-
-    db_name = "opt"
-
-    def get_data(self, sql):
-        return JQDataClient.instance().opt_query(sql=sql)
-
-
-class JqSsymmetry(DBTable):
-
-    db_name = "ssymmetry"
-
-    def get_data(self, sql):
-        return JQDataClient.instance().ssymmetry_query(sql=sql)
-
-
-finance = Finance()
-macro = Macro()
-opt = OPT()
-ssymmetry = JqSsymmetry()
+finance = DBTable("finance")
+macro = DBTable("macro")
+opt = DBTable("opt")
+ssymmetry = DBTable("ssymmetry")
+bond = DBTable("bond")
