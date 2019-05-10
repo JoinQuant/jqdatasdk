@@ -459,7 +459,6 @@ def get_bars(security, count, unit="1d", fields=("open", "high", "low", "close")
     """
     assert security, "security is required"
     security = convert_security(security)
-    assert isinstance(security, six.string_types), "security's type must be string"
     end_dt = to_date_str(end_dt)
     fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_bars(**locals())

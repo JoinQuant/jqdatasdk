@@ -1,28 +1,45 @@
 # JQData
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/JoinQuant/jqdatasdk/master/logo.png"><br>
-</div>
+[![img](https://raw.githubusercontent.com/JoinQuant/jqdatasdk/master/logo.png)](https://raw.githubusercontent.com/JoinQuant/jqdatasdk/master/logo.png)
 
-> jqdatasdk是提供给用户获取聚宽金融数据的SDK。用户可以在自己搭建的环境中获取聚宽提供的金融数据，除了需要验证之外，其余的功能特性与官网的投资研究模块保持一致。
+> jqdatasdk是提供给用户获取聚宽金融数据的SDK。用户可以在自己本地搭建的环境中获取聚宽提供的全品种量化金融数据，其功能特性与官网的投资研究模块保持一致。
+
+
+## 申请账号
+>用户只需[提交JQData试用申请](https://www.joinquant.com/default/index/sdk)，就能开通一年有效期的试用账号。试用期间可免费调用JQData的全部基础数据，每天可调用100万条。（注：JQData基础数据包含沪深A股行情数据，上市公司财务数据，指数数据，场内基金数据，场外基金数据、期货数据、期权数据和宏观经济数据等）
+
 
 ## 安装
 
-```shell
-pip install jqdatasdk -i https://mirrors.aliyun.com/pypi/simple/
+```python
+pip install jqdatasdk
 ```
 
 ## 升级
 
-```shell
+```python
 pip install -U jqdatasdk
 ```
+
+## 登录
+
+```python
+from jqdatasdk import *
+auth('ID','Password') #ID是申请时所填写的手机号；Password为聚宽官网登录密码，新申请用户默认为手机号后6位
+```
+
+## JQData HTTP版本
+除了Python SDK版本外，JQData还推出了不限任何编程语言的JQData HTTP方法，任意编程语言都可调用，点击查看[JQData HTTP使用说明](https://dataapi.joinquant.com/docs)。
+
+## 交流学习
+如在使用中遇到问题，或者想加入JQData学习群和大家一起交流，还可以添加JQData管理员微信咨询，微信号：jqdata01，添加时请留言"JQData"。
+
 
 ## 使用简介
 
 例如：获取平安银行2017-01-01到2017-12-31的所有日行情数据
 
-```python
+```
 import jqdatasdk
 jqdatasdk.auth(username, password)
 jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31")
@@ -30,7 +47,7 @@ jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31
 
 结果显示：
 
-```text
+```
 .            open  close   high    low       volume         money
 2017-01-03   8.98   9.03   9.05   8.96   46650858.0  4.205952e+08
 2017-01-04   9.02   9.03   9.05   9.01   45584521.0  4.115034e+08
@@ -44,13 +61,10 @@ jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31
 ...
 ```
 
-## 试用
-
-如果您想试用该数据包接口，请联系我们的运营（微信:jqdata01），添加时请备注jqdatasdk。
 
 ## 支持的接口
 
-> 各API接口的含义及说明见官网：[官网链接](https://www.joinquant.com/api)
+> 下面仅列举出一些常用接口，更多API接口说明详见：[JQData说明书](https://www.joinquant.com/help/api/help?name=JQData#JQData%E8%AF%B4%E6%98%8E%E4%B9%A6)
 
 - `get_price`
 
@@ -114,7 +128,7 @@ jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31
 
   查询财务数据，包含估值表、利润表、现金流量表、资产负债表、银行专项指标、证券专项指标、保险专项指标
 
-- `get_fundamentals_continuously `
+- `get_fundamentals_continuously`
 
   查询多日的财务数据
 
@@ -130,7 +144,7 @@ jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31
 
   查询股票限售解禁股数据
 
-- `get_margincash_stocks `
+- `get_margincash_stocks`
 
   获取融资标的列表
 

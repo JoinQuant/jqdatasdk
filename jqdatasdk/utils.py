@@ -90,10 +90,8 @@ def compile_query(query):
     params = []
     for k in comp.positiontup:
         v = comp_params[k]
-        if six.PY2 and isinstance(v, unicode):
-            v = v.encode(enc)
-        if six.PY3 and isinstance(v, bytes):
-            v = v.decode(enc)
+        if six.PY2 and isinstance(v, six.string_types) and not isinstance(v, six.text_type):
+            v = v.decode("utf8")
         v = escape_item(v, conversions, encoders)
         params.append(v)
     return (comp.string % tuple(params))
