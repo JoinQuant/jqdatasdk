@@ -15,6 +15,7 @@ __all__ = [
     "opt",
     "ssymmetry",
     "bond",
+    "sup",
     "DBTable",
 ]
 
@@ -27,6 +28,7 @@ class DBTable(object):
         self.__table_names = []
         self.db_name = db
 
+    @assert_auth
     def __load_table_names(self):
         self.__table_names = JQDataClient.instance().get_table_orm(db=self.db_name)
         for name in self.__table_names:
@@ -86,3 +88,4 @@ macro = DBTable("macro")
 opt = DBTable("opt")
 ssymmetry = DBTable("ssymmetry")
 bond = DBTable("bond")
+sup = DBTable("sup")

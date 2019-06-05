@@ -24,7 +24,7 @@ def logout():
     JQDataClient.instance().logout()
 
 
-__version__ = "1.6.5"
+__version__ = "1.6.6"
 
 
 __all__ = ["auth", "auth_by_token", "logout", "alpha101", "alpha191", "technical_analysis", "__version__"]

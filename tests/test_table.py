@@ -35,3 +35,17 @@ def test_bond():
                                     '04001,"bond_form":"\\u8bb0\\u8d26\\u5f0f","list_date":1389225600000,"delist_Date'
                                     '":1420416000000,"interest_begin_date":1389139200000,"maturity_date":1420675200000,'
                                     '"interest_date":null,"last_cash_date":1420675200000,"cash_comment":null}')
+
+
+def test_sup():
+    df = sup.run_query(query(sup.STK_FINANCE_SUPPLEMENT).limit(10))
+    assert len(df) == 10
+    assert df.iloc[0].to_json() ==  (
+                                '{"id":1,"company_id":300000062,"company_name":"\\u5e7f\\u4e1c\\u5fb7\\u7f8e\\u7cbe'
+                                '\\u7ec6\\u5316\\u5de5\\u96c6\\u56e2\\u80a1\\u4efd\\u6709\\u9650\\u516c\\u53f8",'
+                                '"code":"002054.XSHE","a_code":"002054","b_code":null,"h_code":null,'
+                                '"pub_date":1151020800000,"start_date":1041379200000,"end_date":1072828800000,'
+                                '"report_date":1072828800000,"report_type":0,"source_id":321001,"source":"\\u62db'
+                                '\\u52df\\u8bf4\\u660e\\u4e66","bill_and_account_receivable":null,'
+                                '"bill_and_account_payable":null,"rd_expenses":null}'
+    )
