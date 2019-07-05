@@ -10,7 +10,11 @@ from os import path
 import msgpack
 import thriftpy2 as thriftpy
 from pandas.compat import pickle_compat as pc
-from thriftpy2.protocol import cybin
+from thriftpy2 import transport, protocol
+if platform.system().lower() != "windows":
+    socket_error = (transport.TTransportException, socket.error, protocol.cybin.ProtocolError)
+else:
+    socket_error = (transport.TTransportException, socket.error)
 from thriftpy2.rpc import make_client
 
 from .api import *
@@ -129,7 +133,7 @@ class JQDataClient(object):
                 self._reset()
                 err = e
                 raise
-            except (thriftpy.transport.TTransportException, socket.error, cybin.ProtocolError) as e:
+            except socket_error as e:
                 self._reset()
                 err = e
                 time.sleep(idx * 2)
