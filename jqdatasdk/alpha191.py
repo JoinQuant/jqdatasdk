@@ -1,5 +1,5 @@
 # coding=utf-8
-from .utils import assert_auth
+from .utils import assert_auth, to_date_str
 from .client import JQDataClient
 import sys
 
@@ -15,6 +15,7 @@ def alpha_001(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -30,6 +31,7 @@ def alpha_002(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -45,6 +47,7 @@ def alpha_003(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -61,6 +64,7 @@ def alpha_004(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -76,6 +80,7 @@ def alpha_005(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -91,6 +96,7 @@ def alpha_006(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -106,6 +112,7 @@ def alpha_007(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -121,6 +128,7 @@ def alpha_008(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -136,6 +144,7 @@ def alpha_009(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -151,6 +160,7 @@ def alpha_010(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -166,6 +176,7 @@ def alpha_011(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -181,6 +192,7 @@ def alpha_012(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -196,6 +208,7 @@ def alpha_013(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -211,6 +224,7 @@ def alpha_014(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -226,6 +240,7 @@ def alpha_015(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -241,6 +256,7 @@ def alpha_016(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -256,6 +272,7 @@ def alpha_017(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -271,6 +288,7 @@ def alpha_018(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -286,6 +304,7 @@ def alpha_019(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -301,6 +320,7 @@ def alpha_020(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -316,6 +336,7 @@ def alpha_021(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -331,6 +352,7 @@ def alpha_022(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -347,6 +369,7 @@ def alpha_023(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -361,6 +384,7 @@ def alpha_024(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -376,6 +400,7 @@ def alpha_025(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -391,6 +416,7 @@ def alpha_026(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -406,6 +432,7 @@ def alpha_027(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -421,6 +448,7 @@ def alpha_028(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -436,6 +464,7 @@ def alpha_029(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -465,6 +494,7 @@ def alpha_031(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -480,6 +510,7 @@ def alpha_032(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -495,6 +526,7 @@ def alpha_033(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -510,6 +542,7 @@ def alpha_034(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -525,6 +558,7 @@ def alpha_035(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -540,6 +574,7 @@ def alpha_036(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -555,6 +590,7 @@ def alpha_037(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -570,6 +606,7 @@ def alpha_038(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -585,6 +622,7 @@ def alpha_039(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -600,6 +638,7 @@ def alpha_040(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -615,6 +654,7 @@ def alpha_041(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -630,6 +670,7 @@ def alpha_042(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -645,6 +686,7 @@ def alpha_043(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -660,6 +702,7 @@ def alpha_044(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -675,6 +718,7 @@ def alpha_045(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -690,6 +734,7 @@ def alpha_046(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -705,6 +750,7 @@ def alpha_047(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -720,6 +766,7 @@ def alpha_048(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -735,6 +782,7 @@ def alpha_049(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -750,6 +798,7 @@ def alpha_050(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -765,6 +814,7 @@ def alpha_051(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -780,6 +830,7 @@ def alpha_052(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -795,6 +846,7 @@ def alpha_053(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -810,6 +862,7 @@ def alpha_054(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -825,6 +878,7 @@ def alpha_055(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -840,6 +894,7 @@ def alpha_056(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -855,6 +910,7 @@ def alpha_057(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -870,6 +926,7 @@ def alpha_058(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -885,6 +942,7 @@ def alpha_059(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -900,6 +958,7 @@ def alpha_060(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -915,6 +974,7 @@ def alpha_061(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -930,6 +990,7 @@ def alpha_062(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -945,6 +1006,7 @@ def alpha_063(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -960,6 +1022,7 @@ def alpha_064(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -975,6 +1038,7 @@ def alpha_065(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -990,6 +1054,7 @@ def alpha_066(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1005,6 +1070,7 @@ def alpha_067(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1020,6 +1086,7 @@ def alpha_068(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1035,6 +1102,7 @@ def alpha_069(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1050,6 +1118,7 @@ def alpha_070(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1065,6 +1134,7 @@ def alpha_071(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1080,6 +1150,7 @@ def alpha_072(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1095,6 +1166,7 @@ def alpha_073(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1110,6 +1182,7 @@ def alpha_074(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1125,6 +1198,7 @@ def alpha_075(code,benchmark='000300.XSHG',end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1140,6 +1214,7 @@ def alpha_076(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1155,6 +1230,7 @@ def alpha_077(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1170,6 +1246,7 @@ def alpha_078(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1185,6 +1262,7 @@ def alpha_079(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1200,6 +1278,7 @@ def alpha_080(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1215,6 +1294,7 @@ def alpha_081(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1230,6 +1310,7 @@ def alpha_082(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1245,6 +1326,7 @@ def alpha_083(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1260,6 +1342,7 @@ def alpha_084(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1275,6 +1358,7 @@ def alpha_085(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1290,6 +1374,7 @@ def alpha_086(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1305,6 +1390,7 @@ def alpha_087(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1320,6 +1406,7 @@ def alpha_088(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1335,6 +1422,7 @@ def alpha_089(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1350,6 +1438,7 @@ def alpha_090(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1365,6 +1454,7 @@ def alpha_091(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1380,6 +1470,7 @@ def alpha_092(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1395,6 +1486,7 @@ def alpha_093(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1410,6 +1502,7 @@ def alpha_094(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1425,6 +1518,7 @@ def alpha_095(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1440,6 +1534,7 @@ def alpha_096(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1455,6 +1550,7 @@ def alpha_097(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1470,6 +1566,7 @@ def alpha_098(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1485,6 +1582,7 @@ def alpha_099(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1500,6 +1598,7 @@ def alpha_100(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1515,6 +1614,7 @@ def alpha_101(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1530,6 +1630,7 @@ def alpha_102(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1545,6 +1646,7 @@ def alpha_103(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1560,6 +1662,7 @@ def alpha_104(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1575,6 +1678,7 @@ def alpha_105(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1590,6 +1694,7 @@ def alpha_106(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1605,6 +1710,7 @@ def alpha_107(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1620,6 +1726,7 @@ def alpha_108(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1635,6 +1742,7 @@ def alpha_109(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1650,6 +1758,7 @@ def alpha_110(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1665,6 +1774,7 @@ def alpha_111(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1680,6 +1790,7 @@ def alpha_112(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1695,6 +1806,7 @@ def alpha_113(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1710,6 +1822,7 @@ def alpha_114(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1725,6 +1838,7 @@ def alpha_115(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1740,6 +1854,7 @@ def alpha_116(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1755,6 +1870,7 @@ def alpha_117(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1770,6 +1886,7 @@ def alpha_118(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1785,6 +1902,7 @@ def alpha_119(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1800,6 +1918,7 @@ def alpha_120(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1815,6 +1934,7 @@ def alpha_121(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1830,6 +1950,7 @@ def alpha_122(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1845,6 +1966,7 @@ def alpha_123(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1860,6 +1982,7 @@ def alpha_124(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1875,6 +1998,7 @@ def alpha_125(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1890,6 +2014,7 @@ def alpha_126(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1905,6 +2030,7 @@ def alpha_127(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1920,6 +2046,7 @@ def alpha_128(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1935,6 +2062,7 @@ def alpha_129(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1950,6 +2078,7 @@ def alpha_130(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1965,6 +2094,7 @@ def alpha_131(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1980,6 +2110,7 @@ def alpha_132(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -1995,6 +2126,7 @@ def alpha_133(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2010,6 +2142,7 @@ def alpha_134(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2025,6 +2158,7 @@ def alpha_135(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2040,6 +2174,7 @@ def alpha_136(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2055,6 +2190,7 @@ def alpha_137(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2070,6 +2206,7 @@ def alpha_138(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2085,6 +2222,7 @@ def alpha_139(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2100,6 +2238,7 @@ def alpha_140(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2115,6 +2254,7 @@ def alpha_141(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2130,6 +2270,7 @@ def alpha_142(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2159,6 +2300,7 @@ def alpha_144(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2174,6 +2316,7 @@ def alpha_145(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2189,6 +2332,7 @@ def alpha_146(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2204,6 +2348,7 @@ def alpha_147(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2219,6 +2364,7 @@ def alpha_148(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2234,6 +2380,7 @@ def alpha_149(code,benchmark='000300.XSHG',end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2249,6 +2396,7 @@ def alpha_150(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2264,6 +2412,7 @@ def alpha_151(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2279,6 +2428,7 @@ def alpha_152(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2294,6 +2444,7 @@ def alpha_153(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2309,6 +2460,7 @@ def alpha_154(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2324,6 +2476,7 @@ def alpha_155(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2339,6 +2492,7 @@ def alpha_156(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2354,6 +2508,7 @@ def alpha_157(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2369,6 +2524,7 @@ def alpha_158(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2384,6 +2540,7 @@ def alpha_159(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2399,6 +2556,7 @@ def alpha_160(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2414,6 +2572,7 @@ def alpha_161(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2429,6 +2588,7 @@ def alpha_162(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2444,6 +2604,7 @@ def alpha_163(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2459,6 +2620,7 @@ def alpha_164(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2488,6 +2650,7 @@ def alpha_166(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2503,6 +2666,7 @@ def alpha_167(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2518,6 +2682,7 @@ def alpha_168(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2533,6 +2698,7 @@ def alpha_169(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2548,6 +2714,7 @@ def alpha_170(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2563,6 +2730,7 @@ def alpha_171(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2578,6 +2746,7 @@ def alpha_172(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2593,6 +2762,7 @@ def alpha_173(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2608,6 +2778,7 @@ def alpha_174(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2623,6 +2794,7 @@ def alpha_175(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2638,6 +2810,7 @@ def alpha_176(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2653,6 +2826,7 @@ def alpha_177(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2668,6 +2842,7 @@ def alpha_178(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2683,6 +2858,7 @@ def alpha_179(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2698,6 +2874,7 @@ def alpha_180(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2714,6 +2891,7 @@ def alpha_181(code,benchmark='000300.XSHG',end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2730,6 +2908,7 @@ def alpha_182(code, benchmark='000300.XSHG', end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2759,6 +2938,7 @@ def alpha_184(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2774,6 +2954,7 @@ def alpha_185(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2789,6 +2970,7 @@ def alpha_186(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2804,6 +2986,7 @@ def alpha_187(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2819,6 +3002,7 @@ def alpha_188(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2833,6 +3017,7 @@ def alpha_189(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2848,6 +3033,7 @@ def alpha_190(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())
 
@@ -2863,5 +3049,6 @@ def alpha_191(code, end_date=None, fq="pre"):
     Outputs:
         因子的值
     """
+    end_date = to_date_str(end_date)
     func_name = sys._getframe().f_code.co_name
     return JQDataClient.instance().get_alpha_191(**locals())

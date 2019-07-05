@@ -484,7 +484,6 @@ def get_current_tick(security):
     :return:
     """
     assert security, "security is required"
-    assert isinstance(security, six.string_types), "security's type must be string"
     security = convert_security(security)
     return JQDataClient.instance().get_current_tick(**locals())
 

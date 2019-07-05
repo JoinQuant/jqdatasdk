@@ -1,16 +1,19 @@
 # coding=utf-8
-import zlib
-from .utils import *
-from .api import *
-import thriftpy2 as thriftpy
-from thriftpy2.rpc import make_client
-import msgpack
-import time
-from os import path
 import platform
+import socket
 import sys
 import threading
-import socket
+import time
+import zlib
+from os import path
+
+import msgpack
+import thriftpy2 as thriftpy
+from pandas.compat import pickle_compat as pc
+from thriftpy2.protocol import cybin
+from thriftpy2.rpc import make_client
+
+from .api import *
 
 thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
 thrift_path = path.abspath(thrift_path)
@@ -72,6 +75,7 @@ class JQDataClient(object):
                 if self.not_auth:
                     print("auth success %s" % response.msg)
                     self.not_auth = False
+        return not self.not_auth
 
     def _reset(self):
         if self.client:
@@ -101,27 +105,23 @@ class JQDataClient(object):
         request = thrift.St_Query_Req()
         request.method_name = method
         request.params = msgpack.packb(kwargs)
-        import tempfile
-
         err, result = None, None
         for idx in range(self.retry_cnt):
-            d = tempfile.gettempdir()
-            import os, random, string
-            name2 = ''.join(random.sample(string.ascii_letters + string.digits, 10))
-            file = open(os.path.join(d, name2), "w+b")
             try:
                 self.ensure_auth()
+                file = six.BytesIO()
                 response = self.client.query(request)
                 if response.status:
                     buffer = response.msg
                     if six.PY3:
                         if type(buffer) is str:
                             buffer = bytes(buffer, "ascii")
-                    if self.compress:
-                        buffer = zlib.decompress(buffer)
+                    buffer = zlib.decompress(buffer)
                     file.write(buffer)
-                    file.seek(0)
-                    result = pd.read_pickle(file.name)
+                    pickle_encoding = None
+                    if six.PY3:
+                        pickle_encoding = "latin1"
+                    result = pc.load(file, encoding=pickle_encoding)
                 else:
                     err = self.get_error(response)
                 break
@@ -129,7 +129,7 @@ class JQDataClient(object):
                 self._reset()
                 err = e
                 raise
-            except (thriftpy.transport.TTransportException, socket.error) as e:
+            except (thriftpy.transport.TTransportException, socket.error, cybin.ProtocolError) as e:
                 self._reset()
                 err = e
                 time.sleep(idx * 2)
@@ -139,9 +139,7 @@ class JQDataClient(object):
                 err = e
                 break
             finally:
-                if os.path.exists(file.name):
-                    file.close()
-                    os.unlink(file.name)
+                file.close()
 
         if result is None:
             if isinstance(err, Exception):
@@ -151,5 +149,3 @@ class JQDataClient(object):
 
     def __getattr__(self, method):
         return lambda **kwargs: self(method, **kwargs)
-
-
