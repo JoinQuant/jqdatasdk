@@ -66,7 +66,7 @@ class JQDataClient(object):
         if not self.inited:
             if not self.username and not self.token:
                 raise RuntimeError("not inited")
-            self.client = make_client(thrift.JqDataService, self.host, self.port)
+            self.client = make_client(thrift.JqDataService, self.host, self.port, timeout=300000)
             self.inited = True
             if self.username:
                 response = self.client.auth(self.username, self.password, self.compress)
