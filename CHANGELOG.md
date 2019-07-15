@@ -1,3 +1,6 @@
+# 2019-07-15
+- fix bug: socket.timeout
+
 # 2019-07-05
 - try catch兼容Windows平台
 
