@@ -206,6 +206,18 @@ def get_concepts():
 
 
 @assert_auth
+def get_concept(security_or_securities, date):
+    """
+    获取股票所属概念板块。
+
+    :param security 标的代码或标的列表
+    :param date 要查询的提起, 日期字符串/date对象/datetime对象, 注意传入datetime对象时忽略日内时间
+    :return:返回dict, key为标的代码, value为概念板块信息
+    """
+    return JQDataClient.instance().get_concept(**locals())
+
+
+@assert_auth
 def get_all_securities(types=[], date=None):
     """
     获取平台支持的所有股票、基金、指数、期货信息
