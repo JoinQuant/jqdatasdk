@@ -1,3 +1,6 @@
+# 2019-07-24
+- 增加新接口get_concept
+
 # 2019-07-15
 - fix bug: socket.timeout
 
