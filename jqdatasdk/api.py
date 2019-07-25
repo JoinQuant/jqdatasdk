@@ -73,9 +73,9 @@ def get_fundamentals(query_object, date=None, statDate=None):
     from .finance_service import get_fundamentals_sql
     if date is None and statDate is None:
         date = datetime.date.today()
-        from .calendar_service import CalendarService
-        trade_days = CalendarService.get_all_trade_days()
-        date = list(filter(lambda item: item < date, trade_days))[-1]
+        #from .calendar_service import CalendarService
+        #trade_days = CalendarService.get_all_trade_days()
+        #date = list(filter(lambda item: item < date, trade_days))[-1]
     elif date:
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         date = min(to_date(date), yesterday)

@@ -49,8 +49,8 @@ def get_fundamentals_sql(query_object, date=None, statDate=None):
     tables = [get_table_class(name) for name in tablenames]
 
     by_year = False
-    if date:
-        date = CalendarService.get_previous_trade_date(date)
+    #if date:
+    #    date = CalendarService.get_previous_trade_date(date)
     only_year = bool({"bank_indicator_acc", "security_indicator_acc",
                         "insurance_indicator_acc"} & set(tablenames))
 
