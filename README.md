@@ -112,6 +112,10 @@ jqdatasdk.get_price("000001.XSHE", start_date="2017-01-01", end_date="2017-12-31
 
   查询概念列表
 
+- `get_concept`
+
+  获取股票所属概念板块
+
 - `get_all_securities`
 
   查询股票、基金、指数、期货列表
