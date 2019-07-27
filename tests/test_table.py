@@ -4,7 +4,6 @@ from jqdatasdk import *
 with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
     exec (f.read())
 
-
 def test_ssymmetry():
     df = ssymmetry.run_query(query(ssymmetry.ecommerce_data))
     assert len(df) == 5000

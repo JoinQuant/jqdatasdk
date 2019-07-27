@@ -1,5 +1,6 @@
 # coding: utf-8
 import time
+import re
 import datetime
 import logging
 import pytest
@@ -560,7 +561,7 @@ def test_ta():
     assert isinstance(data, tuple)
     assert isinstance(data[0], dict) and sorted([i for i in data[0].keys()]) == security_list
 
-    assert technical_analysis.CCI("000001.XSHE", datetime.date(2018, 10, 8)) == {'000001.XSHE': 54.263565891472524}
+    assert technical_analysis.CCI("000001.XSHE", datetime.date(2018, 10, 8)) == {'000001.XSHE': 54.21853388658356}
 
 
 def test_macro():
@@ -610,21 +611,6 @@ def test_get_locked_shares():
         get_locked_shares(hs_300, '2017-01-10', '2018-5-10', 200)
     with pytest.raises(Exception, message="get_locked_shares 必须指定 end_date 或 forward_count 之一"):
         get_locked_shares(hs_300, '2017-01-10', None, None)
-
-
-def test_baidu_factor():
-    import datetime
-    dates = datetime.date(2017, 11, 20)
-    assert len(get_baidu_factor("csi800", day="2017-11-20", stock="000552", province=620000)) == 1
-    assert len(get_baidu_factor("csi800", day="2017-11-20", stock=["000552", "000001"], province=620000)) == 2
-    assert len(get_baidu_factor("csi800", day="2017-11-20", stock="000552", province="甘肃")) == 1
-    assert get_baidu_factor("csi800", day="2017-11-20", stock="000552")["pc_count"][0] == 104.0
-    assert get_baidu_factor("csi800", day="2017-11-20", stock="000552.XSHE")["pc_count"][0] == 104.0
-    assert len(get_baidu_factor("csi800", day="2017-11-20", stock=["000552.XSHE", "000001.XSHE"])) == 2
-    assert len(get_baidu_factor("csi800", day="2017-11-20")) == 800
-    assert len(get_baidu_factor("csi800", day=dates)) == 800
-    with pytest.raises(Exception, message="目前只支持中证800的搜索量，代码为csi800"):
-        get_baidu_factor(day="2017-11-20")
 
 
 def test_finance_tables():
@@ -709,18 +695,23 @@ def test_get_fund_info():
 
 
 def test_get_current_tick():
-    assert type(get_current_tick('000002.XSHE')) == pd.DataFrame
-    assert len(get_current_tick('000001.XSHE')) == 1
-    assert get_current_tick('600535.XSHG').columns.tolist() == [
-        'datetime', 'current', 'high', 'low', 'volume', 'money',
-        'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p',
-        'a4_v', 'a5_p', 'a5_v', 'b1_p', 'b1_v', 'b2_p', 'b2_v',
-        'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v'
-    ]
-    assert get_current_tick(get_dominant_future('AP')).columns.tolist() == [
-        'datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
-        'a1_p', 'a1_v', 'b1_p', 'b1_v'
-    ]
+    today = datetime.date.today()
+    is_tradeday = (today in get_trade_days(start_date=today))
+    if is_tradeday:
+        assert type(get_current_tick('000002.XSHE')) == pd.DataFrame
+        assert len(get_current_tick('000001.XSHE')) == 1
+        assert get_current_tick('600535.XSHG').columns.tolist() == [
+            'datetime', 'current', 'high', 'low', 'volume', 'money',
+            'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p',
+            'a4_v', 'a5_p', 'a5_v', 'b1_p', 'b1_v', 'b2_p', 'b2_v',
+            'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v'
+        ]
+        assert get_current_tick(get_dominant_future('AP')).columns.tolist() == [
+            'datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+            'a1_p', 'a1_v', 'b1_p', 'b1_v'
+        ]
+    else:
+        assert get_current_tick('000002.XSHE') == None
 
 
 def test_get_price_engine():
@@ -772,9 +763,15 @@ def test_get_ticks_engine():
 
 
 def test_get_current_tick_engine():
+    today = datetime.date.today()
+    is_tradeday = (today in get_trade_days(start_date=today))
     df = get_current_tick_engine(['000002.XSHE', '600358.XSHG'])
-    assert type(df) == dict
-    assert str(type(df["000002.XSHE"])) == "<class 'jqdata.models.tick.Tick'>"
+    if is_tradeday:
+        assert type(df) == dict
+        assert str(type(df["000002.XSHE"])) == "<class 'jqdata.models.tick.Tick'>"
+    else:
+        assert df['000002.XSHE'] == None
+        assert df['600358.XSHG'] == None
 
 
 def test_get_daily_info_engine():
@@ -804,7 +801,7 @@ def test_get_query_count():
         print("after query 1 row, %s" % get_query_count("spare"))
     else:
         assert type(get_query_count("total")) == float
-        assert type(get_query_count("spare")) == float
+        assert type(get_query_count("spare")) == int
 
 
 def test_opt_tables():
@@ -832,14 +829,14 @@ def test_get_factor_effect():
                                datetime.date(2015, 6, 30): 0.5978724949894281,
                                datetime.date(2015, 9, 30): 0.1569389030772208,
                                datetime.date(2015, 12, 31): 0.5417823806275872,
-                               datetime.date(2016, 3, 31): 0.2435673085124841,
-                               datetime.date(2016, 6, 30): 0.24821184261078844,
-                               datetime.date(2016, 9, 30): 0.3200094466839587,
-                               datetime.date(2016, 12, 31): 0.4179656688047624,
-                               datetime.date(2017, 3, 31): 0.414114425859037,
-                               datetime.date(2017, 6, 30): 0.2957341105172204,
-                               datetime.date(2017, 9, 30): 0.3424647387527804,
-                               datetime.date(2017, 12, 31): 0.21692615900766765
+                               datetime.date(2016, 3, 31): 0.24356730851248387,
+                               datetime.date(2016, 6, 30): 0.2482118426107882,
+                               datetime.date(2016, 9, 30): 0.3200094466839585,
+                               datetime.date(2016, 12, 31): 0.41796566880476216,
+                               datetime.date(2017, 3, 31): 0.4141144258590368,
+                               datetime.date(2017, 6, 30): 0.2957341105172202,
+                               datetime.date(2017, 9, 30): 0.34246473875278016,
+                               datetime.date(2017, 12, 31): 0.2169261590076672
                              }
 
 
@@ -859,12 +856,7 @@ def test_get_data():
 
 def test_get_all_factors():
     df = get_all_factors()
-    assert df.iloc[3].to_string() == (
-        u"factor                EBITDA\nfactor_intro       "
-        u"息税折旧摊销前利润\n"
-        u"category              basics\ncategory_intro    "
-        u"基础科目及衍生类因子"
-    )
+    assert re.split(r'\s+', df.iloc[3].to_string()) == [u'factor', u'growth', u'factor_intro', u'\u6210\u957f\u56e0\u5b50', u'category', u'barra', u'category_intro', u'\u98ce\u9669\u56e0\u5b50', u'-', u'\u98ce\u683c\u56e0\u5b50']
 
 
 def pass_test_timeout_error():
