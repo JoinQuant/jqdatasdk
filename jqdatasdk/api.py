@@ -320,7 +320,7 @@ def get_margincash_stocks(dt=None):
 
 
 @assert_auth
-def get_marginsec_stocks(dt=None):
+def get_marginsec_stocks(date=None):
     """
     返回上交所、深交所最近一次披露的的可融券标的列表的list
     :return:list
