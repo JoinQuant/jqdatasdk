@@ -311,7 +311,7 @@ def get_mtss(security_list, start_date=None, end_date=None, fields=None, count=N
 
 
 @assert_auth
-def get_margincash_stocks(dt=None):
+def get_margincash_stocks(date=None):
     """
     返回上交所、深交所最近一次披露的的可融资标的列表的list
     :return: list
