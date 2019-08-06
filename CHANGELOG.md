@@ -1,3 +1,9 @@
+# 2019-08-06
+- get_ticks默认过滤无成交tick
+- get_current_tick支持多个标的
+- 依赖包pandas版本限制
+- crontab 不打印广告信息
+
 # 2019-07-27
 - 更新测试用例
 - 将API与官网API保持一致

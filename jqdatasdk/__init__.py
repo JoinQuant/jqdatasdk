@@ -24,10 +24,16 @@ def logout():
     JQDataClient.instance().logout()
 
 
+def is_auth():
+    if not JQDataClient.instance():
+        return False
+    return not JQDataClient.instance().not_auth
+
+
 __version__ = "1.7.0"
 
 
-__all__ = ["auth", "auth_by_token", "logout", "alpha101", "alpha191", "technical_analysis", "__version__"]
+__all__ = ["auth", "auth_by_token", "logout", "is_auth", "alpha101", "alpha191", "technical_analysis", "__version__"]
 __all__.extend(api.__all__)
 __all__.extend(finance_service.__all__)
 __all__.extend(table.__all__)

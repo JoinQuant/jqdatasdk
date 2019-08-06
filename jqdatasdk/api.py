@@ -354,7 +354,7 @@ def get_dominant_future(underlying_symbol, date=None):
 
 
 @assert_auth
-def get_ticks(security, start_dt=None, end_dt=None, count=None, fields=None):
+def get_ticks(security, start_dt=None, end_dt=None, count=None, fields=None, skip=True):
     """
     获取tick数据
     :param security: 股票or期货标的代码,仅限单只
@@ -364,6 +364,7 @@ def get_ticks(security, start_dt=None, end_dt=None, count=None, fields=None):
     :param fields: 期货：[time current high low volume money position a1_v a1_p b1_v b1_p]
                     股票：[time current high low volume money a1_v-a5_v a1_p-a5_p b1_v-b5_v b1_p-b5_p]
                     为None时，默认返回对应类型的所有字段
+    :param skip: 是否过滤掉无成交的tick
     :return:
     """
     start_dt = to_date_str(start_dt)

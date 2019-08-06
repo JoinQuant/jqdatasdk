@@ -139,11 +139,11 @@ def test_get_extras4():
     assert len(extras['510050.XSHG']) == 10
     assert str(extras.index.tolist()[-1]) == '2014-12-31 00:00:00'
 
-    with pytest.raises(Exception, message="start_date 参数与 count 参数只能二选一"):
+    with pytest.raises(Exception, match="start_date 参数与 count 参数只能二选一"):
         get_extras('is_st', ['000001.XSHE', '000018.XSHE'], '2015-02-02', '2013-12-03', count=10)
-    with pytest.raises(Exception, message="start_date 参数与 count 参数只能二选一"):
+    with pytest.raises(Exception, match="start_date 参数与 count 参数只能二选一"):
         get_extras('acc_net_value', 'IC1509.CCFX', start_date='2015-01-01', count=10)
-    with pytest.raises(Exception, message="start_date 参数与 count 参数只能二选一"):
+    with pytest.raises(Exception, match="start_date 参数与 count 参数只能二选一"):
         get_extras('acc_net_value', 'IC1509.CCFX', start_date='2015-01-01', df=False, count=10)
 
 
@@ -591,9 +591,9 @@ def test_billboard_list():
     assert len(df) > 500
     df = get_billboard_list(None, None, '2017-5-10', 100)
     assert len(df) > 30000
-    with pytest.raises(Exception, message="get_billboard_list 不能同时指定 start_date 和 count 两个参数"):
+    with pytest.raises(Exception, match="get_billboard_list 不能同时指定 start_date 和 count 两个参数"):
         get_billboard_list(hs_300, '2016-01-10', '2017-5-10', 100)
-    with pytest.raises(Exception, message="get_billboard_list 必须指定 start_date 或 count 之一"):
+    with pytest.raises(Exception, match="get_billboard_list 必须指定 start_date 或 count 之一"):
         get_billboard_list(hs_300, None, '2017-5-10', None)
 
 
@@ -607,9 +607,9 @@ def test_get_locked_shares():
     df2 = get_locked_shares(hs_300, start_date, None, 500)
     assert len(df1) == len(df2)
     assert len(df1) > 0
-    with pytest.raises(Exception, message="get_locked_shares 不能同时指定 end_date 和 forward_count 两个参数"):
+    with pytest.raises(Exception, match="get_locked_shares 不能同时指定 end_date 和 forward_count 两个参数"):
         get_locked_shares(hs_300, '2017-01-10', '2018-5-10', 200)
-    with pytest.raises(Exception, message="get_locked_shares 必须指定 end_date 或 forward_count 之一"):
+    with pytest.raises(Exception, match="get_locked_shares 必须指定 end_date 或 forward_count 之一"):
         get_locked_shares(hs_300, '2017-01-10', None, None)
 
 
@@ -622,7 +622,7 @@ def test_finance_tables():
     assert len(finance.__dict__) > 30
     assert finance.STK_LIST != None
     assert finance.STK_MONEY_FLOW != None
-    with pytest.raises(Exception, message='finance 没有该表'):
+    with pytest.raises(Exception, match="no table 'STK'"):
         finance.STK
     df = finance.run_query(query(finance.STK_STATUS_CHANGE))
     stk_status_change_columns = ["id", "company_id", "code", "name",
@@ -655,7 +655,7 @@ def test_get_factor_values():
                             end_date="2017-03-03")["Skewness60"]
     assert dct.to_csv() == ",000001.XSHE,000002.XSHE\n2017-03-01,-0.033712,0.017125\n"\
                            "2017-03-02,-0.032092,0.014074\n2017-03-03,0.024989,0.031561\n"
-    with pytest.raises(Exception, message="Invalid factors asdf"):
+    with pytest.raises(Exception, match="Invalid factors"):
         get_factor_values("000001.XSHE", "asdf", end_date="2017-03-04", count=10)
     with pytest.raises(Exception):
         get_factor_values("000001.XSHE", "asdf", start_date="2017-01-01", end_date="2017-03-04", count=10)
@@ -712,6 +712,15 @@ def test_get_current_tick():
         ]
     else:
         assert get_current_tick('000002.XSHE') == None
+    trade_codes = get_future_contracts("IF")
+    print(trade_codes)
+    df = get_current_tick(trade_codes)
+    assert len(df) == len(trade_codes)
+    assert set(df.index.tolist()) == set(trade_codes)
+    assert get_current_tick(["000001.XSHE", "000006.XSHE"]).index.tolist() == ["000001.XSHE", "000006.XSHE"]
+    assert get_current_tick("000001.XSHE").index.tolist() == [0]
+    with pytest.raises(Exception, match="not support future"):
+        get_current_tick(trade_codes + ["AU8888.XSGE"])
 
 
 def test_get_price_engine():
