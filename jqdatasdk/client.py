@@ -61,7 +61,6 @@ class JQDataClient(object):
     def set_auth_params(cls, **params):
         cls._auth_params = params
         cls.instance().ensure_auth()
-        return not cls.instance().not_auth
 
     def ensure_auth(self):
         if not self.inited:

@@ -30,7 +30,7 @@ def is_auth():
     return not JQDataClient.instance().not_auth
 
 
-__version__ = "1.7.0"
+__version__ = "1.7.1"
 
 
 __all__ = ["auth", "auth_by_token", "logout", "is_auth", "alpha101", "alpha191", "technical_analysis", "__version__"]
