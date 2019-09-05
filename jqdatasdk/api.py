@@ -606,6 +606,8 @@ def get_factor_effect(security, start_date, end_date, period, factor, group_num=
     assert period[-1] in ["D", "W", "M"], "period must be end with one of (\"D\", \"W\", \"M\")"
     return JQDataClient.instance().get_factor_effect(**locals())
 
+def get_test_time(times):
+    return JQDataClient.instance().get_test_time(**locals())
 
 @assert_auth
 def get_data(api_name, **kwargs):
