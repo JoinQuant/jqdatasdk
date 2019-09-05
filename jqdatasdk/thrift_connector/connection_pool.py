@@ -450,10 +450,10 @@ class ClientPool(BaseClientPool):
         self.port = port
         self.clear()
 
-    def fill_connection_pool(self):
-        raise RuntimeError(
-            '{!r} class not support to fill connection pool'.format(
-                self.__class__.__name__))
+    # def fill_connection_pool(self):
+    #     raise RuntimeError(
+    #         '{!r} class not support to fill connection pool'.format(
+    #             self.__class__.__name__))
 
     def yield_server(self):
         return self.host, self.port
@@ -488,28 +488,38 @@ class HeartbeatClientPool(ClientPool):
         return self._get_connection()
 
     def maintain_connections(self):
-        sleep_time = max(1, self.timeout-5)
-
         while True:
-            time.sleep(sleep_time)
-            i = 0
-            print("thread start " + str(sleep_time))
-
+            time.sleep(self.check_interval)
+            self.fill_connection_pool()
             pool_size = self.pool_size()
             for _ in range(pool_size):
-                i += 1
-                
                 conn = self.get_client_from_pool()
                 if conn is None:
+                    self.fill_connection_pool()
                     break
 
-                if (time.time()-conn.latest_use_time < self.check_interval or
-                        conn.test_connection()):
-                    print("back " + str(i))
-                    self.put_back_connection(conn)
-                else:
-                    print("close " + str(i))
+                if not conn.test_connection():
                     conn.close()
+                    conn = self.produce_client()
+                self.put_back_connection(conn)
+
+    # def maintain_connections(self):
+    #     sleep_time = max(1, self.timeout-5)
+
+    #     while True:
+    #         time.sleep(sleep_time)
+
+    #         pool_size = self.pool_size()
+    #         for _ in range(pool_size):
+    #             conn = self.get_client_from_pool()
+    #             if conn is None:
+    #                 break
+
+    #             if (time.time()-conn.latest_use_time < self.check_interval or
+    #                     conn.test_connection()):
+    #                 self.put_back_connection(conn)
+    #             else:
+    #                 conn.close()
 
 
 class MultiServerClientBase(BaseClientPool):
