@@ -60,6 +60,12 @@ class JQDataClient(object):
         self.pool = ClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=10)
         self.fill_connection_pool()
 
+    def fill_connection_pool(self):
+        rest_size = self.pool.max_conn - self.pool.pool_size()
+        for _ in range(rest_size):
+            conn = self.pool.produce_client()
+            self.pool.put_back_connection(conn)
+
     @classmethod
     def set_auth_params(cls, **params):
         cls._auth_params = params
