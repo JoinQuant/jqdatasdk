@@ -31,7 +31,7 @@ setup(
     name="jqdatasdk",
     version=version,
     description="jqdatasdk<easy utility for getting financial market data of China>",
-    packages=["jqdatasdk"],
+    packages=["jqdatasdk", "jqdatasdk.thrift_connector"],
     author="JoinQuant",
     author_email="xlx@joinquant.com",
     maintainer="tech_data",
