@@ -15,7 +15,8 @@ if platform.system().lower() != "windows":
     socket_error = (transport.TTransportException, socket.error, protocol.cybin.ProtocolError)
 else:
     socket_error = (transport.TTransportException, socket.error)
-from thriftpy2.rpc import make_client
+# from thriftpy2.rpc import make_client
+from thrift_connector import ClientPool, ThriftPyClient
 
 from .api import *
 
@@ -56,6 +57,8 @@ class JQDataClient(object):
         self.retry_cnt = retry_cnt
         self.not_auth = True
         self.compress = True
+        self.pool = ClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=10)
+        self.fill_connection_pool()
 
     @classmethod
     def set_auth_params(cls, **params):
@@ -66,7 +69,9 @@ class JQDataClient(object):
         if not self.inited:
             if not self.username and not self.token:
                 raise RuntimeError("not inited")
-            self.client = make_client(thrift.JqDataService, self.host, self.port, timeout=300000)
+            # self.client = make_client(thrift.JqDataService, self.host, self.port, timeout=300000)
+            self.client = self.pool.get_client()
+            self.fill_connection_pool()
             self.inited = True
             if self.username:
                 response = self.client.auth(self.username, self.password, self.compress)
@@ -138,7 +143,7 @@ class JQDataClient(object):
             except socket_error as e:
                 self._reset()
                 err = e
-                time.sleep(idx * 2)
+                # time.sleep(idx * 2)
                 continue
             except Exception as e:
                 self._reset()
