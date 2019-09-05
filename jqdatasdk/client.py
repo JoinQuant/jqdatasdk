@@ -16,7 +16,7 @@ if platform.system().lower() != "windows":
 else:
     socket_error = (transport.TTransportException, socket.error)
 # from thriftpy2.rpc import make_client
-from thrift_connector import ClientPool, ThriftPyClient
+from .thrift_connector import ClientPool, ThriftPyClient
 
 from .api import *
 

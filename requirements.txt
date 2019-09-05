@@ -5,4 +5,3 @@ SQLAlchemy>=1.2.8
 thriftpy2>=0.3.9
 pymysql>=0.7.6
 msgpack>=0.4.7
-thrift_connector
