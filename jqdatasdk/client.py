@@ -57,7 +57,7 @@ class JQDataClient(object):
         self.retry_cnt = retry_cnt
         self.not_auth = True
         self.compress = True
-        self.pool = ClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=10)
+        self.pool = ClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=10, timeout=180)
         self.fill_connection_pool()
 
     def fill_connection_pool(self):
