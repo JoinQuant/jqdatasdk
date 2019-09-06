@@ -3,6 +3,10 @@ from functools import wraps
 from .utils import *
 from .client import JQDataClient
 
+try:
+    from functools import lru_cache
+except ImportError:
+    from fastcache import lru_cache
 
 @assert_auth
 def get_price(security, start_date=None, end_date=None, frequency='daily',
@@ -61,6 +65,7 @@ def get_extras(info, security_list, start_date=None, end_date=None, df=True, cou
 
 
 @assert_auth
+@lru_cache(maxsize=3)
 def get_fundamentals(query_object, date=None, statDate=None):
     """
     查询财务数据, 详细的数据字段描述在 https://www.joinquant.com/data/dict/fundamentals 中查看
@@ -84,6 +89,7 @@ def get_fundamentals(query_object, date=None, statDate=None):
 
 
 @assert_auth
+@lru_cache(maxsize=3)
 def get_fundamentals_continuously(query_object, end_date=None, count=None):
     """
     查询财务数据，详细的数据字段描述在 https://www.joinquant.com/data/dict/fundamentals 中查看

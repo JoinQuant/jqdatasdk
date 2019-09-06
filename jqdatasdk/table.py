@@ -8,6 +8,10 @@ import sys
 from .client import JQDataClient
 from sqlalchemy.types import *
 from sqlalchemy.ext.declarative import declarative_base
+# try:
+#     from functools import lru_cache
+# except ImportError:
+#     from fastcache import lru_cache
 
 __all__ = [
     "finance",
@@ -35,6 +39,7 @@ class DBTable(object):
             setattr(self, name, None)
 
     @assert_auth
+    # @lru_cache(maxsize=3)
     def run_query(self, query_object):
         from .client import JQDataClient
         if self.__disable_join:
