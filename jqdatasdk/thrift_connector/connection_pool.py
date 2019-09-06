@@ -293,8 +293,11 @@ class BaseClientPool(object):
         """
         rest_size = self.max_conn - self.pool_size()
         for _ in range(rest_size):
-            conn = self.produce_client()
-            self.put_back_connection(conn)
+            try:
+                conn = self.produce_client()
+                self.put_back_connection(conn)
+            except Exception as e:
+                pass
 
     def pool_size(self):
         return len(self.connections)
@@ -490,18 +493,20 @@ class HeartbeatClientPool(ClientPool):
     def maintain_connections(self):
         while True:
             time.sleep(self.check_interval)
-            self.fill_connection_pool()
-            pool_size = self.pool_size()
-            for _ in range(pool_size):
-                conn = self.get_client_from_pool()
-                if conn is None:
-                    self.fill_connection_pool()
-                    break
-
-                if not conn.test_connection():
-                    conn.close()
-                    conn = self.produce_client()
-                self.put_back_connection(conn)
+            try:
+                self.fill_connection_pool()
+                pool_size = self.pool_size()
+                for _ in range(pool_size):
+                    conn = self.get_client_from_pool()
+                    if conn is None:
+                        self.fill_connection_pool()
+                        break
+                    if not conn.test_connection():
+                        conn.close()
+                        conn = self.produce_client()
+                    self.put_back_connection(conn)
+            except Exception as e:
+                pass
 
     # def maintain_connections(self):
     #     sleep_time = max(1, self.timeout-5)
