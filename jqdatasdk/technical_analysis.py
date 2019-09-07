@@ -2567,6 +2567,7 @@ def LB(security_list, check_date, N=5):
 
 
 __all__ = [k for k, v in sorted(globals().items()) if k == k.upper()]
+__all__.extend(['Bollinger_Bands'])
 
 
 

@@ -58,7 +58,7 @@ class JQDataClient(object):
         self.not_auth = True
         self.compress = True
         self.pool = HeartbeatClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=10, timeout=180)
-        self.pool.fill_connection_pool()
+        # self.pool.fill_connection_pool()
 
     @classmethod
     def set_auth_params(cls, **params):
