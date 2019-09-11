@@ -492,7 +492,6 @@ class HeartbeatClientPool(ClientPool):
 
     def maintain_connections(self):
         while True:
-            time.sleep(self.check_interval)
             try:
                 self.fill_connection_pool()
                 pool_size = self.pool_size()
@@ -507,6 +506,7 @@ class HeartbeatClientPool(ClientPool):
                     self.put_back_connection(conn)
             except Exception as e:
                 pass
+            time.sleep(self.check_interval)
 
     # def maintain_connections(self):
     #     sleep_time = max(1, self.timeout-5)
