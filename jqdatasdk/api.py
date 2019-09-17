@@ -3,11 +3,6 @@ from functools import wraps
 from .utils import *
 from .client import JQDataClient
 
-try:
-    from functools import lru_cache
-except ImportError:
-    from fastcache import lru_cache
-
 @assert_auth
 def get_price(security, start_date=None, end_date=None, frequency='daily',
               fields=None, skip_paused=False, fq='pre', count=None):
@@ -65,7 +60,7 @@ def get_extras(info, security_list, start_date=None, end_date=None, df=True, cou
 
 
 @assert_auth
-@lru_cache(maxsize=3)
+@hashable_lru(maxsize=3)
 def get_fundamentals(query_object, date=None, statDate=None):
     """
     查询财务数据, 详细的数据字段描述在 https://www.joinquant.com/data/dict/fundamentals 中查看
@@ -89,7 +84,7 @@ def get_fundamentals(query_object, date=None, statDate=None):
 
 
 @assert_auth
-@lru_cache(maxsize=3)
+@hashable_lru(maxsize=3)
 def get_fundamentals_continuously(query_object, end_date=None, count=None):
     """
     查询财务数据，详细的数据字段描述在 https://www.joinquant.com/data/dict/fundamentals 中查看
@@ -116,6 +111,7 @@ def get_fundamentals_continuously(query_object, end_date=None, count=None):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_billboard_list(stock_list=None, start_date=None, end_date=None, count=None):
     """
     获取指定日期区间内的龙虎榜数据
@@ -150,6 +146,7 @@ def get_locked_shares(stock_list=None, start_date=None, end_date=None, forward_c
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_index_stocks(index_symbol, date=today()):
     """
     获取一个指数给定日期在平台可交易的成分股列表，请点击 https://www.joinquant.com/indexData 查看指数信息
@@ -164,6 +161,7 @@ def get_index_stocks(index_symbol, date=today()):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_industry_stocks(industry_code, date=today()):
     """
     获取在给定日期一个行业的所有股票，行业分类列表见 https://www.joinquant.com/data/dict/plateData
@@ -178,6 +176,7 @@ def get_industry_stocks(industry_code, date=today()):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_industries(name=None):
     """
     按照行业分类获取行业列表
@@ -189,6 +188,7 @@ def get_industries(name=None):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_concept_stocks(concept_code, date=today()):
     """
     获取在给定日期一个概念板块的所有股票，概念板块分类列表见 https://www.joinquant.com/data/dict/plateData
@@ -203,6 +203,7 @@ def get_concept_stocks(concept_code, date=today()):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_concepts():
     """
     获取概念板块
@@ -212,6 +213,7 @@ def get_concepts():
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_concept(security_or_securities, date):
     """
     获取股票所属概念板块。
@@ -224,6 +226,7 @@ def get_concept(security_or_securities, date):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_all_securities(types=[], date=None):
     """
     获取平台支持的所有股票、基金、指数、期货信息
@@ -237,6 +240,7 @@ def get_all_securities(types=[], date=None):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_security_info(code):
     """
     获取股票/基金/指数的信息
@@ -251,6 +255,7 @@ def get_security_info(code):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_all_trade_days():
     """
     获取所有交易日
@@ -264,6 +269,7 @@ def get_all_trade_days():
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_trade_days(start_date=None, end_date=None, count=None):
     """
     获取指定日期范围内的所有交易日
@@ -279,6 +285,7 @@ def get_trade_days(start_date=None, end_date=None, count=None):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_money_flow(security_list, start_date=None, end_date=None, fields=None, count=None):
     """
     获取一只或者多只股票在一个时间段内的资金流向数据
@@ -298,6 +305,7 @@ def get_money_flow(security_list, start_date=None, end_date=None, fields=None, c
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_mtss(security_list, start_date=None, end_date=None, fields=None, count=None):
     """
     获取一只或者多只股票在一个时间段内的融资融券信息
@@ -317,6 +325,7 @@ def get_mtss(security_list, start_date=None, end_date=None, fields=None, count=N
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_margincash_stocks(date=None):
     """
     返回上交所、深交所最近一次披露的的可融资标的列表的list
@@ -326,6 +335,7 @@ def get_margincash_stocks(date=None):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_marginsec_stocks(date=None):
     """
     返回上交所、深交所最近一次披露的的可融券标的列表的list
@@ -414,6 +424,7 @@ def normalize_code(code):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_factor_values(securities, factors, start_date=None, end_date=None, count=None):
     """
     获取因子数据
@@ -433,6 +444,7 @@ def get_factor_values(securities, factors, start_date=None, end_date=None, count
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_index_weights(index_id, date=None):
     """
     获取指数成分股权重
@@ -447,6 +459,7 @@ def get_index_weights(index_id, date=None):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_industry(security, date=None):
     """
     查询股票所属行业
@@ -517,6 +530,7 @@ def get_current_tick_engine(security):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_fund_info(security, date=None):
     """
     基金基础信息数据接口
@@ -593,6 +607,7 @@ def get_last_price(codes):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_factor_effect(security, start_date, end_date, period, factor, group_num=5):
     """获取因子分层回测效果
     以因子值升序分组股票, 以period为周期，获取每组股票收益情况
@@ -627,6 +642,7 @@ def get_data(api_name, **kwargs):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_all_factors():
     return JQDataClient.instance().get_all_factors(**locals())
 
