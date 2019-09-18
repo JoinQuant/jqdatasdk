@@ -19,6 +19,7 @@ else:
 from .thrift_connector import HeartbeatClientPool, ThriftPyClient
 
 from .api import *
+from .utils import get_mac_address
 
 thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
 thrift_path = path.abspath(thrift_path)
@@ -73,7 +74,7 @@ class JQDataClient(object):
             self.client = self.pool.get_client()
             self.inited = True
             if self.username:
-                response = self.client.auth(self.username, self.password, self.compress)
+                response = self.client.auth(self.username, self.password, self.compress, get_mac_address())
             else:
                 response = self.client.auth_by_token(self.token)
             auth_message = response.msg
