@@ -567,12 +567,12 @@ def test_ta():
 def test_macro():
     q = query(macro.MAC_INDUSTRY_AREA_AGR_OUTPUT_VALUE_YEAR).filter(macro.MAC_INDUSTRY_AREA_AGR_OUTPUT_VALUE_YEAR.stat_year=='2014')
     df = macro.run_query(q)
-    assert len(df) == 31
+    assert len(df) == 33
 
 
 def test_ticks():
-    assert len(get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=100)) == 100
-    assert get_ticks("NI1804.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10, 7)
+    assert len(get_ticks("CU1901.XSGE", end_dt="2018-03-16", count=100)) == 100
+    assert get_ticks("CU1901.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10, 7)
     assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10)) == 10
     assert str(get_ticks("SM1809.XZCE", '2018-07-06', '2018-07-07').iloc[3][0]) == '2018-07-06 09:00:01.500000'
     assert get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"]).shape == (10, 10)
