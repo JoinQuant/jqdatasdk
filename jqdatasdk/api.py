@@ -177,10 +177,11 @@ def get_industry_stocks(industry_code, date=today()):
 
 @assert_auth
 @hashable_lru(maxsize=3)
-def get_industries(name=None):
+def get_industries(name=None, date=None):
     """
     按照行业分类获取行业列表
     :param name:行业代码
+    :param date:获取数据的日期，默认为None
     :return:pandas.DataFrame, 各column分别为行业代码、行业名称、开始日期
     """
     assert name, "name is required"
