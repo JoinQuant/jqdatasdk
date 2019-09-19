@@ -646,6 +646,37 @@ def get_data(api_name, **kwargs):
 def get_all_factors():
     return JQDataClient.instance().get_all_factors(**locals())
 
+@assert_auth
+def get_call_auction(security, start_date=None, end_date=None, fields=None):
+    """ 获取指定时间区间内集合竞价时的tick数据
+    Args:
+        security: 标的代码或者标的代码组成的列表
+        start_date: 开始日期，一个时间字符串, 比如"2019-01-01"
+        end_date: 结束日期，一个时间字符, 比如"2019-02-01"
+        fields:选择要获取的行情字段(类似tick数据的每一个字段)，字段介绍如下:
+            字段名         说明              字段类型
+            time	      时间	            datetime
+            current	      当前价	            float
+            volume	      累计成交量（股）  	float
+            money	      累计成交额	        float
+            b1_v~b5_v	  五档买量          	float
+            b1_p~b5_v	  五档买价	        float
+            a1_v~a5_v	  五档卖量	        float
+            a1_p~a5_p	  五档卖价	        float
+
+        比如:
+            get_call_auction(['000001.XSHE', '000002.XSHE'], satrt_date='2019-01-01', end_date='2019-10-10',
+                              fields=['time', 'current', 'a1_v', 'b1_v'])
+
+    Return:
+        返回一个dataframe，索引为pandas默认的整数索引
+
+    Notice:
+        1. field为None的时候，默认获取全部字段
+            get_call_auction('000001.XSHE','2019-08-10','2019-08-12')
+        2. start_date和end_date不能为None，否则将抛出异常
+    """
+    return JQDataClient.instance().get_call_auction(**locals())
 
 def read_file(path):
     """
