@@ -647,6 +647,7 @@ def get_all_factors():
     return JQDataClient.instance().get_all_factors(**locals())
 
 @assert_auth
+@hashable_lru(maxsize=3)
 def get_call_auction(security, start_date=None, end_date=None, fields=None):
     """ 获取指定时间区间内集合竞价时的tick数据
     Args:
