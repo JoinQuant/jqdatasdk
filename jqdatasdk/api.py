@@ -71,7 +71,7 @@ def get_fundamentals(query_object, date=None, statDate=None):
     :return 返回一个 pandas.DataFrame, 每一行对应数据库返回的每一行(可能是几个表的联合查询结果的一行), 列索引是你查询的所有字段;为了防止返回数据量过大, 我们每次最多返回10000行;当相关股票上市前、退市后，财务数据返回各字段为空
     """
     from .finance_service import get_fundamentals_sql
-    if date is None:
+    if date is None and statDate is None:
         date = datetime.date.today() - datetime.timedelta(days=1)
     sql = get_fundamentals_sql(query_object, date, statDate)
     return JQDataClient.instance().get_fundamentals(sql=sql)
