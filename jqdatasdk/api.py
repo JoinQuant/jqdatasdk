@@ -60,7 +60,6 @@ def get_extras(info, security_list, start_date=None, end_date=None, df=True, cou
 
 
 @assert_auth
-@hashable_lru(maxsize=3)
 def get_fundamentals(query_object, date=None, statDate=None):
     """
     查询财务数据, 详细的数据字段描述在 https://www.joinquant.com/data/dict/fundamentals 中查看
@@ -70,10 +69,18 @@ def get_fundamentals(query_object, date=None, statDate=None):
     :param statDate: 财报统计的季度或者年份, 一个字符串, 有两种格式:1.季度: 格式是: 年 + ‘q’ + 季度序号, 例如: ‘2015q1’, ‘2013q4’. 2.年份: 格式就是年份的数字, 例如: ‘2015’, ‘2016’.
     :return 返回一个 pandas.DataFrame, 每一行对应数据库返回的每一行(可能是几个表的联合查询结果的一行), 列索引是你查询的所有字段;为了防止返回数据量过大, 我们每次最多返回10000行;当相关股票上市前、退市后，财务数据返回各字段为空
     """
-    from .finance_service import get_fundamentals_sql
     if date is None and statDate is None:
         date = datetime.date.today() - datetime.timedelta(days=1)
+
+    from .finance_service import get_fundamentals_sql
     sql = get_fundamentals_sql(query_object, date, statDate)
+    if date == datetime.date.today() or date == datetime.date.today().strftime("%Y-%m-%d"):
+        """ 当天的数据可能变化,不用缓存 """
+        return JQDataClient.instance().get_fundamentals(sql=sql)
+    return exec_fundamentals(sql)
+
+@hashable_lru(maxsize=3)
+def exec_fundamentals(sql):
     return JQDataClient.instance().get_fundamentals(sql=sql)
 
 
