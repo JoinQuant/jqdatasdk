@@ -27,7 +27,7 @@ def ATR(security_list, check_date, timeperiod=14, unit='1d', include_now=True):
 
 
 @assert_auth
-def BIAS(security_list, check_date, N1=6, N2=12, N3=24, unit='1d', include=True):
+def BIAS(security_list, check_date, N1=6, N2=12, N3=24, unit='1d', include_now=True):
     '''
     计算公式：
         BIAS1 :(CLOSE-MA(CLOSE,N1))/MA(CLOSE,N1)*100;
