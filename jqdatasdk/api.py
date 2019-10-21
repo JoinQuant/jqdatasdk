@@ -2,6 +2,10 @@
 from functools import wraps
 from .utils import *
 from .client import JQDataClient
+from io import StringIO
+import requests
+# import ast
+# import zlib
 
 @assert_auth
 def get_price(security, start_date=None, end_date=None, frequency='daily',
@@ -521,6 +525,42 @@ def get_current_tick(security):
     security = convert_security(security)
     return JQDataClient.instance().get_current_tick(**locals())
 
+def get_current_tick2(codes):
+    """
+    获取最新的 tick 数据
+
+    :param security 标的代码
+    :return:
+    """
+    url = ""
+    if isinstance(codes, six.string_types):
+        codes = [codes]
+    body = ",".join(codes)
+    # tick_token = JQDataClient.instance().get_tick_token()
+    headers = {"tick_token":"aaa",'Accept-Encoding': 'gzip, deflate'}
+
+    redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+                         'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v',
+                         'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
+                         'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v',
+                         'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p',
+                         'open', 'high_limit', 'low_limit']
+    res = requests.post(url, data=body, headers = headers)
+    # data = ast.literal_eval(res.text)
+    # data = zlib.decompress(data)
+    # data = StringIO(data.decode())
+    data = StringIO(res.text)
+    str2time = lambda x: datetime.datetime.strptime(x, '%Y%m%d%H%M%S.%f') if x else pd.NaT
+    df = pd.read_csv(data, header=None, names=redis_tick_fields, converters={"datetime": str2time})
+    stock_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money',
+                         'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p', 'a4_v', 'a5_p', 'a5_v',
+                         'b1_p', 'b1_v', 'b2_p', 'b2_v', 'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v', ]
+    df = df[stock_tick_fields]
+    if len(codes) <= 1:
+        df.index = [0]
+    else:
+        df.index = [code for code in codes]
+    return df
 
 @assert_auth
 def get_current_tick_engine(security):

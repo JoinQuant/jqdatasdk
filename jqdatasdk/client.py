@@ -33,6 +33,7 @@ class JQDataClient(object):
 
     _threading_local = threading.local()
     _auth_params = {}
+    _tick_token = ""
 
     @classmethod
     def instance(cls):
@@ -160,3 +161,6 @@ class JQDataClient(object):
 
     def __getattr__(self, method):
         return lambda **kwargs: self(method, **kwargs)
+
+    def get_tick_token(self):
+        return _tick_token
