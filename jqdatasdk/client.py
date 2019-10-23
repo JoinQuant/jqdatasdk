@@ -119,8 +119,8 @@ class JQDataClient(object):
         err, result = None, None
         for idx in range(self.retry_cnt):
             try:
-                self.ensure_auth()
                 file = six.BytesIO()
+                self.ensure_auth()
                 response = self.client.query(request)
                 if response.status:
                     buffer = response.msg
