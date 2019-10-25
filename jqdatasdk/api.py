@@ -535,6 +535,9 @@ def get_current_ticks(security):
         security = [security]
     codes = ",".join(security)
     # TODO: 判断类型！
+    if not JQDataClient.instance() or JQDataClient.instance().http_token == "":
+        print("run jqdatasdk.auth first")
+        return
     http_token = JQDataClient.instance().http_token
     headers = {
         'Accept-Encoding': 'gzip, deflate',

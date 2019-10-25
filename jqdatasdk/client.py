@@ -29,7 +29,7 @@ thrift = None
 with open(thrift_path) as f:
     thrift = thriftpy.load_fp(f, "jqdata_thrift")
 
-DATA_API_URL = "https://dataapi.joinquant.com"
+DATA_API_URL = "https://dataapi.joinquant.com/apis"
 
 class JQDataClient(object):
 
