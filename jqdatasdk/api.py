@@ -1,11 +1,9 @@
 # coding=utf-8
 from functools import wraps
-from .utils import *
-from .client import JQDataClient
 from io import StringIO
 import requests
-# import ast
-# import zlib
+from .utils import *
+from .client import JQDataClient
 
 @assert_auth
 def get_price(security, start_date=None, end_date=None, frequency='daily',
@@ -550,9 +548,6 @@ def get_current_ticks(security):
     }
     res = requests.post(url, data = json.dumps(body), headers = headers)
     # TODO:判断返回是否有error 抛异常 raise Exception('security 必须是字符串 或者 字符串数组')
-    # data = ast.literal_eval(res.text)
-    # data = zlib.decompress(data)
-    # data = StringIO(data.decode())
     data = StringIO(res.text)
     str2time = lambda x: datetime.datetime.strptime(x, '%Y%m%d%H%M%S.%f') if x else pd.NaT
     redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',

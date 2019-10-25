@@ -5,6 +5,7 @@ import sys
 import threading
 import time
 import zlib
+import requests
 from os import path
 
 import msgpack
@@ -180,7 +181,6 @@ class JQDataClient(object):
 class AnalysisDNS(threading.Thread):
     def run(self):
         try:
-            import requests
             requests.get(DATA_API_URL)
         except:
             pass
