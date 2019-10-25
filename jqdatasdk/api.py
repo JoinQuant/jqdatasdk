@@ -532,31 +532,35 @@ def get_current_ticks(security):
     :param security 标的代码
     :return:
     """
-    url = ""
+    url = "https://dataapi.joinquant.com/apis"
     if isinstance(security, six.string_types):
         security = [security]
     codes = ",".join(security)
     # TODO: 判断类型！
-    # tick_token = JQDataClient.instance().get_tick_token()
+    http_token = JQDataClient.instance().http_token
     headers = {
         'Accept-Encoding': 'gzip, deflate',
         'Content-Type': 'application/json',
         'Connection': 'keep-alive'
     }
-
-    redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
-                         'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v',
-                         'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
-                         'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v',
-                         'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p',
-                         'open', 'high_limit', 'low_limit']
-    res = requests.post(url, data=body, headers = headers)
+    body = {
+        "method": "get_current_ticks2",
+        "token": http_token,
+        "code": codes
+    }
+    res = requests.post(url, data = json.dumps(body), headers = headers)
     # TODO:判断返回是否有error 抛异常 raise Exception('security 必须是字符串 或者 字符串数组')
     # data = ast.literal_eval(res.text)
     # data = zlib.decompress(data)
     # data = StringIO(data.decode())
     data = StringIO(res.text)
     str2time = lambda x: datetime.datetime.strptime(x, '%Y%m%d%H%M%S.%f') if x else pd.NaT
+    redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+                         'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v',
+                         'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
+                         'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v',
+                         'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p',
+                         'open', 'high_limit', 'low_limit']
     df = pd.read_csv(data, header=None, names=redis_tick_fields, converters={"datetime": str2time})
     stock_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money',
                          'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p', 'a4_v', 'a5_p', 'a5_v',

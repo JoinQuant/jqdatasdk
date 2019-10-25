@@ -28,12 +28,12 @@ thrift = None
 with open(thrift_path) as f:
     thrift = thriftpy.load_fp(f, "jqdata_thrift")
 
+DATA_API_URL = "https://dataapi.joinquant.com"
 
 class JQDataClient(object):
 
     _threading_local = threading.local()
     _auth_params = {}
-    _tick_token = ""
 
     @classmethod
     def instance(cls):
@@ -59,8 +59,8 @@ class JQDataClient(object):
         self.retry_cnt = retry_cnt
         self.not_auth = True
         self.compress = True
+        self.http_token = ""
         self.pool = HeartbeatClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=5, timeout=180)
-        # self.pool.fill_connection_pool()
 
     @classmethod
     def set_auth_params(cls, **params):
@@ -76,6 +76,7 @@ class JQDataClient(object):
             self.inited = True
             if self.username:
                 response = self.client.auth(self.username, self.password, self.compress, get_mac_address())
+                self.http_token = self.get_http_token()
             else:
                 response = self.client.auth_by_token(self.token)
             auth_message = response.msg
@@ -162,13 +163,24 @@ class JQDataClient(object):
     def __getattr__(self, method):
         return lambda **kwargs: self(method, **kwargs)
 
-    def get_tick_token(self):
-        return _tick_token
+    def get_http_token(self):
+        http_token = ""
+        body = {
+            "method": "get_current_token",
+            "mob": self.username,
+	        "pwd": self.password
+        }
+        try:
+            res = requests.post(DATA_API_URL, data=json.dumps(body))
+            http_token = res.text
+        except:
+            pass
+        return http_token
 
 class AnalysisDNS(threading.Thread):
     def run(self):
         try:
             import requests
-            requests.get("https://dataapi.joinquant.com")
+            requests.get(DATA_API_URL)
         except:
             pass
