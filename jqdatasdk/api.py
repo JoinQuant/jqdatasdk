@@ -525,7 +525,7 @@ def get_current_tick(security):
     security = convert_security(security)
     return JQDataClient.instance().get_current_tick(**locals())
 
-def get_current_tick2(codes):
+def get_current_tick2(security):
     """
     获取最新的 tick 数据
 
@@ -533,11 +533,16 @@ def get_current_tick2(codes):
     :return:
     """
     url = ""
-    if isinstance(codes, six.string_types):
-        codes = [codes]
-    body = ",".join(codes)
+    if isinstance(security, six.string_types):
+        security = [security]
+    codes = ",".join(security)
+    # TODO: 判断类型！
     # tick_token = JQDataClient.instance().get_tick_token()
-    headers = {"tick_token":"aaa",'Accept-Encoding': 'gzip, deflate'}
+    headers = {
+        'Accept-Encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+        'Connection': 'keep-alive'
+    }
 
     redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
                          'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v',
@@ -546,6 +551,7 @@ def get_current_tick2(codes):
                          'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p',
                          'open', 'high_limit', 'low_limit']
     res = requests.post(url, data=body, headers = headers)
+    # TODO:判断返回是否有error 抛异常 raise Exception('security 必须是字符串 或者 字符串数组')
     # data = ast.literal_eval(res.text)
     # data = zlib.decompress(data)
     # data = StringIO(data.decode())
@@ -556,10 +562,10 @@ def get_current_tick2(codes):
                          'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p', 'a4_v', 'a5_p', 'a5_v',
                          'b1_p', 'b1_v', 'b2_p', 'b2_v', 'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v', ]
     df = df[stock_tick_fields]
-    if len(codes) <= 1:
+    if len(security) <= 1:
         df.index = [0]
     else:
-        df.index = [code for code in codes]
+        df.index = [code for code in security]
     return df
 
 @assert_auth

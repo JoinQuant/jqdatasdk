@@ -164,3 +164,8 @@ class JQDataClient(object):
 
     def get_tick_token(self):
         return _tick_token
+
+class AnalysisDNS(threading.Thread):
+    def run(self):
+        import requests
+        requests.get("https://dataapi.joinquant.com/")
