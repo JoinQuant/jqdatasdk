@@ -167,5 +167,8 @@ class JQDataClient(object):
 
 class AnalysisDNS(threading.Thread):
     def run(self):
-        import requests
-        requests.get("https://dataapi.joinquant.com/")
+        try:
+            import requests
+            requests.get("https://dataapi.joinquant.com")
+        except:
+            pass
