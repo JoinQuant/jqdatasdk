@@ -77,7 +77,7 @@ class JQDataClient(object):
             self.inited = True
             if self.username:
                 response = self.client.auth(self.username, self.password, self.compress, get_mac_address())
-                self.http_token = self.get_http_token()
+                self.set_http_token()
             else:
                 response = self.client.auth_by_token(self.token)
             auth_message = response.msg
@@ -96,6 +96,7 @@ class JQDataClient(object):
             self.client.close()
             self.client = None
         self.inited = False
+        self.http_token = ""
 
     def logout(self):
         self._reset()
@@ -146,7 +147,6 @@ class JQDataClient(object):
             except socket_error as e:
                 self._reset()
                 err = e
-                # time.sleep(idx * 2)
                 continue
             except Exception as e:
                 self._reset()
@@ -165,7 +165,9 @@ class JQDataClient(object):
         return lambda **kwargs: self(method, **kwargs)
 
     def get_http_token(self):
-        http_token = ""
+        return self.http_token
+
+    def set_http_token(self):
         body = {
             "method": "get_current_token",
             "mob": self.username,
@@ -173,10 +175,10 @@ class JQDataClient(object):
         }
         try:
             res = requests.post(DATA_API_URL, data=json.dumps(body))
-            http_token = res.text
+            self.http_token = res.text
         except:
             pass
-        return http_token
+        return self.http_token
 
 class AnalysisDNS(threading.Thread):
     def run(self):

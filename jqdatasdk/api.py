@@ -3,7 +3,7 @@ from functools import wraps
 from io import StringIO
 import requests
 from .utils import *
-from .client import JQDataClient
+from .client import JQDataClient, DATA_API_URL
 
 @assert_auth
 def get_price(security, start_date=None, end_date=None, frequency='daily',
@@ -530,15 +530,53 @@ def get_current_ticks(security):
     :param security 标的代码
     :return:
     """
-    url = "https://dataapi.joinquant.com/apis"
-    if isinstance(security, six.string_types):
-        security = [security]
-    codes = ",".join(security)
-    # TODO: 判断类型！
-    if not JQDataClient.instance() or JQDataClient.instance().http_token == "":
+    if not JQDataClient.instance() or JQDataClient.instance().get_http_token() == "":
         print("run jqdatasdk.auth first")
         return
-    http_token = JQDataClient.instance().http_token
+
+    if isinstance(security, six.string_types):
+        security = [security]
+    # TODO: 判断类型！要测试处理时间
+    
+    res = request_data(security)
+    if not res or res.text == "":
+        return None
+    content = res.text
+    if content[:5] == 'error':
+        if content in ["error: token无效，请重新获取","error: token过期，请重新获取"]:
+            JQDataClient.instance().set_http_token()
+            res = request_data(security)  # 重试一次
+            if not res or res.text == "":
+                return None
+            if content[:5] == 'error':
+                raise Exception(content)
+        raise Exception(content)
+
+    redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+                         'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
+                         'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p',
+                         'open', 'high_limit', 'low_limit']
+    stock_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money',
+                         'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p', 'a4_v', 'a5_p', 'a5_v',
+                         'b1_p', 'b1_v', 'b2_p', 'b2_v', 'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v']
+    option_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+                         'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
+                         'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p']
+    future_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position', 'a1_p', 'a1_v', 'b1_p', 'b1_v']
+
+    data = StringIO(content)
+    str2time = lambda x: datetime.datetime.strptime(x, '%Y%m%d%H%M%S.%f') if x else pd.NaT
+    df = pd.read_csv(data, header=None, names=redis_tick_fields, converters={"datetime": str2time})
+    df = df[stock_tick_fields]
+    if len(security) <= 1:
+        df.index = [0]
+    else:
+        df.index = [code for code in security]
+    return df
+
+def request_data(security):
+    http_token = JQDataClient.instance().get_http_token()
+    codes = ",".join(security)
     headers = {
         'Accept-Encoding': 'gzip, deflate',
         'Content-Type': 'application/json',
@@ -549,26 +587,8 @@ def get_current_ticks(security):
         "token": http_token,
         "code": codes
     }
-    res = requests.post(url, data = json.dumps(body), headers = headers)
-    # TODO:判断返回是否有error 抛异常 raise Exception('security 必须是字符串 或者 字符串数组')
-    data = StringIO(res.text)
-    str2time = lambda x: datetime.datetime.strptime(x, '%Y%m%d%H%M%S.%f') if x else pd.NaT
-    redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
-                         'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v',
-                         'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
-                         'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v',
-                         'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p',
-                         'open', 'high_limit', 'low_limit']
-    df = pd.read_csv(data, header=None, names=redis_tick_fields, converters={"datetime": str2time})
-    stock_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money',
-                         'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p', 'a4_v', 'a5_p', 'a5_v',
-                         'b1_p', 'b1_v', 'b2_p', 'b2_v', 'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v', ]
-    df = df[stock_tick_fields]
-    if len(security) <= 1:
-        df.index = [0]
-    else:
-        df.index = [code for code in security]
-    return df
+    res = requests.post(DATA_API_URL, data = json.dumps(body), headers = headers)
+    return res
 
 @assert_auth
 def get_current_tick_engine(security):
