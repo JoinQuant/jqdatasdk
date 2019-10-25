@@ -525,7 +525,7 @@ def get_current_tick(security):
     security = convert_security(security)
     return JQDataClient.instance().get_current_tick(**locals())
 
-def get_current_tick2(security):
+def get_current_ticks(security):
     """
     获取最新的 tick 数据
 
