@@ -548,9 +548,11 @@ def get_current_ticks(security):
             res = request_data(security)  # 重试一次
             if not res or res.text == "":
                 return None
+            content = res.text
             if content[:5] == 'error':
                 raise Exception(content)
-        raise Exception(content)
+        else:
+            raise Exception(content)
 
     redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
                          'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
@@ -567,7 +569,8 @@ def get_current_ticks(security):
     data = StringIO(content)
     str2time = lambda x: datetime.datetime.strptime(x, '%Y%m%d%H%M%S.%f') if x else pd.NaT
     df = pd.read_csv(data, header=None, names=redis_tick_fields, converters={"datetime": str2time})
-    df = df[stock_tick_fields]
+    security_type = get_security_type(security[0])
+    df = df[tick_fields]
     if len(security) <= 1:
         df.index = [0]
     else:
