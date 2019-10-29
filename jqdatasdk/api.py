@@ -536,8 +536,6 @@ def get_current_ticks(security):
 
     if isinstance(security, six.string_types):
         security = [security]
-    # TODO: 判断类型！要测试处理时间
-    
     res = request_data(security)
     if not res or res.text == "":
         return None
@@ -554,10 +552,10 @@ def get_current_ticks(security):
         else:
             raise Exception(content)
 
-    redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
-                         'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
-                         'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p',
-                         'open', 'high_limit', 'low_limit']
+    # redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+    #                      'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
+    #                      'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p',
+    #                      'open', 'high_limit', 'low_limit']
     stock_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money',
                          'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p', 'a4_v', 'a5_p', 'a5_v',
                          'b1_p', 'b1_v', 'b2_p', 'b2_v', 'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v']
@@ -566,15 +564,26 @@ def get_current_ticks(security):
                          'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p']
     future_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position', 'a1_p', 'a1_v', 'b1_p', 'b1_v']
 
-    data = StringIO(content)
+    tick_fields_list = [stock_tick_fields,future_tick_fields,stock_tick_fields,stock_tick_fields,option_tick_fields]
+    # content[0]返回数据第一个字符为标的类型  "0":"stock","1":"future","2":"fund","3":"index","4":"option"
+    tick_fields = tick_fields_list[int(content[0])]
+
     str2time = lambda x: datetime.datetime.strptime(x, '%Y%m%d%H%M%S.%f') if x else pd.NaT
-    df = pd.read_csv(data, header=None, names=redis_tick_fields, converters={"datetime": str2time})
-    security_type = get_security_type(security[0])
+    data = StringIO(content)
+    data.seek(1)  # 跳过第一个字符，从第二个开始取数据
+    df = pd.read_csv(data, index_col=0, converters={"datetime": str2time})
+    # df = pd.read_csv(data, header=None, names=redis_tick_fields, converters={"datetime": str2time})
+    # security_type = get_security_type(security[0])
+    # tick_fields = stock_tick_fields
+    # if security_type == "future":
+    #     tick_fields = future_tick_fields
+    # elif security_type == "option":
+    #     tick_fields = option_tick_fields
     df = df[tick_fields]
     if len(security) <= 1:
         df.index = [0]
-    else:
-        df.index = [code for code in security]
+    # else:
+    #     df.index = security # [code for code in security]
     return df
 
 def request_data(security):
