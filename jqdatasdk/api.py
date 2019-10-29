@@ -552,10 +552,6 @@ def get_current_ticks(security):
         else:
             raise Exception(content)
 
-    # redis_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
-    #                      'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
-    #                      'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p',
-    #                      'open', 'high_limit', 'low_limit']
     stock_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money',
                          'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p', 'a4_v', 'a5_p', 'a5_v',
                          'b1_p', 'b1_v', 'b2_p', 'b2_v', 'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v']
@@ -572,18 +568,9 @@ def get_current_ticks(security):
     data = StringIO(content)
     data.seek(1)  # 跳过第一个字符，从第二个开始取数据
     df = pd.read_csv(data, index_col=0, converters={"datetime": str2time})
-    # df = pd.read_csv(data, header=None, names=redis_tick_fields, converters={"datetime": str2time})
-    # security_type = get_security_type(security[0])
-    # tick_fields = stock_tick_fields
-    # if security_type == "future":
-    #     tick_fields = future_tick_fields
-    # elif security_type == "option":
-    #     tick_fields = option_tick_fields
     df = df[tick_fields]
     if len(security) <= 1:
         df.index = [0]
-    # else:
-    #     df.index = security # [code for code in security]
     return df
 
 def request_data(security):
