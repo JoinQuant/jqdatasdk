@@ -29,7 +29,8 @@ thrift = None
 with open(thrift_path) as f:
     thrift = thriftpy.load_fp(f, "jqdata_thrift")
 
-DATA_API_URL = "https://dataapi.joinquant.com/apis"
+AUTH_API_URL = "https://dataapi.joinquant.com/apis" # 获取token
+DATA_API_URL = "http://47.95.163.165:1518/apis"     # 获取数据
 
 class JQDataClient(object):
 
@@ -174,7 +175,7 @@ class JQDataClient(object):
 	        "pwd": self.password
         }
         try:
-            res = requests.post(DATA_API_URL, data=json.dumps(body))
+            res = requests.post(AUTH_API_URL, data=json.dumps(body))
             self.http_token = res.text
         except:
             pass
@@ -183,6 +184,6 @@ class JQDataClient(object):
 class AnalysisDNS(threading.Thread):
     def run(self):
         try:
-            requests.get(DATA_API_URL)
+            requests.get(AUTH_API_URL)
         except:
             pass
