@@ -88,7 +88,7 @@ def exec_fundamentals(sql):
 
 @assert_auth
 @hashable_lru(maxsize=3)
-def get_fundamentals_continuously(query_object, end_date=None, count=None):
+def get_fundamentals_continuously(query_object, end_date=None, count=1):
     """
     查询财务数据，详细的数据字段描述在 https://www.joinquant.com/data/dict/fundamentals 中查看
     :param query_object:一个sqlalchemy.orm.query.Query对象
@@ -180,7 +180,7 @@ def get_industry_stocks(industry_code, date=today()):
 
 @assert_auth
 @hashable_lru(maxsize=3)
-def get_industries(name=None, date=None):
+def get_industries(name='zjw', date=None):
     """
     按照行业分类获取行业列表
     :param name:行业代码
@@ -479,7 +479,7 @@ def get_industry(security, date=None):
 
 
 @assert_auth
-def get_bars(security, count, unit="1d", fields=("open", "high", "low", "close"), include_now=False, end_dt=None,
+def get_bars(security, count, unit="1d", fields=("date", "open", "high", "low", "close"), include_now=False, end_dt=None,
              fq_ref_date=None):
     """
     获取历史数据(包含快照数据), 可查询单个标的多个数据字段
