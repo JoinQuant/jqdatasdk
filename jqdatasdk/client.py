@@ -30,7 +30,6 @@ with open(thrift_path) as f:
     thrift = thriftpy.load_fp(f, "jqdata_thrift")
 
 AUTH_API_URL = "https://dataapi.joinquant.com/apis" # 获取token
-DATA_API_URL = "http://47.95.163.165:1518/apis"     # 获取数据
 
 class JQDataClient(object):
 
@@ -62,6 +61,7 @@ class JQDataClient(object):
         self.not_auth = True
         self.compress = True
         self.http_token = ""
+        self.data_api_url = ""
         self.pool = HeartbeatClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=5, timeout=180)
 
     @classmethod
@@ -78,6 +78,7 @@ class JQDataClient(object):
             self.inited = True
             if self.username:
                 response = self.client.auth(self.username, self.password, self.compress, get_mac_address())
+                self.data_api_url = response.error if response.error else AUTH_API_URL
                 self.set_http_token()
             else:
                 response = self.client.auth_by_token(self.token)
@@ -165,8 +166,11 @@ class JQDataClient(object):
     def __getattr__(self, method):
         return lambda **kwargs: self(method, **kwargs)
 
+    def get_data_api_url(self):
+        return self.data_api_url
+
     def get_http_token(self):
-        return self.http_token
+        return self.http_token    
 
     def set_http_token(self):
         body = {

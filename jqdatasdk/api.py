@@ -3,7 +3,7 @@ from functools import wraps
 from io import StringIO
 import requests
 from .utils import *
-from .client import JQDataClient, DATA_API_URL
+from .client import JQDataClient
 
 @assert_auth
 def get_price(security, start_date=None, end_date=None, frequency='daily',
@@ -586,7 +586,8 @@ def request_data(security):
         "token": http_token,
         "code": codes
     }
-    res = requests.post(DATA_API_URL, data = json.dumps(body), headers = headers)
+    data_api_url = JQDataClient.instance().get_data_api_url()
+    res = requests.post(data_api_url, data = json.dumps(body), headers = headers)
     return res
 
 @assert_auth
