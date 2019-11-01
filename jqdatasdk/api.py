@@ -512,7 +512,7 @@ def get_bars_engine(security, count, unit="1d", fields=("open", "high", "low", "
 
 
 @assert_auth
-def get_current_tick(security):
+def get_current_tick2(security):
     """
     获取最新的 tick 数据
 
@@ -523,7 +523,7 @@ def get_current_tick(security):
     security = convert_security(security)
     return JQDataClient.instance().get_current_tick(**locals())
 
-def get_current_ticks(security):
+def get_current_tick(security):
     """
     获取最新的 tick 数据
 
@@ -536,6 +536,8 @@ def get_current_ticks(security):
 
     if isinstance(security, six.string_types):
         security = [security]
+    elif isinstance(security, Security):
+        security = [str(security)]
     res = request_data(security)
     if not res or res.text == "":
         return None
