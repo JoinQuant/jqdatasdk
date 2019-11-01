@@ -5,6 +5,7 @@ import sys
 import threading
 import time
 import zlib
+import requests
 from os import path
 
 import msgpack
@@ -28,6 +29,7 @@ thrift = None
 with open(thrift_path) as f:
     thrift = thriftpy.load_fp(f, "jqdata_thrift")
 
+AUTH_API_URL = "https://dataapi.joinquant.com/apis" # 获取token
 
 class JQDataClient(object):
 
@@ -58,8 +60,9 @@ class JQDataClient(object):
         self.retry_cnt = retry_cnt
         self.not_auth = True
         self.compress = True
+        self.http_token = ""
+        self.data_api_url = ""
         self.pool = HeartbeatClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=5, timeout=180)
-        # self.pool.fill_connection_pool()
 
     @classmethod
     def set_auth_params(cls, **params):
@@ -75,6 +78,8 @@ class JQDataClient(object):
             self.inited = True
             if self.username:
                 response = self.client.auth(self.username, self.password, self.compress, get_mac_address())
+                self.data_api_url = response.error if response.error else AUTH_API_URL
+                self.set_http_token()
             else:
                 response = self.client.auth_by_token(self.token)
             auth_message = response.msg
@@ -93,6 +98,7 @@ class JQDataClient(object):
             self.client.close()
             self.client = None
         self.inited = False
+        self.http_token = ""
 
     def logout(self):
         self._reset()
@@ -143,7 +149,6 @@ class JQDataClient(object):
             except socket_error as e:
                 self._reset()
                 err = e
-                # time.sleep(idx * 2)
                 continue
             except Exception as e:
                 self._reset()
@@ -160,3 +165,29 @@ class JQDataClient(object):
 
     def __getattr__(self, method):
         return lambda **kwargs: self(method, **kwargs)
+
+    def get_data_api_url(self):
+        return self.data_api_url
+
+    def get_http_token(self):
+        return self.http_token    
+
+    def set_http_token(self):
+        body = {
+            "method": "get_current_token",
+            "mob": self.username,
+	        "pwd": self.password
+        }
+        try:
+            res = requests.post(AUTH_API_URL, data=json.dumps(body))
+            self.http_token = res.text
+        except:
+            pass
+        return self.http_token
+
+class AnalysisDNS(threading.Thread):
+    def run(self):
+        try:
+            requests.get(AUTH_API_URL)
+        except:
+            pass

@@ -1,5 +1,7 @@
 # coding=utf-8
 from functools import wraps
+from io import StringIO
+import requests
 from .utils import *
 from .client import JQDataClient
 
@@ -521,6 +523,72 @@ def get_current_tick(security):
     security = convert_security(security)
     return JQDataClient.instance().get_current_tick(**locals())
 
+def get_current_ticks(security):
+    """
+    获取最新的 tick 数据
+
+    :param security 标的代码
+    :return:
+    """
+    if not JQDataClient.instance() or JQDataClient.instance().get_http_token() == "":
+        print("run jqdatasdk.auth first")
+        return
+
+    if isinstance(security, six.string_types):
+        security = [security]
+    res = request_data(security)
+    if not res or res.text == "":
+        return None
+    content = res.text
+    if content[:5] == 'error':
+        if content in ["error: token无效，请重新获取","error: token过期，请重新获取"]:
+            JQDataClient.instance().set_http_token()
+            res = request_data(security)  # 重试一次
+            if not res or res.text == "":
+                return None
+            content = res.text
+            if content[:5] == 'error':
+                raise Exception(content)
+        else:
+            raise Exception(content)
+
+    stock_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money',
+                         'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p', 'a4_v', 'a5_p', 'a5_v',
+                         'b1_p', 'b1_v', 'b2_p', 'b2_v', 'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v']
+    option_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+                         'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
+                         'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p']
+    future_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position', 'a1_p', 'a1_v', 'b1_p', 'b1_v']
+
+    tick_fields_list = [stock_tick_fields,future_tick_fields,stock_tick_fields,stock_tick_fields,option_tick_fields]
+    # content[0]返回数据第一个字符为标的类型  "0":"stock","1":"future","2":"fund","3":"index","4":"option"
+    tick_fields = tick_fields_list[int(content[0])]
+
+    str2time = lambda x: datetime.datetime.strptime(x, '%Y%m%d%H%M%S.%f') if x else pd.NaT
+    data = StringIO(content)
+    data.seek(1)  # 跳过第一个字符，从第二个开始取数据
+    df = pd.read_csv(data, index_col=0, converters={"datetime": str2time})
+    df = df[tick_fields]
+    if len(security) <= 1:
+        df.index = [0]
+    return df
+
+def request_data(security):
+    http_token = JQDataClient.instance().get_http_token()
+    codes = ",".join(security)
+    headers = {
+        'Accept-Encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+        'Connection': 'keep-alive'
+    }
+    body = {
+        "method": "get_current_ticks2",
+        "token": http_token,
+        "code": codes
+    }
+    data_api_url = JQDataClient.instance().get_data_api_url()
+    res = requests.post(data_api_url, data = json.dumps(body), headers = headers)
+    return res
 
 @assert_auth
 def get_current_tick_engine(security):

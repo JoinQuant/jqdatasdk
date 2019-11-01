@@ -9,7 +9,7 @@ from . import alpha101
 from . import alpha191
 from . import technical_analysis
 from .table import *
-from .client import JQDataClient
+from .client import JQDataClient, AnalysisDNS
 
 
 def auth(username, password, host="39.107.190.114", port=7000):
@@ -29,6 +29,8 @@ def is_auth():
         return False
     return not JQDataClient.instance().not_auth
 
+analysis_dns = AnalysisDNS()
+analysis_dns.start()
 
 __version__ = "1.7.5"
 
