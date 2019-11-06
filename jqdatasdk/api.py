@@ -7,7 +7,7 @@ from .client import JQDataClient
 
 @assert_auth
 def get_price(security, start_date=None, end_date=None, frequency='daily',
-              fields=None, skip_paused=False, fq='pre', count=None):
+              fields=None, skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True):
     """
     获取一支或者多只证券的行情数据
 
@@ -18,6 +18,11 @@ def get_price(security, start_date=None, end_date=None, frequency='daily',
     :param frequency 单位时间长度, 几天或者几分钟, 现在支持'Xd','Xm', 'daily'(等同于'1d'), 'minute'(等同于'1m'), X是一个正整数, 分别表示X天和X分钟
     :param fields 字符串list, 默认是None(表示['open', 'close', 'high', 'low', 'volume', 'money']这几个标准字段), 支持以下属性 ['open', 'close', 'low', 'high', 'volume', 'money', 'factor', 'high_limit', 'low_limit', 'avg', 'pre_close', 'paused']
     :param skip_paused 是否跳过不交易日期(包括停牌, 未上市或者退市后的日期). 如果不跳过, 停牌时会使用停牌前的数据填充, 上市前或者退市后数据都为 nan
+    panel: 当传入一个标的列表的时候，是否返回一个panel对象，默认为True，表示返回一哥panel对象
+           注意：
+               当security为一个标的列表，且panel=False的时候，会返回一个dataframe对象，
+               在这个对象中额外多出code、time两个字段，分别表示该条数据对应的标的、时间
+    fill_paused : False 表示使用NAN填充停牌的数据，True表示用close价格填充，默认True
     :return 如果是一支证券, 则返回pandas.DataFrame对象, 行索引是datetime.datetime对象, 列索引是行情字段名字; 如果是多支证券, 则返回pandas.Panel对象, 里面是很多pandas.DataFrame对象, 索引是行情字段(open/close/…), 每个pandas.DataFrame的行索引是datetime.datetime对象, 列索引是证券代号.
     """
     security = convert_security(security)
@@ -88,13 +93,16 @@ def exec_fundamentals(sql):
 
 @assert_auth
 @hashable_lru(maxsize=3)
-def get_fundamentals_continuously(query_object, end_date=None, count=1):
+def get_fundamentals_continuously(query_object, end_date=None, count=1, panel=True):
     """
     查询财务数据，详细的数据字段描述在 https://www.joinquant.com/data/dict/fundamentals 中查看
     :param query_object:一个sqlalchemy.orm.query.Query对象
     :param end_date:查询日期, 一个字符串(格式类似’2015-10-15’)或者datetime.date/datetime.datetime对象, 可以是None, 使用默认日期
     :param count:获取 end_date 前 count 个日期的数据
-    :return:返回一个 pandas.Panel
+    :param panel:是否返回panel对象，默认为True，表示返回panel对象。
+    :return
+    :panel=true: pd.Panel, 三维分别是 field, date, security.
+    :panel=False: pd.Fataframe, index是pandas默认的整数，并且始终会返回'day', 'code'这两个字段
     """
     assert count, "count is required"
     from .finance_service import fundamentals_redundant_continuously_query_to_sql
@@ -104,13 +112,17 @@ def get_fundamentals_continuously(query_object, end_date=None, count=1):
     sql = fundamentals_redundant_continuously_query_to_sql(query_object, trade_days)
     sql = remove_duplicated_tables(sql)
     df = JQDataClient.instance().get_fundamentals_continuously(sql=sql)
-    df3 = df.copy()
-    df3["multi"] = df["day"] + "_" + df["code"]
-    df3 = df3.drop_duplicates("multi")
-    del df3["multi"]
-    df3 = df3.set_index(["day", "code"])
-    pan = df3.to_panel()
-    return pan
+    if panel:
+        newdf = df.set_index(['day', 'code'])
+        pan = newdf.to_panel()
+        return pan
+    else:
+        try:
+            df.sort(columns=['code', 'day'], inplace=True)
+        except AttributeError:
+            df.sort_values(by=['code', 'day'], inplace=True)
+        df.reset_index(drop=True, inplace=True)
+        return df
 
 
 @assert_auth
