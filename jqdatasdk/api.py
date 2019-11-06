@@ -18,11 +18,11 @@ def get_price(security, start_date=None, end_date=None, frequency='daily',
     :param frequency 单位时间长度, 几天或者几分钟, 现在支持'Xd','Xm', 'daily'(等同于'1d'), 'minute'(等同于'1m'), X是一个正整数, 分别表示X天和X分钟
     :param fields 字符串list, 默认是None(表示['open', 'close', 'high', 'low', 'volume', 'money']这几个标准字段), 支持以下属性 ['open', 'close', 'low', 'high', 'volume', 'money', 'factor', 'high_limit', 'low_limit', 'avg', 'pre_close', 'paused']
     :param skip_paused 是否跳过不交易日期(包括停牌, 未上市或者退市后的日期). 如果不跳过, 停牌时会使用停牌前的数据填充, 上市前或者退市后数据都为 nan
-    panel: 当传入一个标的列表的时候，是否返回一个panel对象，默认为True，表示返回一哥panel对象
+    :param panel: 当传入一个标的列表的时候，是否返回一个panel对象，默认为True，表示返回一哥panel对象
            注意：
                当security为一个标的列表，且panel=False的时候，会返回一个dataframe对象，
                在这个对象中额外多出code、time两个字段，分别表示该条数据对应的标的、时间
-    fill_paused : False 表示使用NAN填充停牌的数据，True表示用close价格填充，默认True
+    :param fill_paused : False 表示使用NAN填充停牌的数据，True表示用close价格填充，默认True
     :return 如果是一支证券, 则返回pandas.DataFrame对象, 行索引是datetime.datetime对象, 列索引是行情字段名字; 如果是多支证券, 则返回pandas.Panel对象, 里面是很多pandas.DataFrame对象, 索引是行情字段(open/close/…), 每个pandas.DataFrame的行索引是datetime.datetime对象, 列索引是证券代号.
     """
     security = convert_security(security)
@@ -398,6 +398,7 @@ def get_ticks(security, start_dt=None, end_dt=None, count=None, fields=None, ski
                     股票：[time current high low volume money a1_v-a5_v a1_p-a5_p b1_v-b5_v b1_p-b5_p]
                     为None时，默认返回对应类型的所有字段
     :param skip: 是否过滤掉无成交的tick
+    :param df: 默认为True，传入单个标的返回的是一个dataframe, 当df=False的时候，当单个标的的时候，返回一个np.ndarray
     :return:
     """
     start_dt = to_date_str(start_dt)
@@ -504,6 +505,8 @@ def get_bars(security, count, unit="1d", fields=("date", "open", "high", "low", 
     :param include_now 取值True 或者False。 表示是否包含当前bar, 比如策略时间是9:33，unit参数为5m， 如果 include_now=True,则返回9:30-9:33这个分钟 bar。
     :param end_dt: 查询的截止时间
     :param fq_ref_date: 复权基准日期，为None时为不复权数据
+    :param df: 默认为True，传入单个标的返回的是一个dataframe，传入多个标的返回的是一个multi-index dataframe
+            当df=False的时候，当单个标的的时候，返回一个np.ndarray，多个标的返回一个字典，key是code，value是np.array；
     :return numpy.ndarray格式
     """
     assert security, "security is required"
