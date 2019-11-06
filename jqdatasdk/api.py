@@ -387,7 +387,7 @@ def get_dominant_future(underlying_symbol, date=None):
 
 
 @assert_auth
-def get_ticks(security, start_dt=None, end_dt=None, count=None, fields=None, skip=True):
+def get_ticks(security, start_dt=None, end_dt=None, count=None, fields=None, skip=True, df=True):
     """
     获取tick数据
     :param security: 股票or期货标的代码,仅限单只
@@ -493,7 +493,7 @@ def get_industry(security, date=None):
 
 @assert_auth
 def get_bars(security, count, unit="1d", fields=("date", "open", "high", "low", "close"), include_now=False, end_dt=None,
-             fq_ref_date=None):
+             fq_ref_date=None, df=True):
     """
     获取历史数据(包含快照数据), 可查询单个标的多个数据字段
 
