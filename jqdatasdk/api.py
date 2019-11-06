@@ -245,11 +245,12 @@ def get_all_securities(types=[], date=None):
 
 @assert_auth
 @hashable_lru(maxsize=3)
-def get_security_info(code):
+def get_security_info(code, date=None):
     """
     获取股票/基金/指数的信息
 
     :param code 证券代码
+    :param date 查询日期: 日期字符串/date对象/datetime对象, 注意传入datetime对象时忽略日内时间
     :return Security
     """
     assert code, "code is required"
