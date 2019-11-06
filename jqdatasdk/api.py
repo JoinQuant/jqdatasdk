@@ -218,7 +218,7 @@ def get_concepts():
 
 @assert_auth
 @hashable_lru(maxsize=3)
-def get_concept(security_or_securities, date):
+def get_concept(security, date):
     """
     获取股票所属概念板块。
 
