@@ -833,19 +833,18 @@ def test_opt_tables():
 def test_get_factor_effect():
     df = get_factor_effect("000001.XSHG", start_date="2015-01-01", end_date="2018-01-01", period="3M", factor="net_profit_growth_rate")
     assert df[1].to_dict() == {datetime.date(2015, 1, 5): 0.0,
-                               datetime.date(2015, 3, 31): 0.3340836570512989,
-                               datetime.date(2015, 6, 30): 0.5978724949894281,
-                               datetime.date(2015, 9, 30): 0.1569389030772208,
-                               datetime.date(2015, 12, 31): 0.5417823806275872,
-                               datetime.date(2016, 3, 31): 0.24356730851248387,
-                               datetime.date(2016, 6, 30): 0.2482118426107882,
-                               datetime.date(2016, 9, 30): 0.3200094466839585,
-                               datetime.date(2016, 12, 31): 0.41796566880476216,
-                               datetime.date(2017, 3, 31): 0.4141144258590368,
-                               datetime.date(2017, 6, 30): 0.2957341105172202,
-                               datetime.date(2017, 9, 30): 0.34246473875278016,
-                               datetime.date(2017, 12, 31): 0.2169261590076672
-                             }
+                               datetime.date(2015, 3, 31): 0.2911737010850679,
+                               datetime.date(2015, 6, 30): 0.6774030318149995,
+                               datetime.date(2015, 9, 30): 0.12540945276743498,
+                               datetime.date(2015, 12, 31): 0.4827570435926156,
+                               datetime.date(2016, 3, 31): 0.2134204934053765,
+                               datetime.date(2016, 6, 30): 0.21345157034224815,
+                               datetime.date(2016, 9, 30): 0.2923701525614304,
+                               datetime.date(2016, 12, 31): 0.38180433529720026,
+                               datetime.date(2017, 3, 31): 0.3677375473696791,
+                               datetime.date(2017, 6, 30): 0.25566522532293967,
+                               datetime.date(2017, 9, 30): 0.30284329696764223,
+                               datetime.date(2017, 12, 31): 0.18990079481373812}
 
 
 def test_get_data():
