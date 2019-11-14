@@ -1,6 +1,7 @@
 # coding=utf-8
 import six
 import json
+import copy
 import datetime
 from functools import wraps
 from collections import namedtuple
@@ -262,7 +263,7 @@ def hashable_lru(maxsize=16):
                 if type(v) in (list, dict) else v
                 for k, v in kwargs.items()
             }
-            return cached_func(*_args, **_kwargs)
+            return copy.deepcopy(cached_func(*_args, **_kwargs))
         hashable_cached_func.cache_info = cached_func.cache_info
         hashable_cached_func.cache_clear = cached_func.cache_clear
         return hashable_cached_func
