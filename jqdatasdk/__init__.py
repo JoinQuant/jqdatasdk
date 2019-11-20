@@ -32,7 +32,7 @@ def is_auth():
 analysis_dns = AnalysisDNS()
 analysis_dns.start()
 
-__version__ = "1.7.6"
+__version__ = "1.7.7"
 
 
 __all__ = ["auth", "auth_by_token", "logout", "is_auth", "alpha101", "alpha191", "technical_analysis", "__version__"]
