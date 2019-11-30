@@ -863,7 +863,7 @@ def test_get_data():
 
 def test_get_all_factors():
     df = get_all_factors()
-    assert re.split(r'\s+', df.iloc[3].to_string()) == [u'factor', u'growth', u'factor_intro', u'\u6210\u957f\u56e0\u5b50', u'category', u'barra', u'category_intro', u'\u98ce\u9669\u56e0\u5b50', u'-', u'\u98ce\u683c\u56e0\u5b50']
+    assert re.split(r'\s+', df.iloc[3].to_string()) == [u'factor', u'circulating_market_cap', u'factor_intro', u'\u6d41\u901a\u5e02\u503c', u'category', u'basics', u'category_intro', u'\u57fa\u7840\u79d1\u76ee\u53ca\u884d\u751f\u7c7b\u56e0\u5b50']
 
 
 def pass_test_timeout_error():
