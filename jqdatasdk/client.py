@@ -149,6 +149,7 @@ class JQDataClient(object):
             except socket_error as e:
                 self._reset()
                 err = e
+                # time.sleep(idx)
                 continue
             except Exception as e:
                 self._reset()

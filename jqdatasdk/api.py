@@ -577,8 +577,9 @@ def get_current_tick(security):
                          'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
                          'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p']
     future_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position', 'a1_p', 'a1_v', 'b1_p', 'b1_v']
+    index_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money']
 
-    tick_fields_list = [stock_tick_fields,future_tick_fields,stock_tick_fields,stock_tick_fields,option_tick_fields]
+    tick_fields_list = [stock_tick_fields,future_tick_fields,stock_tick_fields,index_tick_fields,option_tick_fields]
     # content[0]返回数据第一个字符为标的类型  "0":"stock","1":"future","2":"fund","3":"index","4":"option"
     tick_fields = tick_fields_list[int(content[0])]
 
