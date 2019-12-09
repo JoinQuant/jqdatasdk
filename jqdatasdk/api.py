@@ -200,6 +200,7 @@ def get_industries(name='zjw', date=None):
     :return:pandas.DataFrame, 各column分别为行业代码、行业名称、开始日期
     """
     assert name, "name is required"
+    date = to_date_str(date)
     return JQDataClient.instance().get_industries(**locals())
 
 
@@ -238,6 +239,7 @@ def get_concept(security, date):
     :param date 要查询的提起, 日期字符串/date对象/datetime对象, 注意传入datetime对象时忽略日内时间
     :return:返回dict, key为标的代码, value为概念板块信息
     """
+    date = to_date_str(date)
     return JQDataClient.instance().get_concept(**locals())
 
 
@@ -266,6 +268,7 @@ def get_security_info(code, date=None):
     :return Security
     """
     assert code, "code is required"
+    date = to_date_str(date)
     result = JQDataClient.instance().get_security_info(**locals())
     if result:
         return Security(**result)
@@ -348,6 +351,7 @@ def get_margincash_stocks(date=None):
     返回上交所、深交所最近一次披露的的可融资标的列表的list
     :return: list
     """
+    date = to_date_str(date)
     return JQDataClient.instance().get_margincash_stocks(**locals())
 
 
@@ -358,6 +362,7 @@ def get_marginsec_stocks(date=None):
     返回上交所、深交所最近一次披露的的可融券标的列表的list
     :return:list
     """
+    date = to_date_str(date)
     return JQDataClient.instance().get_marginsec_stocks(**locals())
 
 
@@ -527,17 +532,16 @@ def get_bars_engine(security, count, unit="1d", fields=("open", "high", "low", "
     return JQDataClient.instance().get_bars_engine(**locals())
 
 
-@assert_auth
-def get_current_tick2(security):
-    """
-    获取最新的 tick 数据
-
-    :param security 标的代码
-    :return:
-    """
-    assert security, "security is required"
-    security = convert_security(security)
-    return JQDataClient.instance().get_current_tick(**locals())
+# @assert_auth
+# def get_current_tick2(security):
+#     """
+#     获取最新的 tick 数据
+#     :param security 标的代码
+#     :return:
+#     """
+#     assert security, "security is required"
+#     security = convert_security(security)
+#     return JQDataClient.instance().get_current_tick(**locals())
 
 def get_current_tick(security):
     """
@@ -715,9 +719,6 @@ def get_factor_effect(security, start_date, end_date, period, factor, group_num=
     assert isinstance(security, six.string_types), "security must be a inde code" 
     assert period[-1] in ["D", "W", "M"], "period must be end with one of (\"D\", \"W\", \"M\")"
     return JQDataClient.instance().get_factor_effect(**locals())
-
-def get_test_time(times):
-    return JQDataClient.instance().get_test_time(**locals())
 
 @assert_auth
 def get_data(api_name, **kwargs):
