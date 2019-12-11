@@ -45,7 +45,7 @@ class JQDataClient(object):
             cls._threading_local._instance = _instance
         return _instance
 
-    def __init__(self, host, port, username="", password="", token="", retry_cnt=5):
+    def __init__(self, host, port, username="", password="", token="", retry_cnt=5, version=""):
         assert host, "host is required"
         assert port, "port is required"
         assert username or token, "username is required"
@@ -62,7 +62,8 @@ class JQDataClient(object):
         self.compress = True
         self.http_token = ""
         self.data_api_url = ""
-        self.pool = HeartbeatClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=5, timeout=180)
+        self.version = version
+        self.pool = HeartbeatClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=5, timeout=300)
 
     @classmethod
     def set_auth_params(cls, **params):
@@ -77,7 +78,7 @@ class JQDataClient(object):
             self.client = self.pool.get_client()
             self.inited = True
             if self.username:
-                response = self.client.auth(self.username, self.password, self.compress, get_mac_address())
+                response = self.client.auth(self.username, self.password, self.compress, get_mac_address(), self.version)
                 self.data_api_url = response.error if response.error else AUTH_API_URL
                 self.set_http_token()
             else:
@@ -149,7 +150,7 @@ class JQDataClient(object):
             except socket_error as e:
                 self._reset()
                 err = e
-                # time.sleep(idx)
+                # time.sleep(1)  # # time.sleep(idx)
                 continue
             except Exception as e:
                 self._reset()
