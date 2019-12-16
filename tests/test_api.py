@@ -384,7 +384,7 @@ def test_finance_basic():
 
 def test_pd_datetime():
     df = get_all_securities()
-    assert 2874 == df[df['start_date'] < "2016-01-01"].shape[0]
+    assert 2875 == df[df['start_date'] < "2016-01-01"].shape[0]
 
     df = get_price('000001.XSHE')
     assert 5 == df[df.index < '2015-01-10'].shape[0]
