@@ -11,7 +11,7 @@ from . import technical_analysis
 from .table import *
 from .client import JQDataClient, AnalysisDNS
 
-__version__ = "1.7.8"
+__version__ = "1.7.9"
 
 def auth(username, password, host="39.107.190.114", port=7000):
     JQDataClient.set_auth_params(host=host, port=port, username=username, password=password, version=__version__)
