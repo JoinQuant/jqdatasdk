@@ -1,6 +1,6 @@
 # JQData
 
-[![img](https://raw.githubusercontent.com/JoinQuant/jqdatasdk/master/logo.png)](https://raw.githubusercontent.com/JoinQuant/jqdatasdk/master/logo.png)
+[![img](https://file.joinquant.com/jqdatasdk/jqdata.png)](https://file.joinquant.com/jqdatasdk/jqdata.png)
 
 > jqdatasdk是提供给用户获取聚宽金融数据的SDK。用户可以在自己本地搭建的环境中获取聚宽提供的全品种量化金融数据，其功能特性与官网的投资研究模块保持一致。
 
