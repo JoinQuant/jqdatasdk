@@ -722,7 +722,7 @@ def test_get_current_tick():
         get_current_tick(trade_codes + ["AU8888.XSGE"])
 
 
-def test_get_price_engine():
+def del_test_get_price_engine():
     df = get_price_engine(["000001.XSHE", "000002.XSHE"], end_date='2018-10-01', count=1, fq=None)
     assert type(df) == pd.core.panel.Panel
     assert df.minor_xs("000001.XSHE").to_json() == ('{"close":{"1538092800000":11.05},"high":{"1538092800000":11.27},'
@@ -733,20 +733,20 @@ def test_get_price_engine():
 ',close,high,low,money,open,volume\n2018-09-28,1298.24,1324.09,1266.52,2331358288.96,1266.52,1796135.0\n')
 
 
-def test_history_engine():
+def del_test_history_engine():
     assert history_engine("2018-10-01",5, security_list=["000001.XSHE", "600360.XSHG"],
                           pre_factor_ref_date='2018-10-01').to_csv() == (
 ',000001.XSHE,600360.XSHG\n2018-09-21,10.51,''6.09\n2018-09-25,10.55,6.12\n2018-09-26,10.74,6.15\n2018-09-27,10.7,5.99\n2018-09-28,11.05,5.95\n')
 
 
-def test_attribute_history_engine():
+def del_test_attribute_history_engine():
     assert attribute_history_engine("2018-10-01","600360.XSHG",5,pre_factor_ref_date='2018-10-01').to_csv() == (
 ',open,close,high,low,volume,money\n2018-09-21,6.07,6.12,6.14,6.02,8063165.0,49144137.0\n2018-09-25,6.11,6.12,6.17,'
 '6.07,5200100.0,31811127.0\n2018-09-26,6.12,6.14,6.2,6.1,7534100.0,46317036.0\n2018-09-27,6.13,5.91,6.13,5.84,11052'
 '861.0,66220858.0\n2018-09-28,5.91,5.97,5.99,5.91,4979800.0,29647440.0\n')
 
 
-def test_get_bars_engine():
+def del_test_get_bars_engine():
     df = get_bars_engine('000006.XSHE',end_dt='2018-10-26',count=5, fq_ref_date='2018-11-07')
     assert type(df) == np.ndarray
     assert df.tolist() == [(4.6, 4.92, 4.51, 4.88),
@@ -758,7 +758,7 @@ def test_get_bars_engine():
         '000006.XSHE',end_dt='2018-10-26',count=5, fq_ref_date=datetime.date(2018, 11, 7)).tolist()
 
 
-def test_get_ticks_engine():
+def del_test_get_ticks_engine():
     df = get_ticks_engine('600535.XSHG', end_dt='2018-10-10', count=1)
     assert type(df) == np.ndarray
     assert df.tolist() == [(20181009150001.0, 21.83, 22.54, 21.72, 4898100.0,
@@ -770,7 +770,7 @@ def test_get_ticks_engine():
     assert df1["600535.XSHG"] == df
 
 
-def test_get_current_tick_engine():
+def del_test_get_current_tick_engine():
     today = datetime.date.today()
     is_tradeday = (today in get_trade_days(start_date=today))
     df = get_current_tick_engine(['000002.XSHE', '600358.XSHG'])
@@ -782,7 +782,7 @@ def test_get_current_tick_engine():
         assert df['600358.XSHG'] == None
 
 
-def test_get_daily_info_engine():
+def del_test_get_daily_info_engine():
     assert get_daily_info_engine("164810.XSHE", "2018-11-20") == {
         'factor': {'164810.XSHE': 1.0},
         'high_limit': {'164810.XSHE': 1.089},

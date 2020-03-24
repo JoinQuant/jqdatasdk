@@ -26,6 +26,8 @@ with open(join(dirname(__file__), 'README.md'), 'rb') as f:
 
 requirements = [str(ir.req) for ir in parse_requirements("requirements.txt", session=False)]
 
+if sys.version_info.major == 2:
+    requirements = [str(ir.req) for ir in parse_requirements("requirements-py2.txt", session=False)]
 
 setup(
     name="jqdatasdk",
