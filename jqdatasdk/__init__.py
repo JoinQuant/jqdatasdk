@@ -9,7 +9,7 @@ from . import alpha101
 from . import alpha191
 from . import technical_analysis
 from .table import *
-from .client import JQDataClient, AnalysisDNS, is_pandas_version_25
+from .client import JQDataClient, AnalysisDNS, is_pandas_version_25, get_pandas_notice
 
 __version__ = "1.8.0"
 
@@ -28,7 +28,7 @@ def is_auth():
     return not JQDataClient.instance().not_auth
 
 if is_pandas_version_25():
-    print("提示：当前环境pandas版本为0.25，get_price与get_fundamentals_continuously接口panel参数将固定为False\n注意：0.25以上版本pandas不支持panel，如使用该数据结构和相关函数请注意修改")
+    print(get_pandas_notice())
 
 analysis_dns = AnalysisDNS()
 analysis_dns.start()
