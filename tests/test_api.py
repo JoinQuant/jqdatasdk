@@ -190,7 +190,7 @@ def test_get_price():
     get_price('000001.XSHE', start_date=datetime.datetime(2015, 1, 1),
               end_date=datetime.datetime(2015, 2, 1), frequency='daily', fields='open')
     assert get_price('000001.XSHE', start_date='2015-01-01', end_date='2015-02-01', frequency='1d',
-                     fq=None).to_csv() == \
+                     fq=None).to_csv().replace('\r', '') == \
         """,open,close,high,low,volume,money
 2015-01-05,15.99,16.02,16.28,15.6,286043648.0,4565387776.0
 2015-01-06,15.85,15.78,16.39,15.55,216642144.0,3453446144.0
@@ -214,7 +214,7 @@ def test_get_price():
 2015-01-30,13.93,13.93,14.12,13.76,93011672.0,1298735744.0
 """
     assert round_df(get_price('000002.XSHE', fields=day_columns, start_date='2014-12-30',
-                              end_date='2015-01-06', fq=None), 12).to_csv() == \
+                              end_date='2015-01-06', fq=None), 12).to_csv().replace('\r', '') == \
         """,open,close,high,low,volume,money,pre_close,high_limit,low_limit,paused,avg,factor
 2014-12-30,12.45,12.64,13.15,12.19,386124416.0,4894974976.0,12.43,13.67,11.19,0.0,12.68,1.0
 2014-12-31,12.6,13.9,13.9,12.46,489954464.0,6494929920.0,12.64,13.9,11.38,0.0,13.26,1.0
@@ -222,15 +222,19 @@ def test_get_price():
 2015-01-06,14.6,14.36,14.99,14.05,334634688.0,4839616000.0,14.91,16.4,13.42,0.0,14.46,1.0
 """
     assert get_price(['000001.XSHE', '000002.XSHE'], fields='close', start_date='2014-12-30',
-                     end_date='2015-01-06', fq=None)['close'].to_csv() == \
-        """,000001.XSHE,000002.XSHE
-2014-12-30,15.5,12.64
-2014-12-31,15.84,13.9
-2015-01-05,16.02,14.91
-2015-01-06,15.78,14.36
+                     end_date='2015-01-06', fq=None, panel=False).to_csv().replace('\r', '') == \
+        """,time,code,close
+0,2014-12-30,000001.XSHE,15.5
+1,2014-12-31,000001.XSHE,15.84
+2,2015-01-05,000001.XSHE,16.02
+3,2015-01-06,000001.XSHE,15.78
+4,2014-12-30,000002.XSHE,12.64
+5,2014-12-31,000002.XSHE,13.9
+6,2015-01-05,000002.XSHE,14.91
+7,2015-01-06,000002.XSHE,14.36
 """
     df = get_price('000001.XSHE', frequency='5d', start_date='2014-12-01', end_date='2015-01-20', fq=None)
-    assert df.to_csv() == \
+    assert df.to_csv().replace('\r', '') == \
         """,open,close,high,low,volume,money
 2014-12-05,12.6,14.53,15.23,12.08,1981703360.0,26377940992.0
 2014-12-12,14.21,13.94,15.53,13.02,1538351152.0,22132453632.0
@@ -258,21 +262,21 @@ def test_get_price2():
     df = get_price('000001.XSHG', start_date='2000-01-01', end_date='2018-01-01')
     assert len(df.index) == len(get_trade_days(end_date="2018-01-01", count=10000))
 
-    assert get_price('000001.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq=None).iloc[[0, -2, -1]].to_csv() == """\
+    assert get_price('000001.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq=None).iloc[[0, -2, -1]].to_csv().replace('\r', '') == """\
 ,open,close,high,low,volume,money
 2005-01-04,6.59,6.52,6.59,6.46,1760832.0,11465603.0
 2015-12-30,12.09,12.1,12.11,11.95,53266704.0,641277248.0
 2015-12-31,12.1,11.99,12.13,11.98,49125892.0,591643584.0
 """
 
-    assert get_price('000001.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq=None).iloc[[0, -2, -1]].to_csv() == """\
+    assert get_price('000001.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq=None).iloc[[0, -2, -1]].to_csv().replace('\r', '') == """\
 ,open,close,high,low,volume,money
 2005-01-04,6.59,6.52,6.59,6.46,1760832.0,11465603.0
 2015-12-30,12.09,12.1,12.11,11.95,53266704.0,641277248.0
 2015-12-31,12.1,11.99,12.13,11.98,49125892.0,591643584.0
 """
 
-    assert get_price('000001.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq='post').iloc[[0, -2, -1]].to_csv() == """\
+    assert get_price('000001.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq='post').iloc[[0, -2, -1]].to_csv().replace('\r', '') == """\
 ,open,close,high,low,volume,money
 2005-01-04,179.52,177.62,179.52,175.98,64637.0,11465603.0
 2015-12-30,1132.34,1133.27,1134.21,1119.23,568730.0,641277248.0
@@ -280,14 +284,14 @@ def test_get_price2():
 """
 
     # 2015-12-18停牌了
-    assert get_price('000002.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq=None).iloc[[0, -2, -1]].to_csv() == """\
+    assert get_price('000002.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq=None).iloc[[0, -2, -1]].to_csv().replace('\r', '') == """\
 ,open,close,high,low,volume,money
 2005-01-04,5.22,5.27,5.31,5.17,10353811.0,54514225.0
 2015-12-17,20.38,22.21,22.21,20.35,258339264.0,5616476672.0
 2015-12-18,22.4,24.43,24.43,21.66,223898400.0,5288950784.0
 """
 
-    assert get_price('000002.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=False, fq=None).iloc[[0, -2, -1]].to_csv() == """\
+    assert get_price('000002.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=False, fq=None).iloc[[0, -2, -1]].to_csv().replace('\r', '') == """\
 ,open,close,high,low,volume,money
 2005-01-04,5.22,5.27,5.31,5.17,10353811.0,54514225.0
 2015-12-30,24.43,24.43,24.43,24.43,0.0,0.0
@@ -295,14 +299,14 @@ def test_get_price2():
 """
 
     # 2015-11-02退市了
-    assert get_price('000033.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq=None).iloc[[0, -2, -1]].to_csv() == """\
+    assert get_price('000033.XSHE', start_date='2000-01-01', end_date='2015-12-31', skip_paused=True, fq=None).iloc[[0, -2, -1]].to_csv().replace('\r', '') == """\
 ,open,close,high,low,volume,money
 2005-01-04,3.68,3.71,3.74,3.63,221902.0,815076.0
 2015-04-28,9.89,9.89,9.89,9.89,837617.0,8284032.0
 2015-04-29,10.38,10.38,10.38,10.38,8184168.0,84951664.0
 """
 
-    assert get_price('000033.XSHE', start_date='2000-01-01', end_date='2015-11-3', skip_paused=False, fq=None).iloc[[0, -2, -1]].to_csv() == """\
+    assert get_price('000033.XSHE', start_date='2000-01-01', end_date='2015-11-3', skip_paused=False, fq=None).iloc[[0, -2, -1]].to_csv().replace('\r', '') == """\
 ,open,close,high,low,volume,money
 2005-01-04,3.68,3.71,3.74,3.63,221902.0,815076.0
 2015-11-02,10.38,10.38,10.38,10.38,0.0,0.0
@@ -311,7 +315,7 @@ def test_get_price2():
 
     #       display_name    name    start_date  end_date    type
     # 600472.XSHG 包头铝业    BTLY    2005-05-09  2007-12-26  stock
-    assert get_price('600472.XSHG', start_date='2000-01-01', end_date='2007-12-27', skip_paused=False, fq=None).iloc[[0, -2, -1]].to_csv() == """\
+    assert get_price('600472.XSHG', start_date='2000-01-01', end_date='2007-12-27', skip_paused=False, fq=None).iloc[[0, -2, -1]].to_csv().replace('\r', '') == """\
 ,open,close,high,low,volume,money
 2005-01-04,,,,,,
 2007-12-26,51.82,51.82,51.82,51.82,0.0,0.0
@@ -370,8 +374,8 @@ def test_get_price_minute2():
 
 def test_get_price_minute3():
     p = get_price(['000001.XSHE', '000002.XSHE'], '2015-12-17',
-                  '2015-12-21 23:00:00', frequency='minute', skip_paused=False)
-    assert len(p['close'].index) == 720
+                  '2015-12-21 23:00:00', frequency='minute', skip_paused=False, panel=False)
+    assert len(p['close'].index) == 1440
     p = get_price(['000001.XSHE', '000002.XSHE'], '2015-12-22 09:30:00',
                   '2015-12-21 15:00:00', frequency='minute', skip_paused=False)
     assert len(p['close'].index) == 0
@@ -435,28 +439,31 @@ def test_get_fundamentals2():
 def test_get_fundamentals_continuously():
     # with date
     df = get_fundamentals_continuously(
-        query(income.pubDate).filter(income.code == '000001.XSHE'), datetime.date(2015, 1, 1), 10)
-    assert isinstance(df, pd.Panel)
-    assert len(df.major_axis) == 10
-    assert '000001.XSHE' in list(df['pubDate'])
-    assert list(df.major_axis) == ['2014-12-18', '2014-12-19', '2014-12-22', '2014-12-23', '2014-12-24',
-                                   '2014-12-25', '2014-12-26', '2014-12-29', '2014-12-30', '2014-12-31']
+        query(income.pubDate).filter(income.code == '000001.XSHE'), datetime.date(2015, 1, 1), 10, panel=False)
+    # assert isinstance(df, pd.Panel)
+    # assert len(df.major_axis) == 10
+    # assert '000001.XSHE' in list(df['pubDate'])
+    # assert list(df.major_axis) == ['2014-12-18', '2014-12-19', '2014-12-22', '2014-12-23', '2014-12-24',
+    #                                '2014-12-25', '2014-12-26', '2014-12-29', '2014-12-30', '2014-12-31']
+    assert len(df) == 10
 
     # yearly
     df = get_fundamentals_continuously(query(valuation.day, balance.code, cash_flow.code, income.code,
                                              indicator.code).
                                        filter(cash_flow.code.in_(['000001.XSHE', '000002.XSHE'])),
-                                              datetime.date(2015, 1, 1), 60)
-    assert isinstance(df, pd.Panel)
-    assert len(df.major_axis) == 60
-    assert list(df.minor_axis) == ['000001.XSHE', '000002.XSHE']
+                                              datetime.date(2015, 1, 1), 60, panel=False)
+    # assert isinstance(df, pd.Panel)
+    # assert len(df.major_axis) == 60
+    # assert list(df.minor_axis) == ['000001.XSHE', '000002.XSHE']
+    assert len(df) == 120
 
     # indicator
-    df = get_fundamentals_continuously(query(indicator).filter(indicator.code == '000001.XSHE'), '2015-10-15', 10)
-    assert isinstance(df, pd.Panel)
-    assert len(df.major_axis) == 10
-    assert list(df['inc_net_profit_to_shareholders_annual']) == ['000001.XSHE']
-    assert list(df['inc_net_profit_to_shareholders_annual']['000001.XSHE']) == [5.81 for i in range(0, 10)]
+    df = get_fundamentals_continuously(query(indicator).filter(indicator.code == '000001.XSHE'), '2015-10-15', 10, panel=False)
+    # assert isinstance(df, pd.Panel)
+    # assert len(df.major_axis) == 10
+    # assert list(df['inc_net_profit_to_shareholders_annual']) == ['000001.XSHE']
+    # assert list(df['inc_net_profit_to_shareholders_annual']['000001.XSHE']) == [5.81 for i in range(0, 10)]
+    assert len(df) == 10
 
 
 def test_get_industries():
@@ -653,7 +660,7 @@ def test_get_factor_values():
                             ["AR", "Skewness60"],
                             start_date="2017-03-01",
                             end_date="2017-03-03")["Skewness60"]
-    assert dct.to_csv() == ",000001.XSHE,000002.XSHE\n2017-03-01,-0.033712,0.017125\n"\
+    assert dct.to_csv().replace('\r', '') == ",000001.XSHE,000002.XSHE\n2017-03-01,-0.033712,0.017125\n"\
                            "2017-03-02,-0.032092,0.014074\n2017-03-03,0.024989,0.031561\n"
     with pytest.raises(Exception, match="Invalid factors"):
         get_factor_values("000001.XSHE", "asdf", end_date="2017-03-04", count=10)
@@ -672,7 +679,7 @@ def test_trade_days():
 
 def test_get_bars():
     assert len(get_bars("000002.XSHE", end_dt="2018-10-19", count=10)) == 10
-    assert get_bars("000001.XSHE", count=5, end_dt="2018-10-15").to_csv() == (
+    assert get_bars("000001.XSHE", count=5, end_dt="2018-10-15").to_csv().replace('\r', '') == (
         ',date,open,high,low,close\n0,2018-10-08,10.7,10.79,10.45,10.45\n1,2018-10-09,10.46,10.7,10.39,10.56\n2,2018-10-10,10.54,10.66,10.38,10.45\n3,2018-10-11,10.05,10.16,9.7,9.86\n4,2018-10-12,9.97,10.34,9.87,10.3\n'
     )
 
@@ -825,7 +832,7 @@ def test_opt_tables():
             opt.OPT_EXERCISE_INFO.underlying_symbol=='510050.XSHG'
         ).filter(
             opt.OPT_EXERCISE_INFO.exercise_date=='2015-05-27'
-        )).to_csv() == (',id,underlying_symbol,underlying_name,exercise_date,contract_type,exercise_number\n'
+        )).to_csv().replace('\r', '') == (',id,underlying_symbol,underlying_name,exercise_date,contract_type,exercise_number\n'
         '0,3,510050.XSHG,50ETF,2015-05-27,CO,7333\n1,4,510050.XSHG,50ETF,2015-05-27,PO,1897\n')
     assert opt.run_query(query(opt.OPT_CONTRACT_INFO.code).limit(10)).columns.tolist() == ["code"]
 
@@ -849,13 +856,17 @@ def test_get_factor_effect():
 
 def test_get_data():
     df = get_data("get_price", security=['000001.XSHE', '000002.XSHE'], fields='close', start_date='2014-12-30',
-                        end_date='2015-01-06', fq=None)
-    df['close'].to_csv() == \
-""",000001.XSHE,000002.XSHE
-2014-12-30,15.5,12.64
-2014-12-31,15.84,13.9
-2015-01-05,16.02,14.91
-2015-01-06,15.78,14.36
+                        end_date='2015-01-06', fq=None, panel=False)
+    df.to_csv().replace('\r', '') == \
+""",time,code,close
+0,2014-12-30,000001.XSHE,15.5
+1,2014-12-31,000001.XSHE,15.84
+2,2015-01-05,000001.XSHE,16.02
+3,2015-01-06,000001.XSHE,15.78
+4,2014-12-30,000002.XSHE,12.64
+5,2014-12-31,000002.XSHE,13.9
+6,2015-01-05,000002.XSHE,14.91
+7,2015-01-06,000002.XSHE,14.36
 """
     for code in (1, '000001', 'SZ000001', '000001SZ', '000001.sz', '000001.XSHE'):
         assert '000001.XSHE' == get_data("normalize_code", code=code)

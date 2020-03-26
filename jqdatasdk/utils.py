@@ -298,3 +298,8 @@ def get_security_type(security):
                 return "option"
             return "future"
     return 0
+
+def is_pandas_version_25():
+    if pd.__version__[:4] == "0.25":
+        return True
+    return False

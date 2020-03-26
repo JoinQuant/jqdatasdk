@@ -18,13 +18,15 @@ def get_price(security, start_date=None, end_date=None, frequency='daily',
     :param frequency 单位时间长度, 几天或者几分钟, 现在支持'Xd','Xm', 'daily'(等同于'1d'), 'minute'(等同于'1m'), X是一个正整数, 分别表示X天和X分钟
     :param fields 字符串list, 默认是None(表示['open', 'close', 'high', 'low', 'volume', 'money']这几个标准字段), 支持以下属性 ['open', 'close', 'low', 'high', 'volume', 'money', 'factor', 'high_limit', 'low_limit', 'avg', 'pre_close', 'paused']
     :param skip_paused 是否跳过不交易日期(包括停牌, 未上市或者退市后的日期). 如果不跳过, 停牌时会使用停牌前的数据填充, 上市前或者退市后数据都为 nan
-    :param panel: 当传入一个标的列表的时候，是否返回一个panel对象，默认为True，表示返回一哥panel对象
+    :param panel: 当传入一个标的列表的时候，是否返回一个panel对象，默认为True，表示返回一个panel对象
            注意：
                当security为一个标的列表，且panel=False的时候，会返回一个dataframe对象，
                在这个对象中额外多出code、time两个字段，分别表示该条数据对应的标的、时间
     :param fill_paused : False 表示使用NAN填充停牌的数据，True表示用close价格填充，默认True
     :return 如果是一支证券, 则返回pandas.DataFrame对象, 行索引是datetime.datetime对象, 列索引是行情字段名字; 如果是多支证券, 则返回pandas.Panel对象, 里面是很多pandas.DataFrame对象, 索引是行情字段(open/close/…), 每个pandas.DataFrame的行索引是datetime.datetime对象, 列索引是证券代号.
     """
+    if is_pandas_version_25():
+        panel=False
     security = convert_security(security)
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
@@ -108,6 +110,8 @@ def get_fundamentals_continuously(query_object, end_date=None, count=1, panel=Tr
     from .finance_service import fundamentals_redundant_continuously_query_to_sql
     from .calendar_service import CalendarService
 
+    if is_pandas_version_25():
+        panel=False
     trade_days = CalendarService.get_trade_days(end_date=end_date, count=count)
     sql = fundamentals_redundant_continuously_query_to_sql(query_object, trade_days)
     sql = remove_duplicated_tables(sql)

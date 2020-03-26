@@ -20,7 +20,7 @@ else:
 from .thrift_connector import HeartbeatClientPool, ThriftPyClient
 
 from .api import *
-from .utils import get_mac_address
+from .utils import get_mac_address, is_pandas_version_25
 
 thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
 thrift_path = path.abspath(thrift_path)
