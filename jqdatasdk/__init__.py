@@ -11,7 +11,7 @@ from . import technical_analysis
 from .table import *
 from .client import JQDataClient, AnalysisDNS, is_pandas_version_25, get_pandas_notice
 
-__version__ = "1.8.0"
+__version__ = "1.8.1"
 
 def auth(username, password, host="39.107.190.114", port=7000):
     JQDataClient.set_auth_params(host=host, port=port, username=username, password=password, version=__version__)

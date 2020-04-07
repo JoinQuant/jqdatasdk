@@ -16,8 +16,8 @@ if platform.system().lower() != "windows":
     socket_error = (transport.TTransportException, socket.error, protocol.cybin.ProtocolError)
 else:
     socket_error = (transport.TTransportException, socket.error)
-# from thriftpy2.rpc import make_client
-from .thrift_connector import HeartbeatClientPool, ThriftPyClient
+from thriftpy2.rpc import make_client
+# from .thrift_connector import HeartbeatClientPool, ThriftPyClient
 
 from .api import *
 from .utils import get_mac_address, is_pandas_version_25, get_pandas_notice
@@ -63,7 +63,7 @@ class JQDataClient(object):
         self.http_token = ""
         self.data_api_url = ""
         self.version = version
-        self.pool = HeartbeatClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=5, timeout=300)
+        # self.pool = HeartbeatClientPool(thrift.JqDataService, self.host, self.port, connection_class=ThriftPyClient, keepalive=60, max_conn=3, timeout=300)
 
     @classmethod
     def set_auth_params(cls, **params):
@@ -74,8 +74,8 @@ class JQDataClient(object):
         if not self.inited:
             if not self.username and not self.token:
                 raise RuntimeError("not inited")
-            # self.client = make_client(thrift.JqDataService, self.host, self.port, timeout=300000)
-            self.client = self.pool.get_client()
+            self.client = make_client(thrift.JqDataService, self.host, self.port, timeout=300000)
+            # self.client = self.pool.get_client()
             self.inited = True
             if self.username:
                 response = self.client.auth(self.username, self.password, self.compress, get_mac_address(), self.version)
