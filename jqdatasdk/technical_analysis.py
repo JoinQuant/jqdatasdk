@@ -2043,6 +2043,9 @@ def JYJL(security_list, check_date, N=120, M=5, unit='1d', include_now=True):
     输出结果类型：
         字典(dict)：键(key)为股票代码，值(value)为数据
     '''
+    func_name = sys._getframe().f_code.co_name
+    check_date = to_date_str(check_date)
+    return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
