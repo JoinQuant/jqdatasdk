@@ -1,39 +1,46 @@
 #!/usr/bin/env python
 # coding=utf-8
-import re
+
+import os
 import sys
-from os.path import dirname, join
-
-try:
-    # for pip >= 10
-    from pip._internal.req import parse_requirements
-except ImportError:
-    # for pip <= 9.0.3
-    from pip.req import parse_requirements
+import re
+from setuptools import setup, find_packages
 
 
-from setuptools import (
-    find_packages,
-    setup,
-)
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 
-with open(join(dirname(__file__), 'jqdatasdk', '__init__.py'), 'r') as f:
-    version = re.match(r".*__version__ = \"(.*?)\"", f.read(), re.S).group(1)
+def get_version():
+    with open(os.path.join(THIS_FOLDER, 'jqdatasdk', '__init__.py'), 'r') as f:
+        version = re.match(r".*__version__ = \"(.*?)\"", f.read(), re.S).group(1)
 
-with open(join(dirname(__file__), 'README.md'), 'rb') as f:
-    long_description = f.read().decode('utf-8')
 
-requirements = [str(ir.req) for ir in parse_requirements("requirements.txt", session=False)]
+def get_long_description():
+    with open(os.path.join(THIS_FOLDER, 'README.md'), 'rb') as f:
+        long_description = f.read().decode('utf-8')
 
-if sys.version_info.major == 2:
-    requirements = [str(ir.req) for ir in parse_requirements("requirements-py2.txt", session=False)]
+
+def _parse_requirement_file(path):
+    if not os.path.isfile(path):
+        return []
+    with open(path) as f:
+        requirements = [line.strip() for line in f if line.strip()]
+    return requirements
+
+
+def get_install_requires():
+    if sys.version_info.major < 3:
+        requirement_file = os.path.join(THIS_FOLDER, "requirements-py2.txt")
+    else:
+        requirement_file = os.path.join(THIS_FOLDER, "requirements.txt")
+    return _parse_requirement_file(requirement_file)
+
 
 setup(
     name="jqdatasdk",
-    version=version,
+    version=get_version(),
     description="jqdatasdk<easy utility for getting financial market data of China>",
-    packages=["jqdatasdk", "jqdatasdk.thrift_connector"],
+    packages=find_packages(exclude=("tests", "tests.*")),
     author="JoinQuant",
     author_email="xlx@joinquant.com",
     maintainer="tech_data",
@@ -41,9 +48,9 @@ setup(
     license='Apache License v2',
     package_data={'': ['*.*']},
     url="https://www.joinquant.com/data",
-    long_description=long_description,
+    long_description=get_long_description(),
     long_description_content_type='text/markdown',
-    install_requires=requirements,
+    install_requires=get_install_requires(),
     zip_safe=False,
     platforms=["all"],
     classifiers=[
