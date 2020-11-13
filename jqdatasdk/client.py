@@ -28,7 +28,7 @@ thrift = None
 with open(thrift_path) as f:
     thrift = thriftpy.load_fp(f, "jqdata_thrift")
 
-AUTH_API_URL = "https://dataapi.joinquant.com/apis" # 获取token
+AUTH_API_URL = "https://dataapi.joinquant.com/apis"  # 获取token
 
 
 class JQDataClient(object):
@@ -38,6 +38,15 @@ class JQDataClient(object):
 
     request_timeout = 300
     request_attempt_count = 3
+
+    @classproperty
+    def _local_socket_timeout(cls):
+        """本地网络超时时间
+
+        由于网络稍有延迟，将该时间设置为比服务器超时时间略长一点
+        否则会有服务端正常处理完，而客户端已超时断开的问题
+        """
+        return cls.request_timeout + 5
 
     @classmethod
     def instance(cls):
@@ -83,7 +92,7 @@ class JQDataClient(object):
                     sock = instance.client._iprot.trans._trans.sock
                 except AttributeError:
                     sock = instance.client._iprot.trans.sock
-                sock.settimeout(cls.request_timeout)
+                sock.settimeout(cls._local_socket_timeout)
         if "request_attempt_count" in params:
             cls.request_attempt_count = int(params["request_attempt_count"])
 
@@ -100,7 +109,7 @@ class JQDataClient(object):
                 thrift.JqDataService,
                 self.host,
                 self.port,
-                timeout=(self.__class__.request_timeout * 1000)
+                timeout=(self._local_socket_timeout * 1000)
             )
             self.inited = True
             if self.username:
@@ -183,7 +192,7 @@ class JQDataClient(object):
             except socket_error as e:
                 self._reset()
                 err = e
-                # time.sleep(1)  # # time.sleep(idx)
+                print("网络错误：'{}', 将进行重试".format(e))
                 continue
             except Exception as e:
                 self._reset()

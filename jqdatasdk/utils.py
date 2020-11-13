@@ -19,6 +19,17 @@ except ImportError:
 
 Serialized = namedtuple('Serialized', 'json')
 
+
+class classproperty(object):
+    """将方法转换为类属性 @classmethod + @property"""
+
+    def __init__(self, func):
+        self.func = classmethod(func)
+
+    def __get__(self, instance, owner):
+        return self.func.__get__(instance, owner)()
+
+
 class Security(object):
     code = None
     display_name = None
