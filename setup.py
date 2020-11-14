@@ -11,13 +11,16 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_version():
-    with open(os.path.join(THIS_FOLDER, 'jqdatasdk', '__init__.py'), 'r') as f:
-        version = re.match(r".*__version__ = \"(.*?)\"", f.read(), re.S).group(1)
+    with open(os.path.join(THIS_FOLDER, 'jqdatasdk', '__init__.py'), "rb") as f:
+        content = f.read().decode("utf-8")
+        version = re.match(r".*__version__ = \"(.*?)\"", content, re.S).group(1)
+    return version
 
 
 def get_long_description():
     with open(os.path.join(THIS_FOLDER, 'README.md'), 'rb') as f:
         long_description = f.read().decode('utf-8')
+    return long_description
 
 
 def _parse_requirement_file(path):
