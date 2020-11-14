@@ -35,3 +35,4 @@ MANIFEST
 *.log
 *.con
 *.out
+env.sh

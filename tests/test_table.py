@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from jqdatasdk import *
 
-with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
-    exec (f.read())
-
 
 def test_bond():
     df = bond.run_query(query(bond.BOND_BASIC_INFO).limit(10))
