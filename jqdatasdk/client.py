@@ -84,7 +84,7 @@ class JQDataClient(object):
     def set_request_params(cls, **params):
         if "request_timeout" in params:
             request_timeout = params["request_timeout"]
-            if request_timeout is None:
+            if not request_timeout:
                 cls.request_timeout = None
             else:
                 request_timeout = float(request_timeout)
@@ -94,12 +94,18 @@ class JQDataClient(object):
             instance = cls.instance()
             if instance and instance.inited and instance.client:
                 try:
-                    sock = instance.client._iprot.trans._trans.sock
-                except AttributeError:
-                    sock = instance.client._iprot.trans.sock
-                sock.settimeout(cls._local_socket_timeout)
+                    try:
+                        sock = instance.client._iprot.trans._trans.sock
+                    except AttributeError:
+                        sock = instance.client._iprot.trans.sock
+                    sock.settimeout(cls.request_timeout)
+                except Exception:
+                    pass
         if "request_attempt_count" in params:
-            cls.request_attempt_count = int(params["request_attempt_count"])
+            request_attempt_count = int(params["request_attempt_count"])
+            if request_attempt_count > 10:
+                raise Exception("请求的尝试次数不能大于 10 次")
+            cls.request_attempt_count = request_attempt_count
 
     @classmethod
     def set_auth_params(cls, **params):
@@ -114,7 +120,7 @@ class JQDataClient(object):
                 thrift.JqDataService,
                 self.host,
                 self.port,
-                timeout=(self._local_socket_timeout * 1000)
+                timeout=(self.request_timeout * 1000)
             )
             self.inited = True
             if self.username:

@@ -52,8 +52,9 @@ def set_params(**params):
 
     参数说明：
         request_timeout: 请求超时时间，单位为秒，默认为 300 秒，值不能超过 300 秒
-                         该值建议在账户认证前设置，否则可能会失败
-        request_attempt_count: 请求的尝试的次数，用于网络异常时重试，默认为 3 次
+                         该值建议在账户认证前设置，否则可能会不生效
+        request_attempt_count: 请求的尝试的次数，用于网络异常时重试，默认为 3 次，
+                         该次数不能超过 10 次
     """
     JQDataClient.set_request_params(**params)
 
