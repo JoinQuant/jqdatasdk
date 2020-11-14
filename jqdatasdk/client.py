@@ -36,6 +36,9 @@ class JQDataClient(object):
     _threading_local = threading.local()
     _auth_params = {}
 
+    _default_host = "39.107.190.114"
+    _default_port = 7000
+
     request_timeout = 300
     request_attempt_count = 3
 
@@ -58,22 +61,24 @@ class JQDataClient(object):
         return _instance
 
     def __init__(self, host, port, username="", password="", token="", version=""):
-        assert host, "host is required"
-        assert port, "port is required"
-        assert username or token, "username is required"
-        assert password or token, "password is required"
-        self.host = host
-        self.port = port
+        self.host = host or self._default_host
+        self.port = int(port or self._default_port)
         self.username = username
         self.password = password
         self.token = token
+        self.version = version
+
+        assert self.host, "host is required"
+        assert self.port, "port is required"
+        assert self.username or self.token, "username is required"
+        assert self.password or self.token, "password is required"
+
         self.client = None
         self.inited = False
         self.not_auth = True
         self.compress = True
         self.http_token = ""
         self.data_api_url = ""
-        self.version = version
 
     @classmethod
     def set_request_params(cls, **params):
@@ -224,7 +229,11 @@ class JQDataClient(object):
             "pwd": self.password
         }
         try:
-            res = requests.post(AUTH_API_URL, data=json.dumps(body))
+            res = requests.post(
+                AUTH_API_URL,
+                data=json.dumps(body),
+                timeout=cls.request_timeout
+            )
             self.http_token = res.text
         except Exception:
             pass
@@ -239,6 +248,6 @@ class AnalysisDNS(threading.Thread):
 
     def run(self):
         try:
-            requests.get(AUTH_API_URL)
+            requests.get(AUTH_API_URL, timeout=6)
         except Exception:
             pass

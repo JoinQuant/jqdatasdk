@@ -19,7 +19,7 @@ from .client import (
 __version__ = "1.8.2"
 
 
-def auth(username, password, host="39.107.190.114", port=7000):
+def auth(username, password, host=None, port=None):
     """账号认证"""
     JQDataClient.set_auth_params(
         host=host,
@@ -30,7 +30,7 @@ def auth(username, password, host="39.107.190.114", port=7000):
     )
 
 
-def auth_by_token(token, host="39.107.190.114", port=7000):
+def auth_by_token(token, host=None, port=None):
     """使用 token 认证账号"""
     JQDataClient.set_auth_params(host=host, port=port, token=token)
 
