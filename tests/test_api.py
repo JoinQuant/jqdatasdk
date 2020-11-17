@@ -8,11 +8,8 @@ import numpy as np
 import pandas as pd
 from jqdatasdk import *
 
-logging.basicConfig()
 log = logging
 
-with open("/home/server/etc/jqdatasdk/import_debug_account.py") as f:
-    exec(f.read())
 
 def test_get_index_stocks():
     assert len(get_index_stocks('000300.XSHG')) == 300
@@ -149,12 +146,12 @@ def test_get_extras4():
 
 def test_sec_info():
     res = {'display_name': u'\u5e73\u5b89\u94f6\u884c',
-           'name': u'PAYH',
-           'parent': None,
-           'end_date': datetime.date(2200, 1, 1),
-           'type': 'stock',
-           'start_date': datetime.date(1991, 4, 3)}
-    info = get_security_info('000001.XSHE')
+        # 'name': u'PAYH',
+        'parent': None,
+        'end_date': datetime.date(2200, 1, 1),
+        'type': 'stock',
+        'start_date': datetime.date(1991, 4, 3)}
+    info = get_security_info('000001.XSHE', date="2019-06-06")
     for f in res:
         assert getattr(info, f) == res[f]
     assert get_security_info('000001.XSHE').type == 'stock'
@@ -180,7 +177,7 @@ def test_get_price():
     # 传入两个重复股票
     get_price(['000001.XSHE', '000001.XSHE'], start_date=datetime.date(2015, 1, 1), end_date=datetime.date(2015, 2, 1), frequency='daily', fields=(u'open', 'close', 'paused'))
     day_columns = 'open close high low volume money pre_close high_limit low_limit paused avg factor'.split()
-    
+
     get_price('000300.XSHG')
     get_price(u'000300.XSHG')
     get_price('000001.XSHE', start_date=datetime.date(2015, 1, 1), end_date=datetime.date(

@@ -614,7 +614,12 @@ def request_data(security):
         "code": codes
     }
     data_api_url = JQDataClient.instance().get_data_api_url()
-    res = requests.post(data_api_url, data = json.dumps(body), headers = headers)
+    res = requests.post(
+        data_api_url,
+        data=json.dumps(body),
+        headers=headers,
+        timeout=JQDataClient.request_timeout
+    )
     return res
 
 @assert_auth
@@ -720,7 +725,7 @@ def get_factor_effect(security, start_date, end_date, period, factor, group_num=
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
     assert group_num > 0, "group_num must be a positive numbe"
-    assert isinstance(security, six.string_types), "security must be a inde code" 
+    assert isinstance(security, six.string_types), "security must be a inde code"
     assert period[-1] in ["D", "W", "M"], "period must be end with one of (\"D\", \"W\", \"M\")"
     return JQDataClient.instance().get_factor_effect(**locals())
 
