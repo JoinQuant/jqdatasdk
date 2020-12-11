@@ -203,8 +203,6 @@ class JQDataClient(object):
             except socket_error as e:
                 self._reset()
                 err = e
-                if idx < self.request_attempt_count - 1:
-                    print("网络错误：'{}', 将进行重试".format(e))
                 continue
             except Exception as e:
                 self._reset()
