@@ -236,7 +236,7 @@ class JQDataClient(object):
             res = requests.post(
                 AUTH_API_URL,
                 data=json.dumps(body),
-                timeout=cls.request_timeout
+                timeout=self.request_timeout
             )
             self.http_token = res.text
         except Exception:
