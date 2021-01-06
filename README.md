@@ -29,7 +29,7 @@ auth('ID','Password') #ID是申请时所填写的手机号；Password为聚宽�
 ```
 
 ## JQData HTTP版本
-除了Python SDK版本外，JQData还推出了不限任何编程语言的JQData HTTP方法，任意编程语言都可调用，点击查看[JQData HTTP使用说明](https://dataapi.joinquant.com/docs)。
+除了Python SDK版本外，JQData还推出了不限任何编程语言的JQData HTTP方法，任意编程语言都可调用，点击查看[JQData HTTP使用说明](https://www.joinquant.com/help/api/help?name=JQDataHttp)。
 
 ## 交流学习
 如在使用中遇到问题，或者想加入JQData学习群和大家一起交流，还可以添加JQData管理员微信咨询，微信号：JQData02，添加时请留言"JQData"。
