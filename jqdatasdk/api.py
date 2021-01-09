@@ -25,8 +25,8 @@ def get_price(security, start_date=None, end_date=None, frequency='daily',
     :param fill_paused : False 表示使用NAN填充停牌的数据，True表示用close价格填充，默认True
     :return 如果是一支证券, 则返回pandas.DataFrame对象, 行索引是datetime.datetime对象, 列索引是行情字段名字; 如果是多支证券, 则返回pandas.Panel对象, 里面是很多pandas.DataFrame对象, 索引是行情字段(open/close/…), 每个pandas.DataFrame的行索引是datetime.datetime对象, 列索引是证券代号.
     """
-    if is_pandas_version_25():
-        panel=False
+    if check_pandas_version():
+        panel = False
     security = convert_security(security)
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
@@ -110,8 +110,9 @@ def get_fundamentals_continuously(query_object, end_date=None, count=1, panel=Tr
     from .finance_service import fundamentals_redundant_continuously_query_to_sql
     from .calendar_service import CalendarService
 
-    if is_pandas_version_25():
-        panel=False
+    if check_pandas_version():
+        panel = False
+
     trade_days = CalendarService.get_trade_days(end_date=end_date, count=count)
     sql = fundamentals_redundant_continuously_query_to_sql(query_object, trade_days)
     sql = remove_duplicated_tables(sql)

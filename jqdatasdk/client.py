@@ -9,6 +9,7 @@ import requests
 from os import path
 
 import msgpack
+import pandas as pd
 import thriftpy2 as thriftpy
 from pandas.compat import pickle_compat as pc
 from thriftpy2 import transport, protocol
@@ -19,7 +20,7 @@ else:
     socket_error = (transport.TTransportException, socket.error)
 
 from .api import *
-from .utils import get_mac_address, is_pandas_version_25, get_pandas_notice
+from .utils import get_mac_address
 
 thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
 thrift_path = path.abspath(thrift_path)
@@ -171,6 +172,24 @@ class JQDataClient(object):
             err = Exception(response.error)
         return err
 
+    @classmethod
+    def convert_message(cls, msg):
+        if isinstance(msg, dict):
+            data_type = msg.get("data_type", None)
+            data_value = msg.get("data_value", None)
+            if data_type is not None and data_value is not None:
+                params = data_value
+                if data_type == "pandas_dataframe":
+                    dtypes = params.pop("dtypes", None)
+                    msg = pd.DataFrame(**params)
+                    if dtypes:
+                        msg = msg.astype(dtypes, copy=False)
+                elif data_type == "pandas_series":
+                    msg = pd.Series(**params)
+            else:
+                msg = {key: cls.convert_message(val) for key, val in msg.items()}
+        return msg
+
     def __call__(self, method, **kwargs):
         kwargs["timeout"] = self.request_timeout
         request = thrift.St_Query_Req()
@@ -215,7 +234,7 @@ class JQDataClient(object):
             if isinstance(err, Exception):
                 raise err
 
-        return result
+        return self.convert_message(result)
 
     def __getattr__(self, method):
         return lambda **kwargs: self(method, **kwargs)

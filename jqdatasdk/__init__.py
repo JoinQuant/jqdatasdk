@@ -12,11 +12,11 @@ from .table import *
 from .client import (
     JQDataClient,
     AnalysisDNS,
-    is_pandas_version_25,
+    check_pandas_version,
     get_pandas_notice
 )
 
-__version__ = "1.8.5"
+__version__ = "1.8.6"
 
 
 def auth(username, password, host=None, port=None):
@@ -60,7 +60,7 @@ def set_params(**params):
 
 
 try:
-    if is_pandas_version_25():
+    if check_pandas_version():
         print(get_pandas_notice())
 
     analysis_dns = AnalysisDNS()

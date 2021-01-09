@@ -11,6 +11,24 @@ from jqdatasdk import *
 log = logging
 
 
+def assert_sequence_equal(a, b, error=1e-5):
+    assert type(a) == type(b)
+    for x, y in zip(a, b):
+        if isinstance(x, float):
+            np.isclose(x, y, error)
+        else:
+            assert x == y
+
+
+def assert_dict_equal(a, b, error=1e-5):
+    assert len(a) == len(b)
+    for k, v in a.items():
+        if isinstance(v, float):
+            np.isclose(v, b[k], error)
+        else:
+            assert v == b[k]
+
+
 def test_get_index_stocks():
     assert len(get_index_stocks('000300.XSHG')) == 300
     assert len(get_index_stocks('000300.XSHG', '2015-11-01')) == 300
@@ -175,17 +193,29 @@ def round_df(df, decimal):
 
 def test_get_price():
     # 传入两个重复股票
-    get_price(['000001.XSHE', '000001.XSHE'], start_date=datetime.date(2015, 1, 1), end_date=datetime.date(2015, 2, 1), frequency='daily', fields=(u'open', 'close', 'paused'))
-    day_columns = 'open close high low volume money pre_close high_limit low_limit paused avg factor'.split()
+    get_price(['000001.XSHE', '000001.XSHE'],
+              start_date=datetime.date(2015, 1, 1),
+              end_date=datetime.date(2015, 2, 1),
+              frequency='daily',
+              fields=(u'open', 'close', 'paused'))
 
     get_price('000300.XSHG')
     get_price(u'000300.XSHG')
-    get_price('000001.XSHE', start_date=datetime.date(2015, 1, 1), end_date=datetime.date(
-        2015, 2, 1), frequency='daily', fields=(u'open', 'close', 'paused', 'factor'))
-    get_price('000001.XSHE', start_date=datetime.datetime(2015, 1, 1),
-              end_date=datetime.datetime(2015, 2, 1), frequency='daily', fields=[u'open', 'close'])
-    get_price('000001.XSHE', start_date=datetime.datetime(2015, 1, 1),
-              end_date=datetime.datetime(2015, 2, 1), frequency='daily', fields='open')
+    get_price('000001.XSHE',
+              start_date=datetime.date(2015, 1, 1),
+              end_date=datetime.date(2015, 2, 1),
+              frequency='daily',
+              fields=(u'open', 'close', 'paused', 'factor'))
+    get_price('000001.XSHE',
+              start_date=datetime.datetime(2015, 1, 1),
+              end_date=datetime.datetime(2015, 2, 1),
+              frequency='daily',
+              fields=[u'open', 'close'])
+    get_price('000001.XSHE',
+              start_date=datetime.datetime(2015, 1, 1),
+              end_date=datetime.datetime(2015, 2, 1),
+              frequency='daily',
+              fields='open')
     assert get_price('000001.XSHE', start_date='2015-01-01', end_date='2015-02-01', frequency='1d',
                      fq=None).to_csv().replace('\r', '') == \
         """,open,close,high,low,volume,money
@@ -210,6 +240,7 @@ def test_get_price():
 2015-01-29,13.82,13.9,14.01,13.75,101675328.0,1408825344.0
 2015-01-30,13.93,13.93,14.12,13.76,93011672.0,1298735744.0
 """
+    day_columns = 'open close high low volume money pre_close high_limit low_limit paused avg factor'.split()
     assert round_df(get_price('000002.XSHE', fields=day_columns, start_date='2014-12-30',
                               end_date='2015-01-06', fq=None), 12).to_csv().replace('\r', '') == \
         """,open,close,high,low,volume,money,pre_close,high_limit,low_limit,paused,avg,factor
@@ -243,7 +274,11 @@ def test_get_price():
 """
 
     get_price('000300.XSHG', fields='price')
-    pass
+
+    fields = ['open', 'close', 'low', 'high', 'volume', 'money', 'factor',
+              'high_limit','low_limit', 'avg', 'pre_close', 'paused']
+    data = get_price('000300.XSHG', fields=fields)
+    print(data.dtypes)
 
 
 def test_get_price2():
@@ -394,7 +429,7 @@ def test_pd_datetime():
 def test_log():
     log.debug('debug')
     log.info('info')
-    log.warn('warn')
+    log.warning('warn')
     log.error('error')
 
 
@@ -550,6 +585,9 @@ def test_alpha191():
     time.sleep(1)
     assert len(alpha191.alpha_010("000001.XSHE", end_date="2017-03-10")) > 0
 
+    data = alpha191.alpha_018("000001.XSHE", end_date="2017-03-10")
+    print(data.dtypes, type(data.dtypes))
+
 
 def test_ta():
     security_list = "000001.XSHE"
@@ -565,7 +603,10 @@ def test_ta():
     assert isinstance(data, tuple)
     assert isinstance(data[0], dict) and sorted([i for i in data[0].keys()]) == security_list
 
-    assert technical_analysis.CCI("000001.XSHE", datetime.date(2018, 10, 8)) == {'000001.XSHE': 54.21853388658356}
+    assert_dict_equal(
+        technical_analysis.CCI("000001.XSHE", datetime.date(2018, 10, 8)),
+        {'000001.XSHE': 54.92401419294356}
+    )
 
 
 def test_macro():
@@ -578,7 +619,7 @@ def test_ticks():
     assert len(get_ticks("CU1901.XSGE", end_dt="2018-03-16", count=100)) == 100
     assert get_ticks("CU1901.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10, 7)
     assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10)) == 10
-    assert str(get_ticks("SM1809.XZCE", '2018-07-06', '2018-07-07').iloc[3][0]) == '2018-07-06 09:00:01.500000'
+    assert str(get_ticks("SM1809.XZCE", '2018-07-06', '2018-07-07').iloc[3][0]) == '2018-07-06 09:00:01'
     assert get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"]).shape == (10, 10)
 
 
@@ -622,6 +663,8 @@ def test_finance_tables():
     # assert len(finance.__dict__) == 2
     finance.STK_LIST
     # finance查询不全是object类型
+    data = finance.run_query(query(finance.STK_LIST))
+    print("------", data.dtypes)
     assert float in list(finance.run_query(query(finance.STK_LIST)).dtypes)
     assert len(finance.__dict__) > 30
     assert finance.STK_LIST != None
@@ -714,7 +757,7 @@ def test_get_current_tick():
             'a1_p', 'a1_v', 'b1_p', 'b1_v'
         ]
     else:
-        assert get_current_tick('000002.XSHE') == None
+        assert get_current_tick('000002.XSHE').isnull().all().all()
     trade_codes = get_future_contracts("IF")
     print(trade_codes)
     df = get_current_tick(trade_codes)
@@ -836,19 +879,22 @@ def test_opt_tables():
 
 def test_get_factor_effect():
     df = get_factor_effect("000001.XSHG", start_date="2015-01-01", end_date="2018-01-01", period="3M", factor="net_profit_growth_rate")
-    assert df[1].to_dict() == {datetime.date(2015, 1, 5): 0.0,
-                               datetime.date(2015, 3, 31): 0.2911737010850679,
-                               datetime.date(2015, 6, 30): 0.6774030318149995,
-                               datetime.date(2015, 9, 30): 0.12540945276743498,
-                               datetime.date(2015, 12, 31): 0.4827570435926156,
-                               datetime.date(2016, 3, 31): 0.2134204934053765,
-                               datetime.date(2016, 6, 30): 0.21345157034224815,
-                               datetime.date(2016, 9, 30): 0.2923701525614304,
-                               datetime.date(2016, 12, 31): 0.38180433529720026,
-                               datetime.date(2017, 3, 31): 0.3677375473696791,
-                               datetime.date(2017, 6, 30): 0.25566522532293967,
-                               datetime.date(2017, 9, 30): 0.30284329696764223,
-                               datetime.date(2017, 12, 31): 0.18990079481373812}
+    print(df)
+    assert_dict_equal(df[1].to_dict(), {
+        datetime.date(2015, 1, 5): 0.0,
+        datetime.date(2015, 3, 31): 0.2911737010850679,
+        datetime.date(2015, 6, 30): 0.6774030318149995,
+        datetime.date(2015, 9, 30): 0.12540945276743498,
+        datetime.date(2015, 12, 31): 0.4827570435926156,
+        datetime.date(2016, 3, 31): 0.2134204934053765,
+        datetime.date(2016, 6, 30): 0.21345157034224815,
+        datetime.date(2016, 9, 30): 0.2923701525614304,
+        datetime.date(2016, 12, 31): 0.38180433529720026,
+        datetime.date(2017, 3, 31): 0.3677375473696791,
+        datetime.date(2017, 6, 30): 0.25566522532293967,
+        datetime.date(2017, 9, 30): 0.30284329696764223,
+        datetime.date(2017, 12, 31): 0.18990079481373812
+    })
 
 
 def test_get_data():
