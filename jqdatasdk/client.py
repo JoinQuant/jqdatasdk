@@ -179,15 +179,26 @@ class JQDataClient(object):
             data_value = msg.get("data_value", None)
             if data_type is not None and data_value is not None:
                 params = data_value
-                if data_type == "pandas_dataframe":
-                    dtypes = params.pop("dtypes", None)
-                    msg = pd.DataFrame(**params)
-                    if dtypes:
-                        msg = msg.astype(dtypes, copy=False)
-                elif data_type == "pandas_series":
-                    msg = pd.Series(**params)
+                if data_type.startswith("pandas"):
+                    data_index_type = params.pop("index_type", None)
+                    if data_index_type == "Index":
+                        params["index"] = pd.Index(params["index"])
+                    elif data_index_type == "MultiIndex":
+                        params["index"] = pd.MultiIndex.from_tuples(
+                            params["index"]
+                        )
+                    if data_type == "pandas_dataframe":
+                        dtypes = params.pop("dtypes", None)
+                        msg = pd.DataFrame(**params)
+                        if dtypes:
+                            msg = msg.astype(dtypes, copy=False)
+                    elif data_type == "pandas_series":
+                        msg = pd.Series(**params)
             else:
-                msg = {key: cls.convert_message(val) for key, val in msg.items()}
+                msg = {
+                    key: cls.convert_message(val)
+                    for key, val in msg.items()
+                }
         return msg
 
     def __call__(self, method, **kwargs):

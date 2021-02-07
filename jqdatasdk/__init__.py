@@ -16,7 +16,7 @@ from .client import (
     get_pandas_notice
 )
 
-__version__ = "1.8.6"
+__version__ = "1.8.7"
 
 
 def auth(username, password, host=None, port=None):

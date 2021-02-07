@@ -718,7 +718,9 @@ def test_trade_days():
 
 
 def test_get_bars():
-    assert len(get_bars("000002.XSHE", end_dt="2018-10-19", count=10)) == 10
+    df = get_bars(['000001.XSHG', '000002.XSHG'], end_dt="2018-10-19", count=5, df=True)
+    assert isinstance(df.index, pd.MultiIndex)
+    assert len(df) == 10
     assert get_bars("000001.XSHE", count=5, end_dt="2018-10-15").to_csv().replace('\r', '') == (
         ',date,open,high,low,close\n0,2018-10-08,10.7,10.79,10.45,10.45\n1,2018-10-09,10.46,10.7,10.39,10.56\n2,2018-10-10,10.54,10.66,10.38,10.45\n3,2018-10-11,10.05,10.16,9.7,9.86\n4,2018-10-12,9.97,10.34,9.87,10.3\n'
     )
