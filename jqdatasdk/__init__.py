@@ -3,6 +3,7 @@ import sys
 import os
 sys.modules["ROOT_DIR"] = os.path.abspath(os.path.dirname(__file__))
 
+from .version import __version__, version_info
 from .api import *
 from .finance_service import *
 from . import alpha101
@@ -15,8 +16,6 @@ from .client import (
     check_pandas_version,
     get_pandas_notice
 )
-
-__version__ = "1.8.7"
 
 
 def auth(username, password, host=None, port=None):

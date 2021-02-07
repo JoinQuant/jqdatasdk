@@ -11,9 +11,13 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_version():
-    with open(os.path.join(THIS_FOLDER, 'jqdatasdk', '__init__.py'), "rb") as f:
-        content = f.read().decode("utf-8")
-        version = re.match(r".*__version__ = \"(.*?)\"", content, re.S).group(1)
+    scope = {}
+    version = '1.0'
+    version_file = os.path.join(THIS_FOLDER, "jqdatasdk", "version.py")
+    if os.path.exists(version_file):
+        with open(version_file) as fp:
+            exec(fp.read(), scope)
+        version = scope.get('__version__', '1.0')
     return version
 
 

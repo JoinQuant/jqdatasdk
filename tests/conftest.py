@@ -16,9 +16,6 @@ def pytest_sessionstart(session):
     sys.path.insert(0, proj_dir)
 
     import jqdatasdk
-    username = os.getenv("JQDATASDK_USERNAME")
-    password = os.getenv("JQDATASDK_PASSWORD")
-    host = os.getenv("JQDATASDK_HOST")
-    port = os.getenv("JQDATASDK_PORT")
-    assert username and password
-    jqdatasdk.auth(username, password, host, port)
+    client = jqdatasdk.JQDataClient.instance()
+    client.ensure_auth()
+    assert jqdatasdk.is_auth()

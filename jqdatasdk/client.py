@@ -6,7 +6,7 @@ import threading
 import time
 import zlib
 import requests
-from os import path
+from os import getenv, path
 
 import msgpack
 import pandas as pd
@@ -21,6 +21,8 @@ else:
 
 from .api import *
 from .utils import get_mac_address
+from .version import __version__ as current_version
+
 
 thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
 thrift_path = path.abspath(thrift_path)
@@ -56,6 +58,17 @@ class JQDataClient(object):
     def instance(cls):
         _instance = getattr(cls._threading_local, '_instance', None)
         if _instance is None:
+            if not cls._auth_params:
+                username = getenv("JQDATASDK_USERNAME")
+                password = getenv("JQDATASDK_PASSWORD")
+                if username and password:
+                    cls._auth_params = {
+                        "username": getenv("JQDATASDK_USERNAME"),
+                        "password": getenv("JQDATASDK_PASSWORD"),
+                        "host": getenv("JQDATASDK_HOST") or cls._default_host,
+                        "port": getenv("JQDATASDK_PORT") or cls._default_port,
+                        "version": current_version,
+                    }
             if cls._auth_params:
                 _instance = JQDataClient(**cls._auth_params)
             cls._threading_local._instance = _instance
@@ -110,6 +123,9 @@ class JQDataClient(object):
 
     @classmethod
     def set_auth_params(cls, **params):
+        if params != cls._auth_params and cls.instance():
+            cls.instance()._reset()
+            cls.instance()._threading_local._instance = None
         cls._auth_params = params
         cls.instance().ensure_auth()
 
