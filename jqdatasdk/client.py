@@ -59,14 +59,14 @@ class JQDataClient(object):
         _instance = getattr(cls._threading_local, '_instance', None)
         if _instance is None:
             if not cls._auth_params:
-                username = getenv("JQDATASDK_USERNAME")
-                password = getenv("JQDATASDK_PASSWORD")
+                username = getenv("JQDATA_USERNAME")
+                password = getenv("JQDATA_PASSWORD")
                 if username and password:
                     cls._auth_params = {
-                        "username": getenv("JQDATASDK_USERNAME"),
-                        "password": getenv("JQDATASDK_PASSWORD"),
-                        "host": getenv("JQDATASDK_HOST") or cls._default_host,
-                        "port": getenv("JQDATASDK_PORT") or cls._default_port,
+                        "username": username,
+                        "password": password,
+                        "host": getenv("JQDATA_HOST") or cls._default_host,
+                        "port": getenv("JQDATA_PORT") or cls._default_port,
                         "version": current_version,
                     }
             if cls._auth_params:
