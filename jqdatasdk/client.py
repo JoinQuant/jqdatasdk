@@ -11,7 +11,6 @@ from os import getenv, path
 import msgpack
 import pandas as pd
 import thriftpy2 as thriftpy
-from pandas.compat import pickle_compat as pc
 from thriftpy2 import transport, protocol
 from thriftpy2.rpc import make_client
 if platform.system().lower() != "windows":
@@ -22,6 +21,7 @@ else:
 from .api import *
 from .utils import get_mac_address
 from .version import __version__ as current_version
+from .compat import pickle_compat as pc
 
 
 thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
