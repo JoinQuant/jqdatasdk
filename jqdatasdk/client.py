@@ -200,8 +200,9 @@ class JQDataClient(object):
                     if data_index_type == "Index":
                         params["index"] = pd.Index(params["index"])
                     elif data_index_type == "MultiIndex":
-                        params["index"] = pd.MultiIndex.from_tuples(
-                            params["index"]
+                        params["index"] = (
+                            pd.MultiIndex.from_tuples(params["index"])
+                            if len(params["index"]) > 0 else None
                         )
                     if data_type == "pandas_dataframe":
                         dtypes = params.pop("dtypes", None)
