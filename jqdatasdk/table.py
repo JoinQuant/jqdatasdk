@@ -46,8 +46,8 @@ class DBTable(object):
             check_no_join(query_object)
 
         limit = self.RESULT_ROWS_LIMIT
-        if query_object._limit:
-            limit = min(limit, query_object._limit)
+        if query_object.limit_value:
+            limit = min(limit, query_object.limit_value)
         query_object = query_object.limit(limit)
 
         sql = compile_query(query_object)

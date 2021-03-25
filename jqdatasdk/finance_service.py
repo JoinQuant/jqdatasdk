@@ -1,16 +1,22 @@
 # coding=utf-8
-from sqlalchemy.orm.query import Query
+
 import re
+import datetime
+from sqlalchemy.orm.query import Query
 from .utils import *
 from .finance_tables import *
+
+
 FUNDAMENTAL_RESULT_LIMIT = 10000
 
 
 def get_tables_from_sql(sql):
     m = re.findall(
-            r'cash_flow_statement_day|balance_sheet_day|financial_indicator_day|'
-            r'income_statement_day|stock_valuation|bank_indicator_acc|security_indicator_acc|'
-            r'insurance_indicator_acc', sql)
+        r'cash_flow_statement_day|balance_sheet_day|financial_indicator_day|'
+        r'income_statement_day|stock_valuation|bank_indicator_acc|'
+        r'security_indicator_acc|insurance_indicator_acc',
+        sql
+    )
     return list(set(m))
 
 
@@ -34,25 +40,33 @@ def get_stat_date_column(cls):
 def get_fundamentals_sql(query_object, date=None, statDate=None):
     from .calendar_service import CalendarService
 
-    assert isinstance(query_object, Query), \
-    "query_object must be a sqlalchemy's Query object. But what passed in was: " + str(type(query_object))        
+    if not isinstance(query_object, Query):
+        raise AssertionError(
+            "query_object must be a sqlalchemy's Query object."
+            " But what passed in was: " + str(type(query_object))
+        )
 
     stat_date = statDate
     assert (not date) ^ (not stat_date), "(statDate, date) only one param is required"
 
-    limit = min(FUNDAMENTAL_RESULT_LIMIT, query_object._limit or FUNDAMENTAL_RESULT_LIMIT)
-    offset = query_object._offset
-    query_object._offset = None
-    query_object._limit = None
+    if query_object.limit_value:
+        limit = min(FUNDAMENTAL_RESULT_LIMIT, query_object.limit_value)
+    else:
+        limit = FUNDAMENTAL_RESULT_LIMIT
+    offset = query_object.offset_value
+    query_object = query_object.limit(None).limit(None)
 
     tablenames = get_tables_from_sql(str(query_object.statement))
     tables = [get_table_class(name) for name in tablenames]
 
     by_year = False
-    #if date:
+    # if date:
     #    date = CalendarService.get_previous_trade_date(date)
-    only_year = bool({"bank_indicator_acc", "security_indicator_acc",
-                        "insurance_indicator_acc"} & set(tablenames))
+    only_year = bool({
+        "bank_indicator_acc",
+        "security_indicator_acc",
+        "insurance_indicator_acc"
+    } & set(tablenames))
 
     if only_year:
         if date:
@@ -113,8 +127,9 @@ def get_fundamentals_sql(query_object, date=None, statDate=None):
         query_object = query_object.filter(table.code == tables[0].code)
 
     # 恢复 offset, limit
-    query_object = query_object.offset(offset)
-    query_object = query_object.limit(limit)
+    query_object = query_object.limit(limit).offset(offset)
+
+    # 编译 query 对象为纯 sql
     sql = compile_query(query_object)
 
     if stat_date:
@@ -143,10 +158,12 @@ def fundamentals_redundant_continuously_query_to_sql(query, trade_day):
         BalanceSheet, IncomeStatement, CashFlowStatement, FinancialIndicator,
         BankIndicatorAcc, SecurityIndicatorAcc, InsuranceIndicatorAcc, StockValuation)
 
-    limit = min(FUNDAMENTAL_RESULT_LIMIT, query._limit or FUNDAMENTAL_RESULT_LIMIT)
-    offset = query._offset
-    query._offset = None
-    query._limit = None
+    if query.limit_value:
+        limit = min(FUNDAMENTAL_RESULT_LIMIT, query.limit_value)
+    else:
+        limit = FUNDAMENTAL_RESULT_LIMIT
+    offset = query.offset_value
+    query = query.limit(None).limit(None)
 
     def get_table_class(tablename):
         for t in (BalanceSheet, CashFlowStatement, FinancialIndicator,
@@ -179,12 +196,14 @@ def fundamentals_redundant_continuously_query_to_sql(query, trade_day):
         query = query.filter(table.code == tables[0].code)
 
     # 恢复 offset, limit
-    query = query.offset(offset)
-    query = query.limit(limit)
+    query = query.limit(limit).offset(offset)
     # query = query.subquery()
     sql = compile_query(query)
     # 默认添加查询code和day作为panel索引
-    sql = sql.replace('SELECT ', 'SELECT DISTINCT stock_valuation.day AS day,stock_valuation.code as code, ')
+    sql = sql.replace(
+        'SELECT ',
+        'SELECT DISTINCT stock_valuation.day AS day, stock_valuation.code as code, '
+    )
     return sql
 
 
@@ -193,12 +212,12 @@ def get_continuously_query_to_sql(query, trade_day):
     根据传入的查询对象和起始时间生成sql
     trade_day是要查询的交易日列表
     '''
-
-    limit = min(FUNDAMENTAL_RESULT_LIMIT, query._limit or FUNDAMENTAL_RESULT_LIMIT)
-    # limit = min(1e5, query._limit or 1e5)
-    offset = query._offset
-    query._offset = None
-    query._limit = None
+    if query.limit_value:
+        limit = min(FUNDAMENTAL_RESULT_LIMIT, query.limit_value)
+    else:
+        limit = FUNDAMENTAL_RESULT_LIMIT
+    offset = query.offset_value
+    query = query.limit(None).limit(None)
 
     def get_table_class(tablename):
         for t in (BalanceSheet, CashFlowStatement, FinancialIndicator,
@@ -229,8 +248,7 @@ def get_continuously_query_to_sql(query, trade_day):
         query = query.filter(table.code == tables[0].code)
 
     # 恢复 offset, limit
-    query = query.offset(offset)
-    query = query.limit(limit)
+    query = query.limit(limit).offset(offset)
     sql = compile_query(query)
     # 默认添加查询code和day作为panel索引
     sql = sql.replace('SELECT ', 'SELECT DISTINCT stock_valuation.day AS day,stock_valuation.code as code, ')
@@ -249,8 +267,14 @@ insurance_indicator = insurance_indicator_acc = InsuranceIndicatorAcc
 valuation = stock_valuation = StockValuation
 
 
-__all__ = ["query", "balance", "income", "cash_flow", 
-            "indicator", "bank_indicator", "security_indicator", 
-            "insurance_indicator", "valuation"]
-
-
+__all__ = [
+    "query",
+    "balance",
+    "income",
+    "cash_flow",
+    "indicator",
+    "bank_indicator",
+    "security_indicator",
+    "insurance_indicator",
+    "valuation"
+]
