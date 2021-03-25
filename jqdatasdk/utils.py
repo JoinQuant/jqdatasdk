@@ -1,16 +1,14 @@
 # coding=utf-8
-import six
+import re
 import json
 import copy
 import datetime
 from functools import wraps
 from collections import namedtuple
-import re
+from importlib import import_module
+
+import six
 import pandas as pd
-if six.PY2:
-    import cPickle as pickle
-else:
-    import pickle as pickle
 
 try:
     from functools import lru_cache
@@ -95,17 +93,46 @@ def remove_duplicated_tables(sql):
     return unique_sql
 
 
+def _get_sql_session():
+    from sqlalchemy.orm import scoped_session, sessionmaker
+    session = scoped_session(sessionmaker())
+    return session
+
+
+_sql_session = _get_sql_session()
+
+
+class SqlQuery(import_module("sqlalchemy.orm").Query):
+
+    limit_value = None
+    offset_value = None
+
+    def limit(self, limit):
+        self.limit_value = limit
+        return super(SqlQuery, self).limit(limit)
+
+    def offset(self, offset):
+        self.offset_value = offset
+        return super(SqlQuery, self).offset(offset)
+
+
+def query(*args, **kwargs):
+    return SqlQuery(args, **kwargs).with_session(_sql_session)
+
+
 def compile_query(query):
-    """ 把一个 sqlalchemy query object 编译成mysql风格的 sql 语句 """
-    from sqlalchemy.sql import compiler
+    """把一个 sqlalchemy query object 编译成mysql风格的 sql 语句"""
+    # from sqlalchemy.sql import compiler
     from sqlalchemy.dialects import mysql as mysql_dialetct
     from pymysql.converters import conversions, escape_item, encoders
 
     dialect = mysql_dialetct.dialect()
     statement = query.statement
-    comp = compiler.SQLCompiler(dialect, statement)
-    comp.compile()
-    enc = dialect.encoding
+    # comp = compiler.SQLCompiler(dialect, statement, literal_binds=True)
+    compile_kwargs = {"render_postcompile": True}
+    comp = statement.compile(dialect=dialect, compile_kwargs=compile_kwargs)
+    # comp.sql_compile()
+    # enc = dialect.encoding
     comp_params = comp.params
     params = []
     for k in comp.positiontup:
@@ -218,19 +245,6 @@ def to_date(date):
     raise ParamsError("type error")
 
 
-def _get_session():
-    from sqlalchemy.orm import scoped_session, sessionmaker
-    session = scoped_session(sessionmaker())
-    return session
-
-
-session = _get_session()
-
-
-def query(*args, **kwargs):
-    return session.query(*args, **kwargs)
-
-
 def assert_auth(func):
     @wraps(func)
     def _wrapper(*args, **kwargs):
@@ -241,10 +255,12 @@ def assert_auth(func):
             return func(*args, **kwargs)
     return _wrapper
 
+
 def get_mac_address():
     import uuid
     mac = uuid.UUID(int=uuid.getnode()).hex[-12:].upper()
     return '%s:%s:%s:%s:%s:%s' % (mac[0:2], mac[2:4], mac[4:6], mac[6:8],mac[8:10], mac[10:])
+
 
 def hashable_lru(maxsize=16):
     def hashable_cache_internal(func):
@@ -281,6 +297,7 @@ def hashable_lru(maxsize=16):
 
     return hashable_cache_internal
 
+
 def get_security_type(security):
     exchange = security[-4:]
     code = security[:-5]
@@ -302,7 +319,7 @@ def get_security_type(security):
             elif code[0] == "1":
                 return "fund"
         else:
-            raise Exception("找不到标的%s" % security_code)
+            raise Exception("找不到标的%s" % security)
     else:
         if exchange in ("XSGE", "XDCE", "XZCE", "XINE", "CCFX"):
             if len(code) > 6:
@@ -310,10 +327,12 @@ def get_security_type(security):
             return "future"
     return 0
 
+
 def check_pandas_version():
     if pd.__version__[:4] >= "0.25":
         return True
     return False
+
 
 def get_pandas_notice():
     return (
