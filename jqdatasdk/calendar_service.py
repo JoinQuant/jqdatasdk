@@ -1,4 +1,5 @@
 # coding=utf-8
+
 from .utils import *
 
 
@@ -28,7 +29,7 @@ class CalendarService(object):
             data = get_all_trade_days()
             cls.all_trade_days = list(data)
         return cls.all_trade_days
-        
+
 
     @classmethod
     def get_previous_trade_date(cls, date):

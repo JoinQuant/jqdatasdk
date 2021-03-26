@@ -78,6 +78,8 @@ def get_fundamentals(query_object, date=None, statDate=None):
     :param statDate: 财报统计的季度或者年份, 一个字符串, 有两种格式:1.季度: 格式是: 年 + ‘q’ + 季度序号, 例如: ‘2015q1’, ‘2013q4’. 2.年份: 格式就是年份的数字, 例如: ‘2015’, ‘2016’.
     :return 返回一个 pandas.DataFrame, 每一行对应数据库返回的每一行(可能是几个表的联合查询结果的一行), 列索引是你查询的所有字段;为了防止返回数据量过大, 我们每次最多返回10000行;当相关股票上市前、退市后，财务数据返回各字段为空
     """
+    if date:
+        date = to_date(date)
     if date is None and statDate is None:
         date = datetime.date.today() - datetime.timedelta(days=1)
 
