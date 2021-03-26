@@ -141,13 +141,17 @@ class JQDataClient(object):
             )
             self.inited = True
             if self.username:
-                response = self.client.auth(
-                    self.username,
-                    self.password,
-                    self.compress,
-                    get_mac_address(),
-                    self.version
-                )
+                for _ in range(self.request_attempt_count):
+                    try:
+                        response = self.client.auth(
+                            self.username,
+                            self.password,
+                            self.compress,
+                            get_mac_address(),
+                            self.version
+                        )
+                    except socket_error:
+                        continue
                 self.data_api_url = response.error if response.error else AUTH_API_URL
                 self.set_http_token()
             else:
