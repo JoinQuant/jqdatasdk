@@ -54,7 +54,7 @@ def get_fundamentals_sql(query_object, date=None, statDate=None):
     else:
         limit = FUNDAMENTAL_RESULT_LIMIT
     offset = query_object.offset_value
-    query_object = query_object.limit(None).limit(None)
+    query_object = query_object.limit(None).offset(None)
 
     tablenames = get_tables_from_sql(str(query_object.statement))
     tables = [get_table_class(name) for name in tablenames]
@@ -163,7 +163,7 @@ def fundamentals_redundant_continuously_query_to_sql(query, trade_day):
     else:
         limit = FUNDAMENTAL_RESULT_LIMIT
     offset = query.offset_value
-    query = query.limit(None).limit(None)
+    query = query.limit(None).offset(None)
 
     def get_table_class(tablename):
         for t in (BalanceSheet, CashFlowStatement, FinancialIndicator,
@@ -217,7 +217,7 @@ def get_continuously_query_to_sql(query, trade_day):
     else:
         limit = FUNDAMENTAL_RESULT_LIMIT
     offset = query.offset_value
-    query = query.limit(None).limit(None)
+    query = query.limit(None).offset(None)
 
     def get_table_class(tablename):
         for t in (BalanceSheet, CashFlowStatement, FinancialIndicator,
