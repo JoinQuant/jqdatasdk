@@ -927,3 +927,21 @@ def pass_test_timeout_error():
     with pytest.raises(Exception) as e:
         get_price(stocks, end_date="2019-04-01", count=10000)
         pytest.fail("查询超时，请缩小查询范围后重试")
+
+
+def test_get_mtss():
+    stocks = get_all_securities(date='2012-05-28').index.tolist()
+    fields = ['sec_code', 'fin_value', 'fin_buy_value',
+              'fin_refund_value', 'sec_value', 'sec_sell_value',
+              'sec_refund_value', 'fin_sec_value']
+    df = get_mtss(stocks, start_date='2012-05-28', end_date='2012-06-01', fields=fields)
+    print(len(stocks))
+    print(len(df))
+    assert not df.empty
+
+    date = '2020-03-12'
+    securities = get_all_securities(types=['stock'], date=date)
+    stocks = securities.index.tolist()
+    df = get_mtss(stocks, start_date=date, end_date=date)
+    print(df)
+    assert not df.empty
