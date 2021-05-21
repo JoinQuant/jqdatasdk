@@ -1,4 +1,6 @@
 # coding=utf-8
+
+import sys
 import re
 import json
 import copy
@@ -340,3 +342,9 @@ def get_pandas_notice():
         "get_price 与 get_fundamentals_continuously 接口 panel 参数将固定为 False\n"
         "注意：0.25 以上版本 pandas 不支持 panel，如使用该数据结构和相关函数请注意修改"
     )
+
+
+def isatty(stream=None):
+    stream = stream or sys.stdout
+    _isatty = getattr(stream, 'isatty', None)
+    return _isatty and _isatty()

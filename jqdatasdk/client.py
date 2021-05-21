@@ -1,14 +1,16 @@
 # coding=utf-8
+
+import sys
 import platform
 import socket
-import sys
-import threading
-import time
 import zlib
-import requests
+import threading
+import json
 from os import getenv, path
 
+import six
 import msgpack
+import requests
 import pandas as pd
 import thriftpy2 as thriftpy
 from thriftpy2 import transport, protocol
@@ -18,10 +20,10 @@ if platform.system().lower() != "windows":
 else:
     socket_error = (transport.TTransportException, socket.error)
 
-from .api import *
-from .utils import get_mac_address
+from .utils import classproperty, isatty, get_mac_address
 from .version import __version__ as current_version
 from .compat import pickle_compat as pc
+from .api import *
 
 
 thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
@@ -157,7 +159,7 @@ class JQDataClient(object):
             else:
                 response = self.client.auth_by_token(self.token)
             auth_message = response.msg
-            if not sys.stdout.isatty():
+            if not isatty():
                 auth_message = ""
             if not response.status:
                 self._threading_local._instance = None
