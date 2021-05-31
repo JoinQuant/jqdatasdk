@@ -1,11 +1,15 @@
 # coding: utf-8
 import time
 import re
+import warnings
 import datetime
 import logging
 import pytest
 import numpy as np
 import pandas as pd
+
+from jqdatasdk.utils import PandasChecker
+from jqdatasdk.exceptions import PanelObsoleteWarning
 from jqdatasdk import *
 
 log = logging
@@ -945,3 +949,28 @@ def test_get_mtss():
     df = get_mtss(stocks, start_date=date, end_date=date)
     print(df)
     assert not df.empty
+
+
+def test_panel_warning():
+    with warnings.catch_warnings(record=True) as ws:
+        get_price('000001.XSHE', end_date='2021-05-28', count=5, panel=True)
+        ws = list(filter(lambda w: issubclass(w.category, PanelObsoleteWarning), ws))
+        if PandasChecker.check_version():
+            assert len(ws) > 0
+            assert "panel" in str(ws[0].message)
+        else:
+            assert len(ws) == 0
+
+    with warnings.catch_warnings(record=True) as ws:
+        get_fundamentals_continuously(
+            query(income.pubDate).filter(income.code == '000001.XSHE'),
+            datetime.date(2015, 1, 1),
+            10,
+            panel=True
+        )
+        ws = list(filter(lambda w: issubclass(w.category, PanelObsoleteWarning), ws))
+        if PandasChecker.check_version():
+            assert len(ws) > 0
+            assert "panel" in str(ws[0].message)
+        else:
+            assert len(ws) == 0

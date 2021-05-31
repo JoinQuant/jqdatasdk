@@ -10,7 +10,6 @@ from collections import namedtuple
 from importlib import import_module
 
 import six
-import pandas as pd
 
 try:
     from functools import lru_cache
@@ -330,17 +329,18 @@ def get_security_type(security):
     return 0
 
 
-def check_pandas_version():
-    if pd.__version__[:4] >= "0.25":
-        return True
-    return False
+class PandasChecker(object):
 
+    @staticmethod
+    def check_version():
+        if import_module("pandas").__version__[:4] >= "0.25":
+            return True
+        return False
 
-def get_pandas_notice():
-    return (
-        "提示：当前环境 pandas 版本高于 0.25，"
-        "get_price 与 get_fundamentals_continuously 接口 panel 参数将固定为 False\n"
-        "注意：0.25 以上版本 pandas 不支持 panel，如使用该数据结构和相关函数请注意修改"
+    VERSION_NOTICE_MESSAGE = (
+        "当前环境 pandas 版本高于 0.25，get_price 与 get_fundamentals_continuously "
+        "接口的 panel 参数将固定为 False（0.25 及以上版本的 pandas 不再支持 panel，"
+        "如使用该数据结构和相关函数请注意修改）"
     )
 
 

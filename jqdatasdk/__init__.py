@@ -13,8 +13,6 @@ from .table import *
 from .client import (
     JQDataClient,
     AnalysisDNS,
-    check_pandas_version,
-    get_pandas_notice
 )
 
 
@@ -59,9 +57,6 @@ def set_params(**params):
 
 
 try:
-    if check_pandas_version():
-        print(get_pandas_notice())
-
     analysis_dns = AnalysisDNS()
     analysis_dns.start()
 except Exception:
