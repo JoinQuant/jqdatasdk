@@ -403,10 +403,11 @@ def get_dominant_future(underlying_symbol, date=None, end_date=None):
     :return 主力合约对应的期货合约（指定 end_date 时返回 pandas.Series，否则返回字符串）
     """
     dt = to_date_str(date)
+    cli = JQDataClient.instance()
+    if not end_date:
+        return cli.get_dominant_future(underlying_symbol=underlying_symbol, dt=dt)
     end_dt = to_date_str(end_date)
-    return JQDataClient.instance().get_dominant_future(
-        underlying_symbol=underlying_symbol, dt=dt, end_dt=end_dt
-    )
+    return cli.get_dominant_future(underlying_symbol=underlying_symbol, dt=dt, end_dt=end_dt)
 
 
 @assert_auth
