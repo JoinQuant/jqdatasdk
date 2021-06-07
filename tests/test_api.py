@@ -1,4 +1,5 @@
 # coding: utf-8
+from jqdatasdk.api import get_dominant_future
 import time
 import re
 import warnings
@@ -556,7 +557,17 @@ def test_get_dominant_future():
     assert len(m_) == 10 and 'M' in m_
     assert len(p_) == 10 and 'P' in p_
     assert len(i_) == 10 and 'I' in i_
-    pass
+
+    res = get_dominant_future(
+        underlying_symbol="ag", date='2020-05-08', end_date="2020-05-08 21:00:00"
+    )
+    assert res.equals(pd.Series({
+        '2020-05-08': 'AG2006.XSGE', '2020-05-11': 'AG2012.XSGE'
+    }).sort_index())
+
+    with pytest.raises(Exception):
+        get_dominant_future("AG", date="2004-06-30")
+    assert len(get_dominant_future("AG", end_date="2004-06-30")) == 0
 
 
 def test_get_future_contracts():

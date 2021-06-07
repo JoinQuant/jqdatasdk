@@ -393,15 +393,20 @@ def get_future_contracts(underlying_symbol, date=None):
 
 
 @assert_auth
-def get_dominant_future(underlying_symbol, date=None):
+def get_dominant_future(underlying_symbol, date=None, end_date=None):
     """
     获取主力合约对应的标的
 
     :param underlying_symbol 期货合约品种，如 ‘AG’(白银)
-    :return 主力合约对应的期货合约
+    :param date 日期（默认为当前时刻，当指定 end_date 时则表示开始日期）
+    :param end_date 结束日期，当指定该参数时表示获取一段时间的主力合约
+    :return 主力合约对应的期货合约（指定 end_date 时返回 pandas.Series，否则返回字符串）
     """
     dt = to_date_str(date)
-    return JQDataClient.instance().get_dominant_future(underlying_symbol=underlying_symbol, dt=dt)
+    end_dt = to_date_str(end_date)
+    return JQDataClient.instance().get_dominant_future(
+        underlying_symbol=underlying_symbol, dt=dt, end_dt=end_dt
+    )
 
 
 @assert_auth
