@@ -2,6 +2,7 @@
 
 import sys
 import platform
+import time
 import socket
 import zlib
 import threading
@@ -156,6 +157,7 @@ class JQDataClient(object):
                         break
                     except socket_error as ex:
                         error = ex
+                        time.sleep(0.5)
                         continue
                 else:
                     if error and not response:
@@ -236,7 +238,7 @@ class JQDataClient(object):
         request.method_name = method
         request.params = msgpack.packb(kwargs)
         err, result = None, None
-        for idx in range(self.request_attempt_count):
+        for _ in range(self.request_attempt_count):
             try:
                 file = six.BytesIO()
                 self.ensure_auth()
@@ -262,6 +264,7 @@ class JQDataClient(object):
             except socket_error as e:
                 self._reset()
                 err = e
+                time.sleep(0.5)
                 continue
             except Exception as e:
                 self._reset()
