@@ -162,7 +162,10 @@ class JQDataClient(object):
                 else:
                     if error and not response:
                         raise error
-                self.data_api_url = response.error if response.error else AUTH_API_URL
+                if response and response.error:
+                    self.data_api_url = response.error
+                else:
+                    self.data_api_url = AUTH_API_URL
                 self.set_http_token()
             else:
                 response = self.client.auth_by_token(self.token)
