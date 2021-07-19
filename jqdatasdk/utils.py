@@ -11,10 +11,24 @@ from importlib import import_module
 
 import six
 
-try:
-    from functools import lru_cache
-except ImportError:
-    from fastcache import lru_cache
+
+for _modname in ("functools", "fastcache", "functools32"):
+    try:
+        lru_cache = import_module(_modname).lru_cache
+    except (ImportError, AttributeError):
+        continue
+    else:
+        break
+else:
+    def lru_cache(*args, **kwargs):
+        def wrapper(func):
+            @wraps(func)
+            def _func(*args, **kwargs):
+                return func(*args, **kwargs)
+            _func.cache_info = lambda: None
+            _func.cache_clear = lambda: None
+            return _func
+        return wrapper
 
 Serialized = namedtuple('Serialized', 'json')
 
