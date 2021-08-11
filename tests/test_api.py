@@ -20,7 +20,7 @@ def assert_sequence_equal(a, b, error=1e-5):
     assert type(a) == type(b)
     for x, y in zip(a, b):
         if isinstance(x, float):
-            np.isclose(x, y, error)
+            assert np.isclose(x, y, error)
         else:
             assert x == y
 
@@ -29,7 +29,7 @@ def assert_dict_equal(a, b, error=1e-5):
     assert len(a) == len(b)
     for k, v in a.items():
         if isinstance(v, float):
-            np.isclose(v, b[k], error)
+            assert np.isclose(v, b[k], error)
         else:
             assert v == b[k]
 
@@ -911,7 +911,12 @@ def test_get_factor_effect():
         datetime.date(2017, 6, 30): 0.25566522532293967,
         datetime.date(2017, 9, 30): 0.30284329696764223,
         datetime.date(2017, 12, 31): 0.18990079481373812
-    })
+    }
+    ,error=1e-2)
+
+    df1 = get_factor_effect('000300.XSHG', '2019-01-01', '2019-03-14', '1W', 'operating_revenue_ttm', group_num = 3)
+    print(df1)
+    assert len(df1.iloc[0,:]) == 3
 
 
 def test_get_data():
