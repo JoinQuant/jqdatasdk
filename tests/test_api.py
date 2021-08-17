@@ -46,9 +46,9 @@ def test_get_industry_stocks():
     assert len(get_industry_stocks('A01')) > 0
     assert len(get_industry_stocks('C21', datetime.date(2010, 1, 1))) == 4
     assert len(get_industry_stocks('C21', datetime.date(2015, 1, 1))) == 5
-    assert len(get_industry_stocks("HY450", datetime.date(2015, 1, 1))) > 0
-    assert len(get_industry_stocks("HY405", datetime.date(2015, 12, 12))) > 0
-    assert len(get_industry_stocks("HY500", datetime.date(2012, 12, 12)))
+    assert len(get_industry_stocks("HY001", datetime.date(2017, 1, 1))) > 0
+    assert len(get_industry_stocks("HY002", datetime.date(2017, 12, 12))) > 0
+    assert len(get_industry_stocks("HY011", datetime.date(2017, 12, 12))) > 0
     assert len(get_industry_stocks("851521", datetime.date(2012, 12, 12)))
     assert len(get_industry_stocks("850333", datetime.date(2014, 12, 12)))
     pass
@@ -60,10 +60,10 @@ def test_get_industry_stocks2():
     with pytest.raises(Exception) as e:
         get_industry_stocks(123)
 
-    stocks = get_industry_stocks("HY405", datetime.date(2012, 12, 12))
-    assert '300132.XSHE' in stocks
+    stocks = get_industry_stocks("HY001", datetime.date(2017, 12, 12))
+    assert '000059.XSHE' in stocks
     with pytest.raises(ValueError) as e:
-        stocks.index("600714.XSHG")
+        stocks.index("300132.XSHE")
     with pytest.raises(ValueError) as e:
         stocks.index("600885.XSHG")
         print(str(e))
@@ -620,7 +620,7 @@ def test_ta():
 
     assert_dict_equal(
         technical_analysis.CCI("000001.XSHE", datetime.date(2018, 10, 8)),
-        {'000001.XSHE': 54.92401419294356}
+        {'000001.XSHE': 54.2306655887904}
     )
 
 
