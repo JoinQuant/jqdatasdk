@@ -12,6 +12,7 @@ import pandas as pd
 from jqdatasdk.utils import PandasChecker
 from jqdatasdk.exceptions import PanelObsoleteWarning
 from jqdatasdk import *
+from jqdatasdk.technical_analysis import *
 
 log = logging
 
@@ -622,6 +623,158 @@ def test_ta():
         technical_analysis.CCI("000001.XSHE", datetime.date(2018, 10, 8)),
         {'000001.XSHE': 54.2306655887904}
     )
+
+
+@pytest.mark.parametrize(['func', 'kwargs', 'security', 'expected'],
+    [
+        ('WR', dict(security_list='000001.XSHE', check_date='2018-12-12', N=10, N1=6,
+                    fq_ref_date='2005-01-01', ),
+            '000001.XSHE', 79.23558696001311),
+        ('WVAD', dict(security_list='000001.XSHE', check_date='2018-12-12', N=24, M=6,
+                        fq_ref_date='2005-01-01', ),
+            '000001.XSHE', -0.5768863858129046),
+        ('XDT', dict(index_stock='000300.XSHG', security_list='000001.XSHE',
+                        check_date='2018-12-12', P1=5, P2=10, fq_ref_date='2005-01-01', ),
+            '000001.XSHE', 379.44748802280947),
+        ('XS', dict(security_list='000001.XSHE', check_date='2018-12-12', timeperiod=13,
+                    fq_ref_date='2005-01-01', ),
+            '000001.XSHE', 1303.2773793474373),
+        ('ZBCD', dict(security_list='000001.XSHE', check_date='2018-12-12', timeperiod=10,
+                        fq_ref_date='2005-01-01', ),
+            '000001.XSHE', -2.344178255010414),
+        ('ZLMM', dict(security_list='000001.XSHE', check_date='2018-12-12',
+                        fq_ref_date='2005-01-01', ),
+            '000001.XSHE', 37.85041146887006),
+        ('ZSDB', dict(index_stock='000300.XSHG', check_date='2018-12-12',
+                        fq_ref_date='2005-01-01', ),
+            '000300.XSHG', 3159.82),
+        ('ZX', dict(security_list='000001.XSHE', check_date='2018-12-12',
+                    fq_ref_date='2005-01-01', ),
+            '000001.XSHE', 1203.8162155436694),
+        ('LB', dict(security_list='000001.XSHE', check_date='2018-12-12',
+                    fq_ref_date='2005-01-01', ),
+            '000001.XSHE', 0.79837266844305),
+        ('Bollinger_Bands', dict(security_list='RB1909.XSGE', check_date='2019-06-18',
+                                 fq_ref_date='2005-01-01', ),
+            'RB1909.XSGE', 4032.0281122428546),
+    ]
+)
+def test_ta_fq_ref_date1(func, kwargs, security, expected):
+    # DT-2225: Jqdatasdk 技术指标库增加复权基准日参数
+    ans = eval(func)(**kwargs)
+    if isinstance(ans, tuple):
+        np.testing.assert_almost_equal(ans[0][security], expected, decimal=4,
+                                        err_msg=func, verbose=True)
+    else:
+        np.testing.assert_almost_equal(ans[security], expected, decimal=4,
+                                        err_msg=func, verbose=True)
+
+
+def test_ta_fq_ref_date2():
+    # DT-2225: Jqdatasdk 技术指标库增加复权基准日参数
+    security_list = ["000001.XSHE", "600000.XSHG"]
+    check_date = "2021-08-17"
+    timeperiod = 20
+    index_stock = "000300.XSHG"
+    today = datetime.date.today()
+
+    # 这几个技术指标不需要 fq_ref_date 参数：'CYF','HSL','FSL','CCL'
+    assert ATR(security_list, check_date, timeperiod, fq_ref_date="2020-08-09")
+    assert BIAS(security_list, check_date, N1=10, N2=20, N3=60, fq_ref_date="2020-08-09")
+    assert CCI(security_list, check_date, N=20, fq_ref_date="2020-08-09")
+    assert KDJ(security_list, check_date, N=20, M1=6, M2=9, fq_ref_date="2020-08-09")
+    assert MFI(security_list, check_date, timeperiod, fq_ref_date="2020-08-09")
+    assert MTM(security_list, check_date, timeperiod, fq_ref_date=today)
+    assert ROC(security_list, check_date, timeperiod=12, fq_ref_date=today)
+    assert RSI(security_list, check_date, N1=6, fq_ref_date=today)
+    assert ACCER(security_list, check_date, N=10, fq_ref_date=today)
+    assert ADTM(security_list, check_date, N=28, M=1, fq_ref_date=today)
+    assert BIAS_QL(security_list, check_date, N=4, M=8, fq_ref_date='2005-01-01')
+    assert BIAS_36(security_list, check_date, M=12, fq_ref_date='2005-01-01')
+    assert DKX(security_list, check_date, M=20, fq_ref_date='2005-01-01')
+    assert KD(security_list, check_date, N=12, M1=6, M2=3, fq_ref_date='2005-01-01')
+    assert LWR(security_list, check_date, N=12, M1=6, M2=3, fq_ref_date=today)
+    assert MARSI(security_list, check_date, M1=20, M2=12, fq_ref_date=today)
+    assert OSC(security_list, check_date, N=20, M=6, fq_ref_date=today)
+    assert SKDJ(security_list, check_date, N=9, M=3, fq_ref_date=today)
+    assert UDL(security_list, check_date, N1=3, N2=5, N3=10, N4=20, M=6, fq_ref_date=today)
+    assert WR(security_list, check_date, N=10, N1=6, fq_ref_date=None)
+    assert TAPI(index_stock, security_list, check_date, M=6, fq_ref_date=None)
+    assert CHO(security_list, check_date, N1=10, N2=20, M=6, fq_ref_date=None)
+    assert CYE(security_list, check_date, fq_ref_date=None)
+    assert DBQR(index_stock, security_list, check_date, N=5, M1=10, M2=20, M3=60, fq_ref_date=None)
+    assert DMA(security_list, check_date, N1=10, N2=50, M=10, fq_ref_date=None)
+    assert DMI(security_list, check_date, N=14, MM=6, fq_ref_date=None)
+    assert DPO(security_list, check_date, N=20, M=6, fq_ref_date=None)
+    assert EMV(security_list, check_date, N=14, M=9, fq_ref_date=None)
+    assert GDX(security_list, check_date, N=30, M=9, fq_ref_date=None)
+    assert JLHB(security_list, check_date, N=7, M=5, fq_ref_date=None)
+    assert JS(security_list, check_date, N=5, M1=5, M2=10, M3=20, fq_ref_date=None)
+    assert MACD(security_list, check_date, SHORT=12, LONG=26, MID=9, fq_ref_date=None)
+    assert QACD(security_list, check_date, N1=12, N2=26, M=9, fq_ref_date=None)
+    assert QR(index_stock, security_list, check_date, N=21, fq_ref_date=None)
+    assert TRIX(security_list, check_date, N=12, M=9, fq_ref_date=None)
+    assert UOS(security_list, check_date, N1=7, N2=14, N3=28, M=6, fq_ref_date=None)
+    assert VMACD(security_list, check_date, SHORT=12, LONG=26, MID=9, fq_ref_date=None)
+    assert VPT(security_list, check_date, N=51, M=6, fq_ref_date=None)
+    assert WVAD(security_list, check_date, N=24, M=6, fq_ref_date=None)
+    assert PSY(security_list, check_date, timeperiod=12, fq_ref_date=None)
+    assert VR(security_list, check_date, N=26, M=6, fq_ref_date=None)
+    assert BRAR(security_list, check_date, N=26, fq_ref_date=None)
+    assert CR(security_list, check_date, N=26, M1=10, M2=20, M3=40, M4=62, fq_ref_date=None)
+    assert CYR(security_list, check_date, N=13, M=5, fq_ref_date=None)
+    assert MASS(security_list, check_date, N1=9, N2=25, M=6, fq_ref_date=None)
+    assert PCNT(security_list, check_date, M=5, fq_ref_date=None)
+    assert OBV(security_list, check_date, timeperiod=30, fq_ref_date=None)
+    assert AMO(security_list, check_date, M1=5, M2=10, fq_ref_date=None)
+    assert DBLB(index_stock, security_list, check_date, N=5, M=5, fq_ref_date=None)
+    assert DBQRV(index_stock, security_list, check_date, N=5, fq_ref_date=None)
+    assert VOL(security_list, check_date, M1=5, M2=10, fq_ref_date=None)
+    assert VRSI(security_list, check_date, N1=6, N2=12, N3=24, fq_ref_date=None)
+    assert BBI(security_list, check_date, timeperiod1=3, timeperiod2=6, timeperiod3=12,
+               timeperiod4=24, fq_ref_date=None)
+    assert MA(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert EXPMA(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert HMA(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert LMA(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert VMA(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert ALLIGAT(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert AMV(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert BBIBOLL(security_list, check_date, N=11, M=6, fq_ref_date=None)
+    assert Bollinger_Bands(security_list, check_date, timeperiod, nbdevup=2,
+                           nbdevdn=2, fq_ref_date=None)
+    assert ENE(security_list, check_date, N=25, M1=6, M2=6, fq_ref_date=None)
+    assert MIKE(security_list, check_date, fq_ref_date=None)
+    assert PBX(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert XS(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert XS2(security_list, check_date, N=102, M=7, fq_ref_date=None)
+    assert EMA(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert SMA(security_list, check_date, N=7, M=1, fq_ref_date=None)
+    assert BDZX(security_list, check_date, fq_ref_date=None)
+    assert CDP_STD(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert CJDX(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert CYHT(security_list, check_date, fq_ref_date=None)
+    assert JAX(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert JFZX(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert JYJL(security_list, check_date, N=120, M=5, fq_ref_date=None)
+    assert LHXJ(security_list, check_date, fq_ref_date=None)
+    assert LYJH(security_list, check_date, M=80, M1=50, fq_ref_date=None)
+    assert TBP_STD(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert ZBCD(security_list, check_date, timeperiod, fq_ref_date=None)
+    assert SG_SMX(index_stock, security_list, check_date, N=50, fq_ref_date=None)
+    assert XDT(index_stock, security_list, check_date, P1=5, P2=10, fq_ref_date=None)
+    assert SG_LB(index_stock, security_list, check_date, fq_ref_date=None)
+    assert SG_PF(index_stock, security_list, check_date, fq_ref_date=None)
+    assert ZLMM(security_list, check_date, fq_ref_date=None)
+    assert RAD(index_stock, security_list, check_date, D=3, S=30, M=30, fq_ref_date=None)
+    assert SHT(security_list, check_date, N=5, fq_ref_date=today)
+    assert CYW(security_list, check_date, fq_ref_date=today)
+    assert CYS(security_list, check_date, fq_ref_date="2021-08-09")
+    assert ZSDB(index_stock, check_date, fq_ref_date="2021-08-09")
+    assert AROON(security_list, check_date, N=25, fq_ref_date="2021-08-09")
+    assert CFJT(security_list, check_date, MM=200, fq_ref_date="2021-08-09")
+    assert ZX(security_list, check_date, fq_ref_date=today)
+    assert PUCU(security_list, check_date, N=24, fq_ref_date=today)
 
 
 def test_macro():

@@ -5,7 +5,7 @@ import sys
 
 
 @assert_auth
-def ATR(security_list, check_date, timeperiod=14, unit='1d', include_now=True):
+def ATR(security_list, check_date, timeperiod=14, unit='1d', include_now=True, fq_ref_date=None):
     '''
         计算公式：
             MTR:MAX(MAX((HIGH-LOW),ABS(REF(CLOSE,1)-HIGH)),ABS(REF(CLOSE,1)-LOW));
@@ -23,11 +23,12 @@ def ATR(security_list, check_date, timeperiod=14, unit='1d', include_now=True):
         '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def BIAS(security_list, check_date, N1=6, N2=12, N3=24, unit='1d', include_now=True):
+def BIAS(security_list, check_date, N1=6, N2=12, N3=24, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         BIAS1 :(CLOSE-MA(CLOSE,N1))/MA(CLOSE,N1)*100;
@@ -49,11 +50,12 @@ def BIAS(security_list, check_date, N1=6, N2=12, N3=24, unit='1d', include_now=T
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CCI(security_list, check_date, N=14, unit='1d', include_now=True):
+def CCI(security_list, check_date, N=14, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         TYP:=(HIGH+LOW+CLOSE)/3;
@@ -72,11 +74,12 @@ def CCI(security_list, check_date, N=14, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def KDJ(security_list, check_date, N=9, M1=3, M2=3, unit='1d', include_now=True):
+def KDJ(security_list, check_date, N=9, M1=3, M2=3, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         RSV:=(CLOSE- LLV(LOW,N) )/(HHV(HIGH,N)-LLV(LOW,N))*100;
@@ -100,15 +103,17 @@ def KDJ(security_list, check_date, N=9, M1=3, M2=3, unit='1d', include_now=True)
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def MFI(security_list, check_date, timeperiod=14, unit='1d', include_now=True):
+def MFI(security_list, check_date, timeperiod=14, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         TYP = (最高价 + 最低价 + 收盘价)/3
-        V1 = 如果TYP>1日前的TYP,返回TYP*成交量(手),否则返回0的N日累和/如果TYP<1日前的TYP,返回TYP*成交量(手),否则返回0的N日累和
+        V1 = 如果TYP>1日前的TYP,返回TYP*成交量(手),否则返回0的N日累和/如果TYP<1日前的TYP,\
+             返回TYP*成交量(手),否则返回0的N日累和
         MFI = 100-(100/(1+V1))
     输入：
         security_list:股票列表
@@ -121,11 +126,12 @@ def MFI(security_list, check_date, timeperiod=14, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def MTM(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
+def MTM(security_list, check_date, timeperiod=12, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         动量线:收盘价-N日前的收盘价
@@ -140,11 +146,12 @@ def MTM(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def ROC(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
+def ROC(security_list, check_date, timeperiod=12, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         ROC = 100*(收盘价-N日前的收盘价)/N日前的收盘价
@@ -159,11 +166,12 @@ def ROC(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def RSI(security_list, check_date, N1=6, unit='1d', include_now=True):
+def RSI(security_list, check_date, N1=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         LC:=REF(CLOSE,1);
@@ -181,11 +189,12 @@ def RSI(security_list, check_date, N1=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def ACCER(security_list, check_date, N=8, unit='1d', include_now=True):
+def ACCER(security_list, check_date, N=8, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         ACCER:SLOPE(CLOSE,N)/CLOSE;
@@ -201,11 +210,12 @@ def ACCER(security_list, check_date, N=8, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def ADTM(security_list, check_date, N=23, M=8, unit='1d', include_now=True):
+def ADTM(security_list, check_date, N=23, M=8, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         DTM:=IF(OPEN<=REF(OPEN,1),0,MAX((HIGH-OPEN),(OPEN-REF(OPEN,1))));
@@ -232,11 +242,12 @@ def ADTM(security_list, check_date, N=23, M=8, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def BIAS_QL(security_list, check_date, N=6, M=6, unit='1d', include_now=True):
+def BIAS_QL(security_list, check_date, N=6, M=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         BIAS :(CLOSE-MA(CLOSE,N))/MA(CLOSE,N)*100;
@@ -255,11 +266,12 @@ def BIAS_QL(security_list, check_date, N=6, M=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def BIAS_36(security_list, check_date, M=6, unit='1d', include_now=True):
+def BIAS_36(security_list, check_date, M=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         BIAS36:MA(CLOSE,3)-MA(CLOSE,6);
@@ -279,11 +291,12 @@ def BIAS_36(security_list, check_date, M=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def DKX(security_list, check_date, M=10, unit='1d', include_now=True):
+def DKX(security_list, check_date, M=10, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         MID:=(3*CLOSE+LOW+OPEN+HIGH)/6;
@@ -295,7 +308,10 @@ def DKX(security_list, check_date, M=10, unit='1d', include_now=True):
         4*REF(MID,16)+3*REF(MID,17)+2*REF(MID,18)+REF(MID,20))/210;
         MADKX:MA(DKX,M);
         MID赋值:(3*收盘价+最低价+开盘价+最高价)/6
-        输出多空线:(20*MID+19*1日前的MID+18*2日前的MID+17*3日前的MID+16*4日前的MID+15*5日前的MID+14*6日前的MID+13*7日前的MID+12*8日前的MID+11*9日前的MID+10*10日前的MID+9*11日前的MID+8*12日前的MID+7*13日前的MID+6*14日前的MID+5*15日前的MID+4*16日前的MID+3*17日前的MID+2*18日前的MID+20日前的MID)/210
+        输出多空线:(20*MID+19*1日前的MID+18*2日前的MID+17*3日前的MID+16*4日前的MID+\
+                   15*5日前的MID+14*6日前的MID+13*7日前的MID+12*8日前的MID+\
+                   11*9日前的MID+10*10日前的MID+9*11日前的MID+8*12日前的MID+7*13日前的MID+\
+                   6*14日前的MID+5*15日前的MID+4*16日前的MID+3*17日前的MID+2*18日前的MID+20日前的MID)/210
         输出MADKX:DKX的M日简单移动平均
     输入：
         security_list:股票列表
@@ -308,11 +324,12 @@ def DKX(security_list, check_date, M=10, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def KD(security_list, check_date, N=9, M1=3, M2=3, unit='1d', include_now=True):
+def KD(security_list, check_date, N=9, M1=3, M2=3, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         RSV:=(CLOSE-LLV(LOW,N))/(HHV(HIGH,N)-LLV(LOW,N))*100;
@@ -334,11 +351,12 @@ def KD(security_list, check_date, N=9, M1=3, M2=3, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def LWR(security_list, check_date, N=9, M1=3, M2=3, unit='1d', include_now=True):
+def LWR(security_list, check_date, N=9, M1=3, M2=3, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         RSV:= (HHV(HIGH,N)-CLOSE)/(HHV(HIGH,N)-LLV(LOW,N))*100;
@@ -360,11 +378,12 @@ def LWR(security_list, check_date, N=9, M1=3, M2=3, unit='1d', include_now=True)
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def MARSI(security_list, check_date, M1=10, M2=6, unit='1d', include_now=True):
+def MARSI(security_list, check_date, M1=10, M2=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         DIF:=CLOSE-REF(CLOSE,1);
@@ -398,11 +417,12 @@ def MARSI(security_list, check_date, M1=10, M2=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def OSC(security_list, check_date, N=20, M=6, unit='1d', include_now=True):
+def OSC(security_list, check_date, N=20, M=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         OSC:100*(CLOSE-MA(CLOSE,N));
@@ -421,11 +441,12 @@ def OSC(security_list, check_date, N=20, M=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def SKDJ(security_list, check_date, N=9, M=3, unit='1d', include_now=True):
+def SKDJ(security_list, check_date, N=9, M=3, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         LOWV:=LLV(LOW,N);
@@ -450,16 +471,19 @@ def SKDJ(security_list, check_date, N=9, M=3, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def UDL(security_list, check_date, N1=3, N2=5, N3=10, N4=20, M=6, unit='1d', include_now=True):
+def UDL(security_list, check_date, N1=3, N2=5, N3=10, N4=20, M=6, unit='1d',
+        include_now=True, fq_ref_date=None):
     '''
     计算公式：
         UDL:(MA(CLOSE,N1)+MA(CLOSE,N2)+MA(CLOSE,N3)+MA(CLOSE,N4))/4;
         MAUDL:MA(UDL,M);
-        输出引力线UDL = (收盘价的N1日简单移动平均+收盘价的N2日简单移动平均+收盘价的N3日简单移动平均+收盘价的N4日简单移动平均)/4
+        输出引力线UDL = (收盘价的N1日简单移动平均+收盘价的N2日简单移动平均+\
+                        收盘价的N3日简单移动平均+收盘价的N4日简单移动平均)/4
         输出MAUDL = UDL的M日简单移动平均
     输入：
         security_list:股票列表
@@ -476,11 +500,12 @@ def UDL(security_list, check_date, N1=3, N2=5, N3=10, N4=20, M=6, unit='1d', inc
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def WR(security_list, check_date, N=10, N1=6, unit='1d', include_now=True):
+def WR(security_list, check_date, N=10, N1=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         WR1:100*(HHV(HIGH,N)-CLOSE)/(HHV(HIGH,N)-LLV(LOW,N));
@@ -499,6 +524,7 @@ def WR(security_list, check_date, N=10, N1=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -544,7 +570,7 @@ def FSL(security_list, check_date):
 
 
 @assert_auth
-def TAPI(index_stock, security_list, check_date, M=6, unit='1d', include_now=True):
+def TAPI(index_stock, security_list, check_date, M=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         TAPI:AMOUNT/INDEXC;
@@ -562,11 +588,12 @@ def TAPI(index_stock, security_list, check_date, M=6, unit='1d', include_now=Tru
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CHO(security_list, check_date, N1=10, N2=20, M=6, unit='1d', include_now=True):
+def CHO(security_list, check_date, N1=10, N2=20, M=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         MID:=SUM(VOL*(2*CLOSE-HIGH-LOW)/(HIGH+LOW),0);
@@ -587,11 +614,12 @@ def CHO(security_list, check_date, N1=10, N2=20, M=6, unit='1d', include_now=Tru
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CYE(security_list, check_date, unit='1d', include_now=True):
+def CYE(security_list, check_date, unit='1d', include_now=True, fq_ref_date=None):
     '''
      计算公式：
         MAL:=MA(CLOSE,5);
@@ -612,11 +640,13 @@ def CYE(security_list, check_date, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def DBQR(index_stock, security_list, check_date, N=5, M1=10, M2=20, M3=60, unit='1d', include_now=True):
+def DBQR(index_stock, security_list, check_date, N=5, M1=10, M2=20, M3=60, unit='1d',
+         include_now=True, fq_ref_date=None):
     '''
     计算公式：
         ZS:(INDEXC-REF(INDEXC,N))/REF(INDEXC,N);
@@ -644,11 +674,13 @@ def DBQR(index_stock, security_list, check_date, N=5, M1=10, M2=20, M3=60, unit=
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def DMA(security_list, check_date, N1=10, N2=50, M=10, unit='1d', include_now=True):
+def DMA(security_list, check_date, N1=10, N2=50, M=10, unit='1d',
+        include_now=True, fq_ref_date=None):
     '''
     计算公式：
         DIF:MA(CLOSE,N1)-MA(CLOSE,N2);
@@ -668,14 +700,16 @@ def DMA(security_list, check_date, N1=10, N2=50, M=10, unit='1d', include_now=Tr
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def DMI(security_list, check_date, N=14,  MM=6, unit='1d', include_now=True):
+def DMI(security_list, check_date, N=14,  MM=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
-        MTR = 最高价-最低价和最高价-1日前的收盘价的绝对值的较大值和1日前的收盘价-最低价的绝对值的较大值的N日指数平滑移动平均
+        MTR = 最高价-最低价和最高价-1日前的收盘价的绝对值的较大值和1日前的收盘价-\
+              最低价的绝对值的较大值的N日指数平滑移动平均
         HD = 最高价-1日前的最高价
         LD = 1日前的最低价-最低价
         DMP = 如果HD>0并且HD>LD,返回HD,否则返回0的N日指数平滑移动平均
@@ -696,11 +730,12 @@ def DMI(security_list, check_date, N=14,  MM=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def DPO(security_list, check_date, N=20,  M=6, unit='1d', include_now=True):
+def DPO(security_list, check_date, N=20,  M=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         DPO:CLOSE-REF(MA(CLOSE,N),N/2+1);
@@ -719,11 +754,12 @@ def DPO(security_list, check_date, N=20,  M=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def EMV(security_list, check_date, N=14, M=9, unit='1d', include_now=True):
+def EMV(security_list, check_date, N=14, M=9, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VOLUME:=MA(VOL,N)/VOL;
@@ -746,11 +782,12 @@ def EMV(security_list, check_date, N=14, M=9, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def GDX(security_list, check_date, N=30, M=9, unit='1d', include_now=True):
+def GDX(security_list, check_date, N=30, M=9, unit='1d', include_now=True, fq_ref_date=None):
     '''
      计算公式：
         AA:=ABS((2*CLOSE+HIGH+LOW)/4-MA(CLOSE,N))/MA(CLOSE,N);
@@ -773,11 +810,12 @@ def GDX(security_list, check_date, N=30, M=9, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def JLHB(security_list, check_date, N=7, M=5, unit='1d', include_now=True):
+def JLHB(security_list, check_date, N=7, M=5, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR1:=(CLOSE-LLV(LOW,60))/(HHV(HIGH,60)-LLV(LOW,60))*80;
@@ -801,11 +839,13 @@ def JLHB(security_list, check_date, N=7, M=5, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def JS(security_list, check_date, N=5, M1=5, M2=10, M3=20, unit='1d', include_now=True):
+def JS(security_list, check_date, N=5, M1=5, M2=10, M3=20, unit='1d',
+       include_now=True, fq_ref_date=None):
     '''
     计算公式：
         JS:100*(CLOSE-REF(CLOSE,N))/(N*REF(CLOSE,N));
@@ -830,11 +870,13 @@ def JS(security_list, check_date, N=5, M1=5, M2=10, M3=20, unit='1d', include_no
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def MACD(security_list, check_date, SHORT=12, LONG=26, MID=9, unit='1d', include_now=True):
+def MACD(security_list, check_date, SHORT=12, LONG=26, MID=9, unit='1d',
+         include_now=True, fq_ref_date=None):
     '''
     计算公式：
         DIF:EMA(CLOSE,SHORT)-EMA(CLOSE,LONG);
@@ -856,11 +898,13 @@ def MACD(security_list, check_date, SHORT=12, LONG=26, MID=9, unit='1d', include
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def QACD(security_list, check_date, N1=12, N2=26, M=9, unit='1d', include_now=True):
+def QACD(security_list, check_date, N1=12, N2=26, M=9, unit='1d',
+         include_now=True, fq_ref_date=None):
     '''
     计算公式：
         DIF:EMA(CLOSE,N1)-EMA(CLOSE,N2);
@@ -882,11 +926,13 @@ def QACD(security_list, check_date, N1=12, N2=26, M=9, unit='1d', include_now=Tr
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def QR(index_stock, security_list, check_date, N=21, unit='1d', include_now=True):
+def QR(index_stock, security_list, check_date, N=21, unit='1d',
+       include_now=True, fq_ref_date=None):
     '''
     计算公式：
         个股: (CLOSE-REF(CLOSE,N))/REF(CLOSE,N)*100;
@@ -907,11 +953,12 @@ def QR(index_stock, security_list, check_date, N=21, unit='1d', include_now=True
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def TRIX(security_list, check_date, N=12, M=9, unit='1d', include_now=True):
+def TRIX(security_list, check_date, N=12, M=9, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         MTR = 收盘价的N日指数移动平均的N日指数移动平均的N日指数移动平均
@@ -929,11 +976,13 @@ def TRIX(security_list, check_date, N=12, M=9, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def UOS(security_list, check_date, N1=7, N2=14, N3=28, M=6, unit='1d', include_now=True):
+def UOS(security_list, check_date, N1=7, N2=14, N3=28, M=6, unit='1d',
+        include_now=True, fq_ref_date=None):
     '''
     计算公式：
         TH = 最高价和1日前的收盘价的较大值
@@ -957,11 +1006,13 @@ def UOS(security_list, check_date, N1=7, N2=14, N3=28, M=6, unit='1d', include_n
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def VMACD(security_list, check_date, SHORT=12, LONG=26, MID=9, unit='1d', include_now=True):
+def VMACD(security_list, check_date, SHORT=12, LONG=26, MID=9, unit='1d',
+          include_now=True, fq_ref_date=None):
     '''
     计算公式：
         DIF:EMA(VOL,SHORT)-EMA(VOL,LONG);
@@ -983,11 +1034,13 @@ def VMACD(security_list, check_date, SHORT=12, LONG=26, MID=9, unit='1d', includ
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def VPT(security_list, check_date, N=51, M=6, unit='1d', include_now=True):
+def VPT(security_list, check_date, N=51, M=6, unit='1d',
+        include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VPT:SUM(VOL*(CLOSE-REF(CLOSE,1))/REF(CLOSE,1),N);
@@ -1006,11 +1059,12 @@ def VPT(security_list, check_date, N=51, M=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def WVAD(security_list, check_date, N=24, M=6, unit='1d', include_now=True):
+def WVAD(security_list, check_date, N=24, M=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         WVAD:SUM((CLOSE-OPEN)/(HIGH-LOW)*VOL,N)/10000;
@@ -1029,11 +1083,12 @@ def WVAD(security_list, check_date, N=24, M=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def PSY(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
+def PSY(security_list, check_date, timeperiod=12, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         PSY:统计 N 日中满足收盘价>1日前的收盘价的天数/N*100
@@ -1048,11 +1103,12 @@ def PSY(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def VR(security_list, check_date, N=26, M=6, unit='1d', include_now=True):
+def VR(security_list, check_date, N=26, M=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         TH:=SUM(IF(CLOSE>REF(CLOSE,1),VOL,0),N);
@@ -1077,11 +1133,12 @@ def VR(security_list, check_date, N=26, M=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def BRAR(security_list, check_date, N=26, unit='1d', include_now=True):
+def BRAR(security_list, check_date, N=26, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         BR:SUM(MAX(0,HIGH-REF(CLOSE,1)),N)/SUM(MAX(0,REF(CLOSE,1)-LOW),N)*100;
@@ -1099,11 +1156,13 @@ def BRAR(security_list, check_date, N=26, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CR(security_list, check_date, N=26, M1=10, M2=20, M3=40, M4=62, unit='1d', include_now=True):
+def CR(security_list, check_date, N=26, M1=10, M2=20, M3=40, M4=62, unit='1d',
+       include_now=True, fq_ref_date=None):
     '''
     计算公式：
         MID:=REF(HIGH+LOW,1)/2;
@@ -1133,11 +1192,12 @@ def CR(security_list, check_date, N=26, M1=10, M2=20, M3=40, M4=62, unit='1d', i
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CYR(security_list, check_date, N=13, M=5, unit='1d', include_now=True):
+def CYR(security_list, check_date, N=13, M=5, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         DIVE:=0.01*EMA(AMOUNT,N)/EMA(VOL,N);
@@ -1158,11 +1218,12 @@ def CYR(security_list, check_date, N=13, M=5, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def MASS(security_list, check_date, N1=9, N2=25, M=6, unit='1d', include_now=True):
+def MASS(security_list, check_date, N1=9, N2=25, M=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         MASS:SUM(MA(HIGH-LOW,N1)/MA(MA(HIGH-LOW,N1),N1),N2);
@@ -1182,11 +1243,12 @@ def MASS(security_list, check_date, N1=9, N2=25, M=6, unit='1d', include_now=Tru
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def PCNT(security_list, check_date, M=5, unit='1d', include_now=True):
+def PCNT(security_list, check_date, M=5, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         PCNT:(CLOSE-REF(CLOSE,1))/CLOSE*100;
@@ -1204,11 +1266,12 @@ def PCNT(security_list, check_date, M=5, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def OBV(security_list, check_date, timeperiod=30, unit='1d', include_now=True):
+def OBV(security_list, check_date, timeperiod=30, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VA = 如果收盘价>1日前的收盘价,返回成交量(手),否则返回-成交量(手)
@@ -1224,11 +1287,12 @@ def OBV(security_list, check_date, timeperiod=30, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def AMO(security_list, check_date, M1=5, M2=10, unit='1d', include_now=True):
+def AMO(security_list, check_date, M1=5, M2=10, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         AMOW:AMOUNT/10000.0,VOLSTICK;
@@ -1249,6 +1313,7 @@ def AMO(security_list, check_date, M1=5, M2=10, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1275,7 +1340,8 @@ def CCL(futures_list, check_date, M=5):
 
 
 @assert_auth
-def DBLB(index_stock, security_list, check_date, N=5, M=5, unit='1d', include_now=True):
+def DBLB(index_stock, security_list, check_date, N=5, M=5, unit='1d',
+         include_now=True, fq_ref_date=None):
     '''
     计算公式：
         GG:=VOL/SUM(REF(VOL,1),N);
@@ -1299,11 +1365,13 @@ def DBLB(index_stock, security_list, check_date, N=5, M=5, unit='1d', include_no
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def DBQRV(index_stock, security_list, check_date, N=5, unit='1d', include_now=True):
+def DBQRV(index_stock, security_list, check_date, N=5, unit='1d',
+          include_now=True, fq_ref_date=None):
     '''
     计算公式：
         ZS:(INDEXV-REF(INDEXV,N))/REF(INDEXV,N);
@@ -1322,6 +1390,7 @@ def DBQRV(index_stock, security_list, check_date, N=5, unit='1d', include_now=Tr
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
@@ -1348,7 +1417,7 @@ def HSL(security_list, check_date, N=5, unit='1d', include_now=True):
 
 
 @assert_auth
-def VOL(security_list, check_date, M1=5, M2=10, unit='1d', include_now=True):
+def VOL(security_list, check_date, M1=5, M2=10, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VOLUME:VOL,VOLSTICK;
@@ -1369,11 +1438,12 @@ def VOL(security_list, check_date, M1=5, M2=10, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def VRSI(security_list, check_date, N1=6, N2=12, N3=24, unit='1d', include_now=True):
+def VRSI(security_list, check_date, N1=6, N2=12, N3=24, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         LC:=REF(VOL,1);
@@ -1397,15 +1467,18 @@ def VRSI(security_list, check_date, N1=6, N2=12, N3=24, unit='1d', include_now=T
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def BBI(security_list, check_date, timeperiod1=3, timeperiod2=6, timeperiod3=12, timeperiod4=24, unit='1d', include_now=True):
+def BBI(security_list, check_date, timeperiod1=3, timeperiod2=6, timeperiod3=12,
+        timeperiod4=24, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         BBI:(MA(CLOSE,M1)+MA(CLOSE,M2)+MA(CLOSE,M3)+MA(CLOSE,M4))/4;
-        输出多空均线BBI:(收盘价的M1日简单移动平均+收盘价的M2日简单移动平均+收盘价的M3日简单移动平均+收盘价的M4日简单移动平均)/4
+        输出多空均线BBI:(收盘价的M1日简单移动平均+收盘价的M2日简单移动平均+\
+                        收盘价的M3日简单移动平均+收盘价的M4日简单移动平均)/4
     输入：
         security_list:股票列表
         check_date：要查询数据的日期
@@ -1420,11 +1493,12 @@ def BBI(security_list, check_date, timeperiod1=3, timeperiod2=6, timeperiod3=12,
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def MA(security_list, check_date, timeperiod=5, unit='1d', include_now=True):
+def MA(security_list, check_date, timeperiod=5, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         MA1:MA(CLOSE,M1);
@@ -1440,11 +1514,12 @@ def MA(security_list, check_date, timeperiod=5, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def EXPMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
+def EXPMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         EXPMA:EMA(CLOSE,timeperiod)
@@ -1460,11 +1535,12 @@ def EXPMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True)
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def HMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
+def HMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         HMA:MA(HIGH,timeperiod);
@@ -1480,11 +1556,12 @@ def HMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def LMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
+def LMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         LMA:MA(LOW,timeperiod)
@@ -1500,11 +1577,12 @@ def LMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def VMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
+def VMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VV:=(HIGH+OPEN+LOW+CLOSE)/4
@@ -1522,11 +1600,12 @@ def VMA(security_list, check_date, timeperiod=12, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def ALLIGAT(security_list, check_date, timeperiod=21, unit='1d', include_now=True):
+def ALLIGAT(security_list, check_date, timeperiod=21, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         NN:=(H+L)/2;
@@ -1548,11 +1627,12 @@ def ALLIGAT(security_list, check_date, timeperiod=21, unit='1d', include_now=Tru
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def AMV(security_list, check_date, timeperiod=13, unit='1d', include_now=True):
+def AMV(security_list, check_date, timeperiod=13, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         AMOV:=VOL*(OPEN+CLOSE)/2;
@@ -1570,11 +1650,12 @@ def AMV(security_list, check_date, timeperiod=13, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def BBIBOLL(security_list, check_date, N=11, M=6, unit='1d', include_now=True):
+def BBIBOLL(security_list, check_date, N=11, M=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         CV:=CLOSE;
@@ -1597,11 +1678,13 @@ def BBIBOLL(security_list, check_date, N=11, M=6, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def Bollinger_Bands(security_list, check_date, timeperiod=20, nbdevup=2, nbdevdn=2, unit='1d', include_now=True):
+def Bollinger_Bands(security_list, check_date, timeperiod=20, nbdevup=2, nbdevdn=2,
+                    unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         LB:BOLL - nbdevup*STD(CLOSE,timeperiod);
@@ -1623,11 +1706,12 @@ def Bollinger_Bands(security_list, check_date, timeperiod=20, nbdevup=2, nbdevdn
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def ENE(security_list, check_date, N=25, M1=6, M2=6, unit='1d', include_now=True):
+def ENE(security_list, check_date, N=25, M1=6, M2=6, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         UPPER:(1+M1/100)*MA(CLOSE,N);
@@ -1649,11 +1733,12 @@ def ENE(security_list, check_date, N=25, M1=6, M2=6, unit='1d', include_now=True
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def MIKE(security_list, check_date, timeperiod=10, unit='1d', include_now=True):
+def MIKE(security_list, check_date, timeperiod=10, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         HLC:=REF(MA((HIGH+LOW+CLOSE)/3,timeperiod),1);
@@ -1685,15 +1770,17 @@ def MIKE(security_list, check_date, timeperiod=10, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def PBX(security_list, check_date, timeperiod=9, unit='1d', include_now=True):
+def PBX(security_list, check_date, timeperiod=9, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         PBX:(EMA(CLOSE,timeperiod)+MA(CLOSE,timeperiod*2)+MA(CLOSE,timeperiod*4))/3;
-        输出PBX:(收盘价的timeperiod日指数移动平均+收盘价的timeperiod*2日简单移动平均+收盘价的timeperiod*4日简单移动平均)/3
+        输出PBX:(收盘价的timeperiod日指数移动平均+收盘价的timeperiod*2日简单移动平均+\
+                收盘价的timeperiod*4日简单移动平均)/3
     输入：
         security_list:股票列表
         check_date：要查询数据的日期
@@ -1705,22 +1792,27 @@ def PBX(security_list, check_date, timeperiod=9, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def XS(security_list, check_date, timeperiod=13, unit='1d', include_now=True):
+def XS(security_list, check_date, timeperiod=13, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR2:=CLOSE*VOL;
-        VAR3:=EMA((EMA(VAR2,3)/EMA(VOL,3)+EMA(VAR2,6)/EMA(VOL,6)+EMA(VAR2,12)/EMA(VOL,12)+EMA(VAR2,24)/EMA(VOL,24))/4,N);
+        VAR3:=EMA((EMA(VAR2,3)/EMA(VOL,3)+EMA(VAR2,6)/EMA(VOL,6)+\
+              EMA(VAR2,12)/EMA(VOL,12)+EMA(VAR2,24)/EMA(VOL,24))/4,N);
         SUP:1.06*VAR3;
         SDN:VAR3*0.94;
         VAR4:=EMA(CLOSE,9);
         LUP:EMA(VAR4*1.14,5);
         LDN:EMA(VAR4*0.86,5);
         VAR2赋值:收盘价*成交量(手)
-        VAR3赋值:(VAR2的3日指数移动平均/成交量(手)的3日指数移动平均+VAR2的6日指数移动平均/成交量(手)的6日指数移动平均+VAR2的12日指数移动平均/成交量(手)的12日指数移动平均+VAR2的24日指数移动平均/成交量(手)的24日指数移动平均)/4的N日指数移动平均
+        VAR3赋值:(VAR2的3日指数移动平均/成交量(手)的3日指数移动平均+\
+                 VAR2的6日指数移动平均/成交量(手)的6日指数移动平均+\
+                 VAR2的12日指数移动平均/成交量(手)的12日指数移动平均+\
+                 VAR2的24日指数移动平均/成交量(手)的24日指数移动平均)/4的N日指数移动平均
         输出SUP:1.06*VAR3
         输出SDN:VAR3*0.94
         VAR4赋值:收盘价的9日指数移动平均
@@ -1737,11 +1829,12 @@ def XS(security_list, check_date, timeperiod=13, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def XS2(security_list, check_date, N=102, M=7, unit='1d', include_now=True):
+def XS2(security_list, check_date, N=102, M=7, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         AA:=MA((2*CLOSE+HIGH+LOW)/4,5);
@@ -1770,11 +1863,12 @@ def XS2(security_list, check_date, N=102, M=7, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def EMA(security_list, check_date, timeperiod=30, unit='1d', include_now=True):
+def EMA(security_list, check_date, timeperiod=30, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         若Y=EMA(X,N)，则Y=[(2/N+1) * X+(N-1/N+1) * Y'],其中Y'表示上一周期Y值。
@@ -1789,11 +1883,12 @@ def EMA(security_list, check_date, timeperiod=30, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def SMA(security_list, check_date, N=7, M=1, unit='1d', include_now=True):
+def SMA(security_list, check_date, N=7, M=1, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         计算SMA(X, N, M)， 即X的N日移动平均，M为权重。
@@ -1810,11 +1905,12 @@ def SMA(security_list, check_date, N=7, M=1, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def BDZX(security_list, check_date, timeperiod=40, unit='1d', include_now=True):
+def BDZX(security_list, check_date, timeperiod=40, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR1:=(HIGH+LOW+CLOSE*2)/4;
@@ -1854,11 +1950,12 @@ def BDZX(security_list, check_date, timeperiod=40, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CDP_STD(security_list, check_date, timeperiod=2, unit='1d', include_now=True):
+def CDP_STD(security_list, check_date, timeperiod=2, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         CH:=REF(H,1);
@@ -1888,11 +1985,12 @@ def CDP_STD(security_list, check_date, timeperiod=2, unit='1d', include_now=True
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CJDX(security_list, check_date, timeperiod=16, unit='1d', include_now=True):
+def CJDX(security_list, check_date, timeperiod=16, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR1:=(2*CLOSE+HIGH+LOW)/4;
@@ -1916,11 +2014,12 @@ def CJDX(security_list, check_date, timeperiod=16, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CYHT(security_list, check_date, timeperiod=60, unit='1d', include_now=True):
+def CYHT(security_list, check_date, timeperiod=60, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR1:=(2*CLOSE+HIGH+LOW+OPEN)/5;
@@ -1958,11 +2057,12 @@ def CYHT(security_list, check_date, timeperiod=60, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def JAX(security_list, check_date, timeperiod=30, unit='1d', include_now=True):
+def JAX(security_list, check_date, timeperiod=30, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         AA:=ABS((2*CLOSE+HIGH+LOW)/4-MA(CLOSE,N))/MA(CLOSE,N);
@@ -1994,11 +2094,12 @@ def JAX(security_list, check_date, timeperiod=30, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def JFZX(security_list, check_date, timeperiod=30, unit='1d', include_now=True):
+def JFZX(security_list, check_date, timeperiod=30, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR2:=SUM(IF(CLOSE>OPEN,VOL,0),timeperiod)/SUM(VOL,timeperiod)*100;
@@ -2022,11 +2123,12 @@ def JFZX(security_list, check_date, timeperiod=30, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def JYJL(security_list, check_date, N=120, M=5, unit='1d', include_now=True):
+def JYJL(security_list, check_date, N=120, M=5, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         单位时间总量: SUM(VOL,N)*100
@@ -2045,11 +2147,12 @@ def JYJL(security_list, check_date, N=120, M=5, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def LHXJ(security_list, check_date, timeperiod=100, unit='1d', include_now=True):
+def LHXJ(security_list, check_date, timeperiod=100, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR1:=(CLOSE*2+HIGH+LOW)/4;
@@ -2073,11 +2176,12 @@ def LHXJ(security_list, check_date, timeperiod=100, unit='1d', include_now=True)
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def LYJH(security_list, check_date, M=80, M1=50, unit='1d', include_now=True):
+def LYJH(security_list, check_date, M=80, M1=50, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR1:=(HHV(HIGH,36)-CLOSE)/(HHV(HIGH,36)-LLV(LOW,36))*100;
@@ -2104,11 +2208,12 @@ def LYJH(security_list, check_date, M=80, M1=50, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def TBP_STD(security_list, check_date, timeperiod=30, unit='1d', include_now=True):
+def TBP_STD(security_list, check_date, timeperiod=30, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         APX:=(H+L+C)/3;
@@ -2148,11 +2253,12 @@ def TBP_STD(security_list, check_date, timeperiod=30, unit='1d', include_now=Tru
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def ZBCD(security_list, check_date, timeperiod=10, unit='1d', include_now=True):
+def ZBCD(security_list, check_date, timeperiod=10, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR1:=money/VOL/7;
@@ -2176,11 +2282,12 @@ def ZBCD(security_list, check_date, timeperiod=10, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def SG_SMX(index_stock, security_list, check_date, N=50, unit='1d', include_now=True):
+def SG_SMX(index_stock, security_list, check_date, N=50, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         H1:=HHV(HIGH,N);
@@ -2211,11 +2318,13 @@ def SG_SMX(index_stock, security_list, check_date, N=50, unit='1d', include_now=
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def XDT(index_stock, security_list, check_date, P1=5, P2=10, unit='1d', include_now=True):
+def XDT(index_stock, security_list, check_date, P1=5, P2=10, unit='1d',
+        include_now=True, fq_ref_date=None):
     '''
     计算公式：
         QR:CLOSE/INDEXC*1000;
@@ -2236,11 +2345,12 @@ def XDT(index_stock, security_list, check_date, P1=5, P2=10, unit='1d', include_
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def SG_LB(index_stock, security_list, check_date, unit='1d', include_now=True):
+def SG_LB(index_stock, security_list, check_date, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         ZY2:=VOL/INDEXV*1000;
@@ -2262,11 +2372,12 @@ def SG_LB(index_stock, security_list, check_date, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def SG_PF(index_stock, security_list, check_date, unit='1d', include_now=True):
+def SG_PF(index_stock, security_list, check_date, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         ZY1:=CLOSE/INDEXC*1000;
@@ -2294,11 +2405,12 @@ def SG_PF(index_stock, security_list, check_date, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def ZLMM(security_list, check_date, unit='1d', include_now=True):
+def ZLMM(security_list, check_date, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         LC :=REF(CLOSE,1);
@@ -2310,9 +2422,11 @@ def ZLMM(security_list, check_date, unit='1d', include_now=True):
         赋值:1日前的收盘价
         RSI2赋值:收盘价-LC和0的较大值的12日[1日权重]移动平均/收盘价-LC的绝对值的12日[1日权重]移动平均*100
         RSI3赋值:收盘价-LC和0的较大值的18日[1日权重]移动平均/收盘价-LC的绝对值的18日[1日权重]移动平均*100
-        输出MMS:3*RSI2-2*收盘价-LC和0的较大值的16日[1日权重]移动平均/收盘价-LC的绝对值的16日[1日权重]移动平均*100的3日简单移动平均
+        输出MMS:3*RSI2-2*收盘价-LC和0的较大值的16日[1日权重]移动平均/收盘价-\
+                LC的绝对值的16日[1日权重]移动平均*100的3日简单移动平均
         输出MMM:MMS的8日指数移动平均
-        输出MML:3*RSI3-2*收盘价-LC和0的较大值的12日[1日权重]移动平均/收盘价-LC的绝对值的12日[1日权重]移动平均*100的5日简单移动平均
+        输出MML:3*RSI3-2*收盘价-LC和0的较大值的12日[1日权重]移动平均/收盘价-\
+                LC的绝对值的12日[1日权重]移动平均*100的5日简单移动平均
     输入：
         security_list:股票列表
         check_date：要查询数据的日期
@@ -2323,11 +2437,13 @@ def ZLMM(security_list, check_date, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def RAD(index_stock, security_list, check_date, D=3, S=30, M=30, unit='1d', include_now=True):
+def RAD(index_stock, security_list, check_date, D=3, S=30, M=30, unit='1d',
+        include_now=True, fq_ref_date=None):
     '''
     计算公式：
         SM:=(OPEN+HIGH+CLOSE+LOW)/4;
@@ -2359,11 +2475,12 @@ def RAD(index_stock, security_list, check_date, D=3, S=30, M=30, unit='1d', incl
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def SHT(security_list, check_date, N=5, unit='1d', include_now=True):
+def SHT(security_list, check_date, N=5, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR1:=MA((VOL-REF(VOL,1))/REF(VOL,1),5);
@@ -2387,11 +2504,12 @@ def SHT(security_list, check_date, N=5, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CYW(security_list, check_date, unit='1d', include_now=True):
+def CYW(security_list, check_date, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         VAR1:=CLOSE-LOW;
@@ -2414,11 +2532,12 @@ def CYW(security_list, check_date, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CYS(security_list, check_date, unit='1d', include_now=True):
+def CYS(security_list, check_date, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         CYC13:=0.01*EMA(AMOUNT,13)/EMA(VOL,13);
@@ -2435,11 +2554,12 @@ def CYS(security_list, check_date, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def ZSDB(index_stock, check_date, unit='1d', include_now=True):
+def ZSDB(index_stock, check_date, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         A:=REF(INDEXC,1);
@@ -2456,11 +2576,12 @@ def ZSDB(index_stock, check_date, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def AROON(security_list, check_date, N=25, unit='1d', include_now=True):
+def AROON(security_list, check_date, N=25, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         上轨:(N-HHVBARS(H,N))/N*100,COLORRED;
@@ -2478,11 +2599,12 @@ def AROON(security_list, check_date, N=25, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def CFJT(security_list, check_date, MM=200, unit='1d', include_now=True):
+def CFJT(security_list, check_date, MM=200, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         突破:=REF(EMA(C,14),1);
@@ -2504,11 +2626,12 @@ def CFJT(security_list, check_date, MM=200, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def ZX(security_list, check_date, unit='1d', include_now=True):
+def ZX(security_list, check_date, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         AV:0.01*AMOUNT/VOL;
@@ -2523,11 +2646,12 @@ def ZX(security_list, check_date, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def PUCU(security_list, check_date, N=24, unit='1d', include_now=True):
+def PUCU(security_list, check_date, N=24, unit='1d', include_now=True, fq_ref_date=None):
     '''
     计算公式：
         PU:MA(CLOSE,N);
@@ -2545,11 +2669,12 @@ def PUCU(security_list, check_date, N=24, unit='1d', include_now=True):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 @assert_auth
-def LB(security_list, check_date, N=5):
+def LB(security_list, check_date, N=5, fq_ref_date=None):
     '''
     量比
     计算公式：
@@ -2566,19 +2691,9 @@ def LB(security_list, check_date, N=5):
     '''
     func_name = sys._getframe().f_code.co_name
     check_date = to_date_str(check_date)
+    fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_technical_analysis(**locals())
 
 
 __all__ = [k for k, v in sorted(globals().items()) if k == k.upper()]
 __all__.extend(['Bollinger_Bands'])
-
-
-
-
-
-
-
-
-
-
-
