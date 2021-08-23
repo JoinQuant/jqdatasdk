@@ -17,7 +17,6 @@ __all__ = [
     "finance",
     "macro",
     "opt",
-    "ssymmetry",
     "bond",
     "sup",
     "DBTable",

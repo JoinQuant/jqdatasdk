@@ -145,7 +145,6 @@ def get_fundamentals_continuously(query_object, end_date=None, count=1, panel=Tr
 @hashable_lru(maxsize=3)
 def get_valuation(security_list, start_date=None, end_date=None, fields=None, count=None):
     """ 获取多个标的在指定交易日范围内的市值表数据
-
     Args:
         security_list: 标的code字符串列表或者单个标的字符串
         end_date: 查询结束时间
@@ -164,7 +163,6 @@ def get_valuation(security_list, start_date=None, end_date=None, fields=None, co
             pb_ratio	市净率(PB)
             ps_ratio	市销率(PS, TTM)
             pcf_ratio	市现率(PCF, 现金净流量TTM)
-
     Returns:
         返回一个dataframe，索引默认是pandas的整数索引，返回的结果中总会包含code、day字段。
     """
@@ -179,38 +177,34 @@ def get_history_fundamentals(security, fields, watch_date=None, stat_date=None,
                              count=1, interval='1q', stat_by_year=False):
     """ 获取多个季度/年度的三大财务报表和财务指标数据. 可指定单季度数据, 也可以指定年度数据.
             可以指定观察日期, 也可以指定最后一个报告期的结束日期.
-
-        Args:
-            security: 股票代码或者股票代码列表。
-            fields: 要查询的财务数据的列, 季度数据和年度数据可选择的列不同. 示例:
-                [
-                    balance.cash_equivalents,
-                    cash_flow.net_deposit_increase,
-                    income.total_operating_revenue,
-                ]
-            watch_date: 观察日期, 如果指定, 将返回 watch_date 日期前(包含该日期)发布的报表数据
-            stat_date: 统计日期, 可以是 '2019'/'2019q1'/'2018q4' 等格式, 如果指定, 将返回 stat_date 对应报告期及之前的历史报告期的报表数据,
-                注意: watch_date 和 stat_date 只能指定一个, 而且必须指定一个
-                    如果没有 stat_date 指定报告期的数据, 则该数据会缺失一行.
-            count: 查询历史的多个报告期时, 指定的报告期数量. 如果股票历史报告期的数量小于 count, 则该股票返回的数据行数将小于 count
-            interval: 查询多个报告期数据时, 指定报告期间隔, 可选值: '1q'/'1y', 表示间隔一季度或者一年, 举例说明:
-                stat_date='2019q1', interval='1q', count=4, 将返回 2018q2,2018q3,2018q4,2019q1 的数据
-                stat_date='2019q1', interval='1y', count=4, 将返回 2016q1,2017q1,2018q1,2019q1 的数据
-                stat_by_year=True, stat_date='2018', interval='1y', count=4 将返回 2015/2016/2017/2018 年度的年报数据
-            stat_by_year: bool, 是否返回年度数据. 默认返回的按季度统计的数据(比如income表中只有单个季度的利润).
-                如果返回年度数据:
-                    interval必须是 '1y'
-                    如果指定了 stat_date 的话, stat_date 必须是一个数字, 表明统计的年份
-                stat_by_year 是 True 时, fields 可以选择 balance/income/cash_flow/indicator/bank_indicator/security_indicator/insurance_indicator 表中的列
-                            是 False 时, fields 可以选择 balance/income/cash_flow/indicator 表中的列
-
-        Returns:
-            pandas.DataFrame, 数据库查询结果. 数据格式同 get_fundamentals. 每个股票每个报告期(一季度或者一年)的数据占用一行.
-
-        Others:
-            推荐用户对结果使用df.groupby来进行分组分析数据
-
-        """
+    Args:
+        security: 股票代码或者股票代码列表。
+        fields: 要查询的财务数据的列, 季度数据和年度数据可选择的列不同. 示例:
+            [
+                balance.cash_equivalents,
+                cash_flow.net_deposit_increase,
+                income.total_operating_revenue,
+            ]
+        watch_date: 观察日期, 如果指定, 将返回 watch_date 日期前(包含该日期)发布的报表数据
+        stat_date: 统计日期, 可以是 '2019'/'2019q1'/'2018q4' 等格式, 如果指定, 将返回 stat_date 对应报告期及之前的历史报告期的报表数据,
+            注意: watch_date 和 stat_date 只能指定一个, 而且必须指定一个
+                如果没有 stat_date 指定报告期的数据, 则该数据会缺失一行.
+        count: 查询历史的多个报告期时, 指定的报告期数量. 如果股票历史报告期的数量小于 count, 则该股票返回的数据行数将小于 count
+        interval: 查询多个报告期数据时, 指定报告期间隔, 可选值: '1q'/'1y', 表示间隔一季度或者一年, 举例说明:
+            stat_date='2019q1', interval='1q', count=4, 将返回 2018q2,2018q3,2018q4,2019q1 的数据
+            stat_date='2019q1', interval='1y', count=4, 将返回 2016q1,2017q1,2018q1,2019q1 的数据
+            stat_by_year=True, stat_date='2018', interval='1y', count=4 将返回 2015/2016/2017/2018 年度的年报数据
+        stat_by_year: bool, 是否返回年度数据. 默认返回的按季度统计的数据(比如income表中只有单个季度的利润).
+            如果返回年度数据:
+                interval必须是 '1y'
+                如果指定了 stat_date 的话, stat_date 必须是一个数字, 表明统计的年份
+            stat_by_year 是 True 时, fields 可以选择 balance/income/cash_flow/indicator/bank_indicator/security_indicator/insurance_indicator 表中的列
+                        是 False 时, fields 可以选择 balance/income/cash_flow/indicator 表中的列
+    Returns:
+        pandas.DataFrame, 数据库查询结果. 数据格式同 get_fundamentals. 每个股票每个报告期(一季度或者一年)的数据占用一行.
+    Others:
+        推荐用户对结果使用df.groupby来进行分组分析数据
+    """
     assert security, "security is required"
     assert fields, "fields is required"
     assert (not watch_date) or (not stat_date), "watch_date与stat_date有且只能有一个不是None"

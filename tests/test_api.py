@@ -1216,9 +1216,36 @@ def test_get_history_fundamentals():
                                   stat_by_year=False)
     print(df)
     assert not df.empty
+    # 银行业专项测试
+    df = get_history_fundamentals(['600015.XSHG', '600926.XSHG'],
+                                  fields=[bank_indicator.total_loan,
+                                          bank_indicator.non_interest_income,
+                                          bank_indicator.Nonperforming_loan_rate],
+                                  stat_date='2019',
+                                  interval='1y',
+                                  stat_by_year=True)
+    print(df)
+    assert not df.empty
+    # 保险业专项测试
+    df = get_history_fundamentals(['601336.XSHG'],
+                                  fields=[insurance_indicator.payoff_cost],
+                                  stat_date='2019',
+                                  interval='1y',
+                                  stat_by_year=True)
+    print(df)
+    assert not df.empty
+    # 券商业专项测试
+    df = get_history_fundamentals(['002500.XSHE', '002673.XSHE'],
+                                  fields=[security_indicator.net_assets],
+                                  stat_date='2019',
+                                  interval='1y',
+                                  stat_by_year=True)
+    print(df)
+    assert not df.empty
     # 测试异常抛出情况
     with pytest.raises(AssertionError):
         get_history_fundamentals(['000002.XSHE'], fields=[balance.cash_equivalents])
     with pytest.raises(Exception):
-        get_history_fundamentals(['000001.XSHE'], fields=income.total_operating_revenue,
+        get_history_fundamentals(['000001.XSHE'],
+                                 fields=income.total_operating_revenue,
                                  stat_date='2019q1')
