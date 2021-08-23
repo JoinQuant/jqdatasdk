@@ -1143,3 +1143,82 @@ def test_panel_warning():
             assert "panel" in str(ws[0].message)
         else:
             assert len(ws) == 0
+
+
+def test_get_valuation():
+    # DT-2302
+    res = get_valuation(('000001.XSHE', '000002.XSHE'), end_date='2019-07-24',
+                        fields=('code', 'day', 'pe_ratio', 'pb_ratio', 'market_cap'), count=2)
+    print(res)
+    assert len(res) == 4
+    assert set(res['code']) == {'000001.XSHE', '000002.XSHE'}
+    assert list(res[res['code'] == '000001.XSHE']['market_cap']) == [2362.6487, 2383.2532]
+    assert list(res[res['code'] == '000002.XSHE']['market_cap']) == [3390.6428, 3387.2522]
+
+    res = get_valuation('000001.XSHE', end_date='2019-07-24', fields='market_cap', count=5)
+    assert len(res) == 5
+    assert list(res['market_cap']) == [2347.1953, 2402.1406, 2378.1021, 2362.6487, 2383.2532]
+    assert list(res[res['code']=='000001.XSHE']['day']) \
+           == [datetime.date(2019, 7, 18), datetime.date(2019, 7, 19), datetime.date(2019, 7, 22),
+               datetime.date(2019, 7, 23), datetime.date(2019, 7, 24)]
+
+    res = get_valuation(('000001.XSHE', '000002.XSHE'), start_date='2019-07-20', end_date='2019-07-24',
+                        fields=('code', 'day', 'pe_ratio', 'pb_ratio', 'market_cap'))
+    assert len(res) == 6
+    assert list(res[res['code'] == '000001.XSHE']['pe_ratio']) == [9.2645, 9.2043, 9.2846]
+    assert list(res[res['code'] == '000002.XSHE']['pe_ratio']) == [10.3386, 9.9729, 9.963]
+
+    res = get_valuation('000001.XSHE', start_date='2019-07-20', end_date='2019-07-24', fields='market_cap')
+    assert len(res) == 3
+    assert list(res['market_cap']) ==[2378.1021, 2362.6487, 2383.2532]
+    assert list(res['day']) == [datetime.date(2019, 7, 22),
+                                datetime.date(2019, 7, 23),
+                                datetime.date(2019, 7, 24)]
+
+
+def test_get_history_fundamentals():
+    # DT-2302
+    # 多标的、跨表、指定watch_date、1q
+    fields = [balance.statDate, income.net_profit,
+              balance.cash_equivalents,
+              cash_flow.dividend_interest_payment]
+    df = get_history_fundamentals(['000001.XSHE', '000002.XSHE'], fields,
+                                   watch_date='2019-03-31', count=10)
+    print(df)
+    assert not df.empty
+    # 多标的、跨表、指定watch_date、1y
+    fields = [balance.statDate, income.net_profit,
+              balance.cash_equivalents,
+              cash_flow.net_operate_cash_flow]
+    df = get_history_fundamentals(['000001.XSHE', '000002.XSHE'], fields,
+                                   watch_date='2019-07-01', interval='1y', count=10)
+    print(df)
+    assert not df.empty
+    # 多标的、跨表、指定stat_date、1q
+    df = get_history_fundamentals(['000001.XSHE', '000002.XSHE'], fields,
+                                  stat_date='2019q1', count=10)
+    print(df)
+    assert not df.empty
+    # 多标的、跨表、指定stat_date、年表
+    df = get_history_fundamentals(['000001.XSHE', '000002.XSHE'], fields, stat_date='2019',
+                                  interval='1y', count=10, stat_by_year=True)
+    print(df)
+    assert not df.empty
+    # 官网示例
+    df = get_history_fundamentals(['000001.XSHE', '600000.XSHG'],
+                                  fields=[balance.cash_equivalents,
+                                          cash_flow.net_deposit_increase,
+                                          income.total_operating_revenue],
+                                  watch_date=None,
+                                  stat_date='2019q1',
+                                  count=5,
+                                  interval='1q',
+                                  stat_by_year=False)
+    print(df)
+    assert not df.empty
+    # 测试异常抛出情况
+    with pytest.raises(AssertionError):
+        get_history_fundamentals(['000002.XSHE'], fields=[balance.cash_equivalents])
+    with pytest.raises(Exception):
+        get_history_fundamentals(['000001.XSHE'], fields=income.total_operating_revenue,
+                                 stat_date='2019q1')

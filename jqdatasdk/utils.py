@@ -208,6 +208,14 @@ def convert_security(s):
         raise ParamsError("security's type should be Security or list")
 
 
+def convert_fields_to_str(s):
+    if isinstance(s, (list, tuple)):
+        res = [str(item) for item in s]
+        return res
+    else:
+        raise ParamsError("fields's type should be list or tuple")
+
+
 def normal_security_code(code):
     """
 
