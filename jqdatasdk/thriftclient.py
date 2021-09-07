@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) JoinQuant Development Team
 
+api_description = """
 enum DataType {
     Serial = 1,
     DataFrame = 2,
@@ -21,5 +24,8 @@ service JqDataService {
     St_Query_Rsp auth(1:string username, 2:string password, 5:bool compress, 8:string mac, 10:string version),
     St_Query_Rsp auth_by_token(1: string token)
 }
+"""
 
-
+import six
+import thriftpy2 as thriftpy
+thrift = thriftpy.load_fp(six.StringIO(api_description), "jqdata_thrift")

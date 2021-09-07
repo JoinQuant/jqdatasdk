@@ -7,32 +7,26 @@ import socket
 import zlib
 import threading
 import json
-from os import getenv, path
+from os import getenv
 
 import six
 import msgpack
 import requests
 import pandas as pd
-import thriftpy2 as thriftpy
 from thriftpy2 import transport, protocol
 from thriftpy2.rpc import make_client
-if platform.system().lower() != "windows":
-    socket_error = (transport.TTransportException, socket.error, protocol.cybin.ProtocolError)
-else:
-    socket_error = (transport.TTransportException, socket.error)
 
 from .utils import classproperty, isatty, get_mac_address
 from .version import __version__ as current_version
 from .compat import pickle_compat as pc
-from .api import *
+from .thriftclient import thrift
+from .api import *  # noqa
 
 
-thrift_path = path.join(sys.modules["ROOT_DIR"], "jqdata.thrift")
-thrift_path = path.abspath(thrift_path)
-module_name = path.splitext(path.basename(thrift_path))[0]
-thrift = None
-with open(thrift_path) as f:
-    thrift = thriftpy.load_fp(f, "jqdata_thrift")
+if platform.system().lower() != "windows":
+    socket_error = (transport.TTransportException, socket.error, protocol.cybin.ProtocolError)
+else:
+    socket_error = (transport.TTransportException, socket.error)
 
 AUTH_API_URL = "https://dataapi.joinquant.com/apis"  # 获取token
 
