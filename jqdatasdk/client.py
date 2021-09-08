@@ -126,16 +126,20 @@ class JQDataClient(object):
         cls._auth_params = params
         cls.instance().ensure_auth()
 
+    def _create_client(self):
+        self.client = make_client(
+            thrift.JqDataService,
+            self.host,
+            self.port,
+            timeout=(self.request_timeout * 1000)
+        )
+        return self.client
+
     def ensure_auth(self):
         if not self.inited:
             if not self.username and not self.token:
                 raise RuntimeError("not inited")
-            self.client = make_client(
-                thrift.JqDataService,
-                self.host,
-                self.port,
-                timeout=(self.request_timeout * 1000)
-            )
+            self._create_client()
             self.inited = True
             if self.username:
                 error, response = None, None
@@ -152,6 +156,8 @@ class JQDataClient(object):
                     except socket_error as ex:
                         error = ex
                         time.sleep(0.5)
+                        self.client.close()
+                        self._create_client()
                         continue
                 else:
                     if error and not response:
