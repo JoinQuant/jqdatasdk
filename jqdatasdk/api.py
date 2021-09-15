@@ -889,15 +889,5 @@ def write_file(path, content, append=False):
         return f.write(content)
 
 
-__all__ = ["normalize_code", "attribute_history_engine", "history_engine",]
-
-def _collect_func():
-    funcs = []
-    for func in globals().keys():
-        if func.startswith("get"):
-            funcs.append(func)
-    return funcs
-
-__all__.extend(_collect_func())
-
-del _collect_func
+__all__ = ["normalize_code", "attribute_history_engine", "history_engine"]
+__all__.extend([name for name in globals().keys() if name.startswith("get")])

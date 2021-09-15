@@ -1,19 +1,13 @@
 # coding=utf-8
-import sys
-import os
-sys.modules["ROOT_DIR"] = os.path.abspath(os.path.dirname(__file__))
 
-from .version import __version__, version_info
-from .api import *
-from .finance_service import *
+from .api import *  # noqa
+from .table import *  # noqa
+from .finance_service import *  # noqa
 from . import alpha101
 from . import alpha191
 from . import technical_analysis
-from .table import *
-from .client import (
-    JQDataClient,
-    AnalysisDNS,
-)
+from .client import JQDataClient, AnalysisDNS
+from .version import __version__, version_info  # noqa
 
 
 def auth(username, password, host=None, port=None):
@@ -64,7 +58,6 @@ except Exception:
 
 __all__ = [
     "auth",
-    "auth_by_token",
     "logout",
     "is_auth",
     "set_params",
@@ -73,6 +66,6 @@ __all__ = [
     "technical_analysis",
     "__version__"
 ]
-__all__.extend(api.__all__)
-__all__.extend(finance_service.__all__)
-__all__.extend(table.__all__)
+__all__.extend(api.__all__)  # noqa
+__all__.extend(finance_service.__all__) # noqa
+__all__.extend(table.__all__)  # noqa
