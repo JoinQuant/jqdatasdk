@@ -92,8 +92,8 @@ class JQDataClient(object):
         self.inited = False
         self.not_auth = True
         self.compress = True
-        self.http_token = ""
         self.data_api_url = ""
+        self._http_token = ""
 
     @classmethod
     def set_request_params(cls, **params):
@@ -170,7 +170,6 @@ class JQDataClient(object):
                     self.data_api_url = response.error
                 else:
                     self.data_api_url = AUTH_API_URL
-                self.set_http_token()
             else:
                 response = self.client.auth_by_token(self.token)
             auth_message = response.msg
@@ -292,14 +291,20 @@ class JQDataClient(object):
     def get_data_api_url(self):
         return self.data_api_url
 
-    def get_http_token(self):
-        return self.http_token
+    @property
+    def http_token(self):
+        if not self._http_token:
+            self.set_http_token()
+        return self._http_token
 
     def set_http_token(self):
+        username, password = self.username, self.password
+        if not username or not password:
+            return
         body = {
             "method": "get_current_token",
-            "mob": self.username,
-            "pwd": urlquote(self.password)  # 给密码编码，防止使用特殊字符登录失败
+            "mob": username,
+            "pwd": urlquote(password),  # 给密码编码，防止使用特殊字符登录失败
         }
         headers = {'User-Agent': 'JQDataSDK/{}'.format(current_version)}
         try:
@@ -309,7 +314,10 @@ class JQDataClient(object):
                 headers=headers,
                 timeout=self.request_timeout
             )
-            self.http_token = res.text
+            self._http_token = res.text.strip()
         except Exception:
             pass
+        return self._http_token
+
+    def get_http_token(self):
         return self.http_token
