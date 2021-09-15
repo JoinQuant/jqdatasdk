@@ -1249,3 +1249,8 @@ def test_get_history_fundamentals():
         get_history_fundamentals(['000001.XSHE'],
                                  fields=income.total_operating_revenue,
                                  stat_date='2019q1')
+
+
+def test_get_call_auction():
+    data = get_call_auction('000001.XSHE', start_date='2021-09-15', end_date='2021-09-15')
+    print(data)
