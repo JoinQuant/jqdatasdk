@@ -6,7 +6,7 @@ from .finance_service import *  # noqa
 from . import alpha101
 from . import alpha191
 from . import technical_analysis
-from .client import JQDataClient, AnalysisDNS
+from .client import JQDataClient
 from .version import __version__, version_info  # noqa
 
 
@@ -49,12 +49,6 @@ def set_params(**params):
     """
     JQDataClient.set_request_params(**params)
 
-
-try:
-    analysis_dns = AnalysisDNS()
-    analysis_dns.start()
-except Exception:
-    pass
 
 __all__ = [
     "auth",

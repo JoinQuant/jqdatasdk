@@ -313,16 +313,3 @@ class JQDataClient(object):
         except Exception:
             pass
         return self.http_token
-
-
-class AnalysisDNS(threading.Thread):
-
-    def __init__(self, *args, **kwargs):
-        super(AnalysisDNS, self).__init__(*args, **kwargs)
-        self.daemon = True
-
-    def run(self):
-        try:
-            requests.get(AUTH_API_URL, timeout=6)
-        except Exception:
-            pass
