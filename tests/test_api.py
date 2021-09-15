@@ -1254,3 +1254,12 @@ def test_get_history_fundamentals():
 def test_get_call_auction():
     data = get_call_auction('000001.XSHE', start_date='2021-09-15', end_date='2021-09-15')
     print(data)
+    assert len(data) > 0
+
+    data2 = get_call_auction('000001.XSHE', start_date='2021-09-15',
+                             end_date='2021-09-15 09:30:00')
+    assert len(data) == len(data2)
+    print(data)
+
+    with pytest.raises(TypeError):
+        get_call_auction('000001.XSHE', start_date='2021-09-15')

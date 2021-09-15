@@ -839,7 +839,7 @@ def get_all_factors():
     return JQDataClient.instance().get_all_factors(**locals())
 
 @assert_auth
-def get_call_auction(security, start_date=None, end_date=None, fields=None):
+def get_call_auction(security, start_date, end_date, fields=None):
     """ 获取指定时间区间内集合竞价时的tick数据
     Args:
         security: 标的代码或者标的代码组成的列表
@@ -868,7 +868,7 @@ def get_call_auction(security, start_date=None, end_date=None, fields=None):
             get_call_auction('000001.XSHE','2019-08-10','2019-08-12')
         2. start_date和end_date不能为None，否则将抛出异常
     """
-    if end_date == datetime.date.today() or end_date == datetime.date.today().strftime("%Y-%m-%d"):
+    if str(end_date) >= str(datetime.datetime.today()):
         if datetime.datetime.now().time() < datetime.time(9, 30):
             # 当天9:30之前数据可能变化, 不用缓存
             return JQDataClient.instance().get_call_auction(**locals())
