@@ -1,6 +1,5 @@
 # coding=utf-8
 
-import sys
 import platform
 import time
 import socket
@@ -16,16 +15,17 @@ import pandas as pd
 from thriftpy2 import transport, protocol
 from thriftpy2.rpc import make_client
 
+try:
+    from urllib.parse import quote as urlquote
+except ImportError:
+    from urllib import quote as urlquote
+
 from .utils import classproperty, isatty, get_mac_address
 from .version import __version__ as current_version
 from .compat import pickle_compat as pc
 from .thriftclient import thrift
 from .api import *  # noqa
 
-try:
-    import urllib.parse as urlparse
-except ImportError:
-    import urllib as urlparse
 
 if platform.system().lower() != "windows":
     socket_error = (transport.TTransportException, socket.error, protocol.cybin.ProtocolError)
@@ -296,16 +296,17 @@ class JQDataClient(object):
         return self.http_token
 
     def set_http_token(self):
-        password = urlparse.quote(self.password)  # 给密码编码，防止使用特殊字符登录失败
         body = {
             "method": "get_current_token",
             "mob": self.username,
-            "pwd": password
+            "pwd": urlquote(self.password)  # 给密码编码，防止使用特殊字符登录失败
         }
+        headers = {'User-Agent': 'JQDataSDK/{}'.format(current_version)}
         try:
             res = requests.post(
                 AUTH_API_URL,
                 data=json.dumps(body),
+                headers=headers,
                 timeout=self.request_timeout
             )
             self.http_token = res.text
