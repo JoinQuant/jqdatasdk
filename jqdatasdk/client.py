@@ -22,6 +22,10 @@ from .compat import pickle_compat as pc
 from .thriftclient import thrift
 from .api import *  # noqa
 
+try:
+    import urllib.parse as urlparse
+except ImportError:
+    import urllib as urlparse
 
 if platform.system().lower() != "windows":
     socket_error = (transport.TTransportException, socket.error, protocol.cybin.ProtocolError)
@@ -292,10 +296,11 @@ class JQDataClient(object):
         return self.http_token
 
     def set_http_token(self):
+        password = urlparse.quote(self.password)  # 给密码编码，防止使用特殊字符登录失败
         body = {
             "method": "get_current_token",
             "mob": self.username,
-            "pwd": self.password
+            "pwd": password
         }
         try:
             res = requests.post(
