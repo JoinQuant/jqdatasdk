@@ -883,6 +883,102 @@ def exec_call_auction(security,start_date=None, end_date=None, fields=None):
                                                     fields=fields)
 
 
+@assert_auth
+def get_factor_kanban_values(universe=None, bt_cycle=None, category=None, model='long_only', **kwargs):
+    """获取因子面板数据
+    Args:
+        universe: 股票池
+            'hs300': 沪深300
+            'zz500': 中证500
+            'zz800': 中证800
+            'zz1000': 中证1000
+            'zzqz': 中证全指
+        bt_cycle: 测试周期
+            'month_3':近三个月
+            'year_1': 近一年
+            'year_3': 近三年
+            'year_10': 近十年
+        category: 分类
+            'basics': 基础类
+            'quality': 质量类
+            'pershare': 每股类
+            'emotion': 情绪类
+            'growth': 成长类
+            'risk': 风险类
+            'barra': 风险因子 - 风格因子
+            'technical': 技术类
+            'momentum': 动量类
+        model: 组合构建模型
+            'long_only': 纯多头组合
+            'long_short': 多空组合
+        **kwargs: 其他约束条件详见
+            https://www.joinquant.com/help/api/help?name=api#get_factor_kanban_values
+
+    """
+    assert  model in ('long_only', 'long_short'),\
+            "model 的值应为 'long_only', 'long_short' 中的一个"
+    return JQDataClient.instance().get_factor_kanban_values(
+            universe=universe,
+            bt_cycle=bt_cycle,
+            category=category,
+            model=model,
+            **kwargs
+        )
+
+
+@assert_auth
+def get_factor_barra_returns(factors=None, start_date=None, end_date=None, count=None):
+    """获取 barra 因子暴露收益率
+    参数：
+        factors : 因子名称，单个因子（字符串）或一个因子列表
+        start_date : 开始日期，字符串或 datetime 对象
+        end_date : 结束日期，字符串或 datetime 对象，可以与 start_date 或 count 配合使用
+        count: 截止 end_date 之前交易日的数量（含 end_date 当日）
+
+    返回：
+        一个 DataFrame, index 是日期, value 是 barra 因子暴露收益率
+    """
+    if count and start_date:
+        raise ParamsError("(start_date, count) only one param is required")
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    return JQDataClient.instance().get_factor_barra_returns(**locals())
+
+
+@assert_auth
+def get_factor_stats(factor_names=None, universe_type='hs300',
+                     start_date=None, end_date=None, count=None,
+                     skip_paused=False, commision_fee=0.0):
+    """ 获取历史收益(多头)
+    参数：
+        factor_names : 因子名称，单个因子（字符串）或一个因子列表
+        universe_type : 股票池包括以下五种：
+                                        'hs300': 沪深300
+                                        'zz500': 中证500
+                                        'zz800': 中证800
+                                        'zz1000': 中证1000
+                                        'zzqz': 中证全指
+                        默认为'hs300'
+        start_date : 开始日期，字符串或 datetime 对象
+        end_date : 结束日期，字符串或 datetime 对象，可以与 start_date 或 count 配合使用
+        count: 截止 end_date 之前交易日的数量（含 end_date 当日）
+        skip_paused : 是否跳过停牌，bool，默认为False
+        commision_fee : 手续费，float，0.0/0.0008/0.0018, 默认为0.0
+
+    返回：
+        一个 dict，其中 key 是因子名称，value 是一个 pandas.DataFrame
+        DataFrame 的 index 是日期，column 1,2,3,4,5是一分位、二分位、三分位、四分位、五分位累积收益
+    """
+    if count and start_date:
+        raise ParamsError("(start_date, count) only one param is required")
+    assert universe_type in ('zz500', 'zz1000', 'hs300', 'zz800', 'zzqz'),\
+            "股票池应为 'zz500', 'zz1000', 'hs300', 'zz800', 'zzqz'中一个"
+    assert commision_fee in (0.0, 0.0008, 0.0018), "手续费应为 0.0, 0.0008, 0.0018 中一个"
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    return JQDataClient.instance().get_factor_stats(**locals())
+
+
 def read_file(path):
     """
     读取文件

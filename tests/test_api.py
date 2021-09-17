@@ -9,7 +9,7 @@ import pytest
 import numpy as np
 import pandas as pd
 
-from jqdatasdk.utils import PandasChecker
+from jqdatasdk.utils import PandasChecker, ParamsError
 from jqdatasdk.exceptions import PanelObsoleteWarning
 from jqdatasdk import *
 from jqdatasdk.technical_analysis import *
@@ -1263,3 +1263,91 @@ def test_get_call_auction():
 
     with pytest.raises(TypeError):
         get_call_auction('000001.XSHE', start_date='2021-09-15')
+
+
+def test_get_factor_kanban_values():
+    kbv = get_factor_kanban_values(
+        universe='zz800', bt_cycle='year_1', skip_paused=False,
+        commision_slippage=1, category='emotion', model='long_short'
+    )
+    print(kbv)
+    assert set(kbv['universe']) == set(['zz800'])
+    assert set(kbv['bt_cycle']) == set(['year_1'])
+    assert set(kbv['category']) == set(['emotion'])
+    assert kbv['commision_slippage'].any() == 1
+    with pytest.raises(AssertionError):
+        kbv = get_factor_kanban_values(model='hhh')
+
+
+def test_get_factor_barra_returns():
+    data = get_factor_barra_returns()
+    print(data)
+    assert not data.empty
+    data2 = get_factor_barra_returns(
+        factors=['beta', 'growth', 'HY001'],
+        start_date='2021-01-01',
+        end_date='2021-01-10'
+    )
+    print(data2)
+    assert not data2.empty
+
+
+def test_get_factor_stats():
+    # 测试默认值
+    data = get_factor_stats()
+    print(data)
+    assert len(data['beta']) == 10
+    # 测试 factor_names
+    with pytest.raises(Exception):
+        data = get_factor_stats(factor_names='hhh')
+    # 测试多因子
+    data1 = get_factor_stats(
+        factor_names=['beta', 'size', 'growth'],
+        universe_type='zzqz',
+        start_date='2021-01-01',
+        end_date='2021-01-10',
+    )
+    print(data1)
+    assert set(data1.keys()) == set({'beta', 'size', 'growth'})
+    assert len(data1['beta'])
+    assert len(data1['size'])
+    assert len(data1['growth'])
+    # 测试 count
+    data2 = get_factor_stats(factor_names=['growth'],
+                             end_date=datetime.date(2021,9,1), count=20)
+    assert len(data2['growth']) == 20
+    print(data2)
+    # 测试手续费, 跳过停牌
+    data3 = get_factor_stats(
+        factor_names=['net_profit_to_total_operate_revenue_ttm'],
+        skip_paused=True,
+        commision_fee=0.0008
+    )
+    print(data3)
+    assert len(data3['net_profit_to_total_operate_revenue_ttm']) == 10
+    data4 = get_factor_stats(
+        factor_names=['net_profit_to_total_operate_revenue_ttm'],
+        skip_paused=True,
+        commision_fee=0.0018
+    )
+    print(data4)
+    assert len(data4['net_profit_to_total_operate_revenue_ttm']) == 10
+    with pytest.raises(Exception):
+        get_factor_stats(commision_fee=0.0001)
+    # 测试 start_date
+    data5 = get_factor_stats(
+        factor_names=['growth'],
+        start_date='2021-08-30',
+        end_date='2021-09-03'
+    )
+    print(data5)
+    assert len(data5['growth']) == 5
+    # 测试 股票池
+    with pytest.raises(AssertionError, match='^股票池应为.*$'):
+        get_factor_stats(universe_type='沪深300')
+    # 测试 start_date count
+    with pytest.raises(ParamsError, match='^.*only.one.param.is.required$'):
+        get_factor_stats(start_date='2021-08-30', count=10)
+    # 测试 date
+    with pytest.raises(Exception):
+        get_factor_stats(start_date='2021-08-30', end_date='2021-08-20')
