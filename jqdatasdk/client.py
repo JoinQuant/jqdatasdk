@@ -297,6 +297,14 @@ class JQDataClient(object):
             self.set_http_token()
         return self._http_token
 
+    @http_token.setter
+    def http_token(self, value):
+        self._http_token = value
+
+    @http_token.deleter
+    def http_token(self):
+        self._http_token = ""
+
     def set_http_token(self):
         username, password = self.username, self.password
         if not username or not password:
