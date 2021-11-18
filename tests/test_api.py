@@ -85,14 +85,14 @@ def test_get_concept_stocks():
     with pytest.raises(Exception) as e:
         get_concept_stocks(123)
 
-    assert get_concept_stocks('GN001').__len__() > 0
-    assert len(get_concept_stocks('gn001', date=datetime.date(2015, 5, 5))) > 0
-    assert len(get_concept_stocks('GN001', date=datetime.date(2016, 1, 1))) > 0
-    assert len(get_concept_stocks('GN075')) > 0
-    assert len(get_concept_stocks('GN116', datetime.date(2012, 6, 5))) == 0
-    assert len(get_concept_stocks('GN146', datetime.date(2015, 1, 1)))
-    assert len(get_concept_stocks('GN201', datetime.date.today()))
-    assert get_concept_stocks("GN116", datetime.date(2005, 1, 1)) == []
+    assert get_concept_stocks('SC0001').__len__() > 0
+    assert len(get_concept_stocks('sc0001', date=datetime.date(2017, 5, 5))) > 0
+    assert len(get_concept_stocks('SC0001', date=datetime.date(2018, 1, 1))) > 0
+    assert len(get_concept_stocks('SC0075')) > 0
+    assert len(get_concept_stocks('SC0116', datetime.date(2017, 6, 5))) == 0
+    assert len(get_concept_stocks('SC0146', datetime.date(2018, 1, 1)))
+    assert len(get_concept_stocks('SC0201', datetime.date.today()))
+    assert get_concept_stocks("SC0116", datetime.date(2005, 1, 1)) == []
 
 
 def test_get_all_securities():
@@ -1292,6 +1292,7 @@ def test_get_factor_barra_returns():
     assert not data2.empty
 
 
+@pytest.mark.skip()
 def test_get_factor_stats():
     # 测试默认值
     data = get_factor_stats()
