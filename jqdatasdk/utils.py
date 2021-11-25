@@ -80,9 +80,15 @@ def no_sa_warnings(f):
 
 
 def get_tables_from_sql(sql):
-    """ 从 sql 语句中拿到所有引用的表名字 """
-    m = re.search(r'FROM (.*?)($| WHERE| GROUP| HAVING| ORDER)', sql, flags=re.M)
-    return [t.strip() for t in m.group(1).strip().split(',')] if m else []
+    """从 sql 语句中拿到所有引用的表名字"""
+    sql = re.sub(r'\s+', ' ', sql).replace('`', '').replace('"', '')
+    pattern = re.compile(
+        r'(?:\b(?:from)|(?:join)\b)\s+(\w+(?:\s*,\s*\w+)*)\b',
+        flags=re.I
+    )
+    matchs = re.findall(pattern, sql)
+    tables = ' '.join(matchs).replace(',', ' ')
+    return {tab for tab in tables.split()}
 
 
 @no_sa_warnings
@@ -288,6 +294,7 @@ def get_mac_address():
 def hashable_lru(maxsize=16):
     def hashable_cache_internal(func):
         cache = lru_cache(maxsize=maxsize)
+
         def deserialize(value):
             if isinstance(value, Serialized):
                 return json.loads(value.json)

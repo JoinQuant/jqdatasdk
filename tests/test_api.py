@@ -1,18 +1,22 @@
 # coding: utf-8
-from jqdatasdk.api import get_dominant_future
-import time
+
+from __future__ import print_function
+
 import re
+import time
 import warnings
 import datetime
 import logging
+
 import pytest
 import numpy as np
 import pandas as pd
 
 from jqdatasdk.utils import PandasChecker, ParamsError
 from jqdatasdk.exceptions import PanelObsoleteWarning
-from jqdatasdk import *
-from jqdatasdk.technical_analysis import *
+from jqdatasdk.table import DBTable
+from jqdatasdk import *  # noqa
+from jqdatasdk.technical_analysis import *  # noqa
 
 log = logging
 
@@ -447,7 +451,6 @@ def test_get_fundamentals():
     assert(len(df.index)) == 10
     with pytest.raises(Exception) as e:
         get_fundamentals(query(income.day).limit(10), date='2016-07-01', statDate='2016-07-01')
-    pass
 
 
 def test_get_fundamentals2():
@@ -832,7 +835,6 @@ def test_finance_tables():
     finance.STK_LIST
     # finance查询不全是object类型
     data = finance.run_query(query(finance.STK_LIST))
-    print("------", data.dtypes)
     assert float in list(finance.run_query(query(finance.STK_LIST)).dtypes)
     assert len(finance.__dict__) > 30
     assert finance.STK_LIST != None
@@ -859,6 +861,40 @@ def test_finance_tables():
                         "ipo_shares", "book_price", "par_value",
                         "state_id", "state", "status"]
     assert set(stk_list_columns) - set(df.columns) == set(["status"])
+
+
+@pytest.mark.skip()
+def test_finance_tables2():
+    # 测试连表查询的情况
+    with pytest.raises(Exception):
+        fin = DBTable("finance", disable_join=False)
+        data = fin.run_query(query(
+            fin.FUND_FIN_INDICATOR.code,
+            fin.FUND_FIN_INDICATOR.name,
+            fin.FUND_DIVIDEND.event,
+            fin.FUND_DIVIDEND.distribution_date
+        ).filter(
+            fin.FUND_FIN_INDICATOR.code == '000001'
+        ))
+        print(data)
+
+    from jqdatasdk.utils import get_tables_from_sql
+    tables = get_tables_from_sql("select * from tx")
+    assert tables == {"tx"}
+    tables = get_tables_from_sql("select * from tx, ty, tz")
+    assert tables == {"tx", "ty", "tz"}
+    tables = get_tables_from_sql("select * from ta join tb where id=1")
+    assert tables == {"ta", "tb"}
+
+    with pytest.raises(Exception):
+        finance.run_query(query(
+            finance.FUND_FIN_INDICATOR.code,
+            finance.FUND_FIN_INDICATOR.name,
+            finance.FUND_DIVIDEND.event,
+            finance.FUND_DIVIDEND.distribution_date
+        ).filter(
+            finance.FUND_FIN_INDICATOR.code == '000001'
+        ))
 
 
 def test_get_factor_values():

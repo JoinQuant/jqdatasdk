@@ -3,15 +3,12 @@
 """
 财经/宏观经济数据
 """
-from .utils import *
-import sys
+
 from .client import JQDataClient
-from sqlalchemy.types import *
+from sqlalchemy.types import *  # noqa
 from sqlalchemy.ext.declarative import declarative_base
-# try:
-#     from functools import lru_cache
-# except ImportError:
-#     from fastcache import lru_cache
+from .utils import assert_auth, check_no_join, compile_query
+
 
 __all__ = [
     "finance",
@@ -26,8 +23,8 @@ __all__ = [
 class DBTable(object):
     RESULT_ROWS_LIMIT = 5000
 
-    def __init__(self, db, disable_join=False):
-        self.__disable_join = True
+    def __init__(self, db, disable_join=True):
+        self.__disable_join = disable_join
         self.__table_names = []
         self.db_name = db
 
@@ -38,7 +35,6 @@ class DBTable(object):
             setattr(self, name, None)
 
     @assert_auth
-    # @lru_cache(maxsize=3)
     def run_query(self, query_object):
         from .client import JQDataClient
         if self.__disable_join:
@@ -54,11 +50,10 @@ class DBTable(object):
         return df
 
     def __load_table_class(self, table_name):
-        import datetime
-        from sqlalchemy import Date, Column, DateTime, Integer, INTEGER, Numeric, SmallInteger, String, Table, Text, \
-            text
-        from sqlalchemy.dialects.mysql import TINYINT, TIMESTAMP, DECIMAL, DOUBLE
-
+        from sqlalchemy.dialects.mysql import TINYINT, TIMESTAMP, DECIMAL, DOUBLE  # noqa
+        from sqlalchemy import (Date, Column, DateTime, Integer, INTEGER,          # noqa
+                                Numeric, SmallInteger, String, Table, Text,
+                                text)
         data = JQDataClient.instance().get_table_orm(db=self.db_name, table=table_name)
         dct = {}
         for k, v in data["columns"]:
