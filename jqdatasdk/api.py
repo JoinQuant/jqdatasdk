@@ -979,18 +979,33 @@ def get_factor_stats(factor_names=None, universe_type='hs300',
     return JQDataClient.instance().get_factor_stats(**locals())
 
 
+def get_data(api_name, **kwargs):
+    """获取数据"""
+    return JQDataClient.instance().get_factor_stats(api_name=api_name, **kwargs)
+
+
+def get_privilege():
+    """获取当前拥有的权限"""
+    return JQDataClient.instance().get_privilege()
+
+
+def get_now_time():
+    """获取服务器当前时间戳"""
+    return JQDataClient.instance().get_now_time()
+
+
+def get_test():
+    return JQDataClient.instance().get_test()
+
+
 def read_file(path):
-    """
-    读取文件
-    """
+    """读取文件"""
     with open(path, 'rb') as f:
         return f.read()
 
 
 def write_file(path, content, append=False):
-    """
-    写入文件
-    """
+    """写入文件"""
     if isinstance(content, six.text_type):
         content = content.encode('utf-8')
     with open(path, 'ab' if append else 'wb') as f:
