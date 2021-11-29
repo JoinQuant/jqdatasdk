@@ -172,13 +172,15 @@ def test_get_extras4():
         get_extras('acc_net_value', 'IC1509.CCFX', start_date='2015-01-01', df=False, count=10)
 
 
-def test_sec_info():
-    res = {'display_name': u'\u5e73\u5b89\u94f6\u884c',
+def test_get_security_info():
+    res = {
+        'display_name': u'\u5e73\u5b89\u94f6\u884c',
         # 'name': u'PAYH',
         'parent': None,
         'end_date': datetime.date(2200, 1, 1),
         'type': 'stock',
-        'start_date': datetime.date(1991, 4, 3)}
+        'start_date': datetime.date(1991, 4, 3)
+    }
     info = get_security_info('000001.XSHE', date="2019-06-06")
     for f in res:
         assert getattr(info, f) == res[f]
@@ -186,6 +188,7 @@ def test_sec_info():
     assert get_security_info('510300.XSHG').type == 'etf'
     assert get_security_info('510300.XSHG').parent is None
     assert get_security_info('502050.XSHG').parent == '502048.XSHG'
+    assert get_security_info("180801.XSHE").type == 'reits'
 
 
 def test_normalize_code():
