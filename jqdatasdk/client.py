@@ -6,6 +6,7 @@ import socket
 import zlib
 import threading
 import json
+import pickle
 from os import getenv
 
 import six
@@ -190,6 +191,19 @@ class JQDataClient(object):
         self.inited = False
         self.http_token = ""
 
+    def _ping_server(self):
+        if not self.client or not self.inited:
+            return False
+        request = thrift.St_Query_Req()
+        request.method_name = "ping"
+        request.params = msgpack.packb({"timeout": 5})
+        try:
+            response = self.client.query(request)
+            msg = pickle.loads(zlib.decompress(response.msg))
+        except Exception:
+            return False
+        return msg == "pong"
+
     def logout(self):
         self._reset()
         self._threading_local._instance = None
@@ -264,19 +278,18 @@ class JQDataClient(object):
                     err = self.get_error(response)
                 break
             except KeyboardInterrupt as e:
-                self._reset()
                 err = e
                 raise
             except socket_error as e:
-                self._reset()
                 err = e
                 time.sleep(0.5)
                 continue
             except Exception as e:
-                self._reset()
                 err = e
                 break
             finally:
+                if not self._ping_server():
+                    self._reset()
                 file.close()
 
         if result is None:
