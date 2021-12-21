@@ -822,21 +822,12 @@ def get_factor_effect(security, start_date, end_date, period, factor, group_num=
     assert period[-1] in ["D", "W", "M"], "period must be end with one of (\"D\", \"W\", \"M\")"
     return JQDataClient.instance().get_factor_effect(**locals())
 
-@assert_auth
-def get_data(api_name, **kwargs):
-    """通用接口
-    获取非run_query, alpha因子, technical_analysis查询的数据
-    :param apis_name 接口名称
-    :param kwargs 传入参数，且必须是关键字参数
-    """
-    assert api_name
-    return JQDataClient.instance().get_data(api_name=api_name, args=kwargs)
-
 
 @assert_auth
 @hashable_lru(maxsize=3)
 def get_all_factors():
     return JQDataClient.instance().get_all_factors(**locals())
+
 
 @assert_auth
 def get_call_auction(security, start_date, end_date, fields=None):
@@ -979,9 +970,16 @@ def get_factor_stats(factor_names=None, universe_type='hs300',
     return JQDataClient.instance().get_factor_stats(**locals())
 
 
+@assert_auth
 def get_data(api_name, **kwargs):
-    """获取数据"""
-    return JQDataClient.instance().get_factor_stats(api_name=api_name, **kwargs)
+    """通用数据获取接口
+
+    获取非 run_query, alpha 因子, technical_analysis 查询的数据
+    :param apis_name 接口名称
+    :param kwargs 传入参数，且必须是关键字参数
+    """
+    assert api_name
+    return JQDataClient.instance().get_data(api_name=api_name, args=kwargs)
 
 
 def get_privilege():
