@@ -6,7 +6,8 @@ import socket
 import zlib
 import threading
 import json
-import pickle
+import random
+import itertools
 from os import getenv
 
 import six
@@ -25,7 +26,7 @@ from .utils import classproperty, isatty, get_mac_address
 from .version import __version__ as current_version
 from .compat import pickle_compat as pc
 from .thriftclient import thrift
-from .api import *  # noqa
+from .exceptions import ResponseError
 
 
 if platform.system().lower() != "windows":
@@ -95,6 +96,10 @@ class JQDataClient(object):
         self.compress = True
         self.data_api_url = ""
         self._http_token = ""
+
+        self._request_id_generator = itertools.count(
+            random.choice(range(0, 1000, 10))
+        )
 
     @classmethod
     def set_request_params(cls, **params):
@@ -191,19 +196,6 @@ class JQDataClient(object):
         self.inited = False
         self.http_token = ""
 
-    def _ping_server(self):
-        if not self.client or not self.inited:
-            return False
-        request = thrift.St_Query_Req()
-        request.method_name = "ping"
-        request.params = msgpack.packb({"timeout": 5})
-        try:
-            response = self.client.query(request)
-            msg = pickle.loads(zlib.decompress(response.msg))
-        except Exception:
-            return False
-        return msg == "pong"
-
     def logout(self):
         self._reset()
         self._threading_local._instance = None
@@ -221,6 +213,59 @@ class JQDataClient(object):
         else:
             err = Exception(response.error)
         return err
+
+    def query(self, method, params):
+        params["timeout"] = self.request_timeout
+        params["request_id"] = next(self._request_id_generator)
+        request = thrift.St_Query_Req()
+        request.method_name = method
+        request.params = msgpack.packb(params)
+        err, result = None, None
+        buffer = six.BytesIO()
+        try:
+            self.ensure_auth()
+            response = self.client.query(request)
+            if response.status:
+                msg = response.msg
+                if six.PY3 and isinstance(msg, str):
+                    try:
+                        msg = msg.encode("ascii")
+                    except UnicodeError:
+                        raise ResponseError("bad msg {!r}".format(msg))
+                msg = zlib.decompress(msg)
+                buffer.write(msg)
+                pickle_encoding = None
+                if six.PY3:
+                    pickle_encoding = "latin1"
+                result = pc.load(buffer, encoding=pickle_encoding)
+            else:
+                err = self.get_error(response)
+        finally:
+            buffer.close()
+
+        if result is None and isinstance(err, Exception):
+            raise err
+        if not isinstance(result, dict) or "request_id" not in result:
+            return result
+
+        if params["request_id"] != result["request_id"]:
+            raise ResponseError("request_id {!r} != {!r}".format(
+                params["request_id"], result["request_id"]
+            ))
+        return result["msg"]
+
+    def _ping_server(self):
+        if not self.client or not self.inited:
+            return False
+        for _ in range(self.request_attempt_count):
+            try:
+                msg = self.query("ping", {})
+            except ResponseError:
+                msg = None
+                continue
+            except Exception:
+                return False
+        return msg == "pong"
 
     @classmethod
     def convert_message(cls, msg):
@@ -253,48 +298,21 @@ class JQDataClient(object):
         return msg
 
     def __call__(self, method, **kwargs):
-        kwargs["timeout"] = self.request_timeout
-        request = thrift.St_Query_Req()
-        request.method_name = method
-        request.params = msgpack.packb(kwargs)
         err, result = None, None
         for _ in range(self.request_attempt_count):
             try:
-                file = six.BytesIO()
-                self.ensure_auth()
-                response = self.client.query(request)
-                if response.status:
-                    buffer = response.msg
-                    if six.PY3:
-                        if type(buffer) is str:
-                            buffer = bytes(buffer, "ascii")
-                    buffer = zlib.decompress(buffer)
-                    file.write(buffer)
-                    pickle_encoding = None
-                    if six.PY3:
-                        pickle_encoding = "latin1"
-                    result = pc.load(file, encoding=pickle_encoding)
-                else:
-                    err = self.get_error(response)
+                result = self.query(method, kwargs)
                 break
-            except KeyboardInterrupt as e:
-                err = e
-                raise
-            except socket_error as e:
-                err = e
-                time.sleep(0.5)
-                continue
-            except Exception as e:
-                err = e
-                break
-            finally:
+            except socket_error as ex:
                 if not self._ping_server():
                     self._reset()
-                file.close()
+                err = ex
+                time.sleep(0.5)
+            except ResponseError as ex:
+                err = ex
 
-        if result is None:
-            if isinstance(err, Exception):
-                raise err
+        if err:
+            raise err
 
         return self.convert_message(result)
 
