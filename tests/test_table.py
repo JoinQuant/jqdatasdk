@@ -16,7 +16,7 @@ def test_opt():
     ]
     df = df.set_index("code").drop("id", axis=1)
     item = df.loc["C2101-C-2800.XDCE"]
-    assert item["name"] == "玉米购1月2800"
+    assert item["name"] == u"玉米购1月2800"
     assert item.underlying_symbol == "C2101.XDCE"
     assert str(item.delist_date) == "2020-12-08"
 
@@ -36,8 +36,8 @@ def test_macro():
     print(df)
     assert len(df) == 5
     assert df["area_code"].tolist() == ['330101', '330102', '330103', '330104', '330105']
-    assert set(df["province_name"]) == {"浙江省"}
-    assert set(df["city_name"]) == {"杭州市"}
+    assert set(df["province_name"]) == {u"浙江省"}
+    assert set(df["city_name"]) == {u"杭州市"}
 
 
 def test_bond():
@@ -46,7 +46,7 @@ def test_bond():
     assert len(df) == 10
     df = df.set_index("code").drop("id", axis=1)
     item = df.loc["131801"]
-    assert item.short_name == "花呗01A1" and str(item.maturity_date) == "2017-06-15"
+    assert item.short_name == u"花呗01A1" and str(item.maturity_date) == "2017-06-15"
     item = df.loc["131811"]
     assert item.short_name == "R-002" and item.maturity_date is None
 
