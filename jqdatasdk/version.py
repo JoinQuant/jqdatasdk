@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__version__ = "1.8.10"
+__version__ = "1.8.11"
 
 
 _VersionInfo = __import__("collections").namedtuple(
