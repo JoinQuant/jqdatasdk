@@ -220,8 +220,8 @@ class JQDataClient(object):
         request = thrift.St_Query_Req()
         request.method_name = method
         request.params = msgpack.packb(params)
-        err, result = None, None
         buffer = six.BytesIO()
+        result = None
         try:
             self.ensure_auth()
             response = self.client.query(request)
@@ -239,12 +239,10 @@ class JQDataClient(object):
                     pickle_encoding = "latin1"
                 result = pc.load(buffer, encoding=pickle_encoding)
             else:
-                err = self.get_error(response)
+                raise self.get_error(response)
         finally:
             buffer.close()
 
-        if result is None and isinstance(err, Exception):
-            raise err
         if not isinstance(result, dict) or "request_id" not in result:
             return result
 
@@ -307,11 +305,11 @@ class JQDataClient(object):
                 if not self._ping_server():
                     self._reset()
                 err = ex
-                time.sleep(0.5)
+                time.sleep(0.6)
             except ResponseError as ex:
                 err = ex
 
-        if err:
+        if result is None and isinstance(err, Exception):
             raise err
 
         return self.convert_message(result)
