@@ -913,6 +913,10 @@ def test_get_factor_values():
         get_factor_values("000001.XSHE", "asdf", end_date="2017-03-04", count=10)
     with pytest.raises(Exception):
         get_factor_values("000001.XSHE", "asdf", start_date="2017-01-01", end_date="2017-03-04", count=10)
+    with pytest.raises(Exception):
+        get_factor_values("000001.XSHE", "alpha_001", end_date="2022-02-16", count=10)
+    with pytest.raises(Exception):
+        get_factor_values("000001.XSHE", ["alpha_001", "alpha_002"], end_date="2022-02-16", count=10)
 
 
 def test_trade_days():
@@ -931,6 +935,8 @@ def test_get_bars():
     assert get_bars("000001.XSHE", count=5, end_dt="2018-10-15").to_csv().replace('\r', '') == (
         ',date,open,high,low,close\n0,2018-10-08,10.7,10.79,10.45,10.45\n1,2018-10-09,10.46,10.7,10.39,10.56\n2,2018-10-10,10.54,10.66,10.38,10.45\n3,2018-10-11,10.05,10.16,9.7,9.86\n4,2018-10-12,9.97,10.34,9.87,10.3\n'
     )
+    df = get_bars(["000688.XSHG"], count=6, unit="1M", end_dt="2020-03-10", include_now=False)
+    assert df.empty
 
 
 def test_get_fund_info():
