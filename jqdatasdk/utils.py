@@ -68,6 +68,27 @@ class Security(object):
         return self.code
 
 
+class Security2(Security):
+
+    __slots__ = ("code", "display_name", "name", "start_date", "end_date",
+                 "type", "parent",)
+
+    def __repr__(self):
+        return (
+            "Security(code='{}', type='{}', start_date='{}', end_date='{}', "
+            "display_name='{}')"
+        ).format(
+            self.code, self.type, self.start_date, self.end_date,
+            self.display_name
+        )
+
+    def __str__(self):
+        return self.code
+
+    def to_dict(self):
+        return {name: getattr(self, name, None) for name in self.__slots__}
+
+
 def no_sa_warnings(f):
     @wraps(f)
     def wrapper(*args, **kwds):

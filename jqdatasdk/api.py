@@ -4,7 +4,7 @@ import warnings
 from io import StringIO
 import requests
 import pandas as pd
-from .utils import *
+from .utils import *  # noqa
 from .exceptions import PanelObsoleteWarning
 from .client import JQDataClient
 
@@ -363,6 +363,23 @@ def get_security_info(code, date=None):
     result = JQDataClient.instance().get_security_info(**locals())
     if result:
         return Security(**result)
+
+
+@assert_auth
+@hashable_lru(maxsize=3)
+def get_security_info2(code, date=None):
+    """
+    获取标的信息
+
+    :param code 证券代码
+    :param date 查询日期: 日期字符串/date对象/datetime对象, 注意传入datetime对象时忽略日内时间
+    :return Security2
+    """
+    assert code, "code is required"
+    date = to_date_str(date)
+    result = JQDataClient.instance().get_security_info(**locals())
+    if result:
+        return Security2(**result)
 
 
 @assert_auth

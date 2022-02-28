@@ -8,6 +8,9 @@ import warnings
 import datetime
 import logging
 
+from matplotlib.pyplot import get
+from jqdatasdk.api import get_security_info
+
 import pytest
 import numpy as np
 import pandas as pd
@@ -189,6 +192,11 @@ def test_get_security_info():
     assert get_security_info('510300.XSHG').parent is None
     assert get_security_info('502050.XSHG').parent == '502048.XSHG'
     assert get_security_info("180801.XSHE").type == 'reits'
+
+    info = get_security_info2("600000.XSHG")
+    assert info.type == "stock"
+    assert info.to_dict()["code"] == "600000.XSHG"
+    assert "start_date" in repr(info)
 
 
 def test_normalize_code():
