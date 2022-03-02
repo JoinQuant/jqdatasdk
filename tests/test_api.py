@@ -8,9 +8,6 @@ import warnings
 import datetime
 import logging
 
-from matplotlib.pyplot import get
-from jqdatasdk.api import get_security_info
-
 import pytest
 import numpy as np
 import pandas as pd
@@ -20,6 +17,7 @@ from jqdatasdk.exceptions import PanelObsoleteWarning
 from jqdatasdk.table import DBTable
 from jqdatasdk import *  # noqa
 from jqdatasdk.technical_analysis import *  # noqa
+
 
 log = logging
 
