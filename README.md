@@ -1,4 +1,4 @@
-[![img](https://raw.githubusercontent.com/JoinQuant/jqdatasdk/master/logo.png)](https://raw.githubusercontent.com/JoinQuant/jqdatasdk/master/logo.png)
+![Logo](logo.png)
 
 ## 公司介绍
 
