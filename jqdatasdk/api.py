@@ -1,11 +1,9 @@
 # coding=utf-8
 
-import warnings
 from io import StringIO
 import requests
 import pandas as pd
 from .utils import *  # noqa
-from .exceptions import PanelObsoleteWarning
 from .client import JQDataClient
 
 
@@ -31,7 +29,6 @@ def get_price(security, start_date=None, end_date=None, frequency='daily',
     """
     if panel and PandasChecker.check_version():
         panel = False
-        warnings.warn(PandasChecker.VERSION_NOTICE_MESSAGE, PanelObsoleteWarning)
     security = convert_security(security)
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
@@ -123,7 +120,6 @@ def get_fundamentals_continuously(query_object, end_date=None, count=1, panel=Tr
 
     if panel and PandasChecker.check_version():
         panel = False
-        warnings.warn(PandasChecker.VERSION_NOTICE_MESSAGE, PanelObsoleteWarning)
 
     trade_days = CalendarService.get_trade_days(end_date=end_date, count=count)
     sql = fundamentals_redundant_continuously_query_to_sql(query_object, trade_days)
