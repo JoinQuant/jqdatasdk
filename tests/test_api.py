@@ -539,6 +539,11 @@ def test_get_marginsec_stocks():
     assert len(get_marginsec_stocks('2016-12-01')) > 0
 
 
+def test_get_index_weights():
+    data = get_index_weights("000001.XSHG", "2018-05-09")
+    assert len(data) > 0
+
+
 def test_get_dominant_future():
     if_ = get_dominant_future('IF', datetime.datetime(2016, 9, 12, 10, 0))
     assert if_ == 'IF1609.CCFX'
