@@ -37,3 +37,4 @@ MANIFEST
 *.con
 *.out
 env.sh
+*-env.sh
