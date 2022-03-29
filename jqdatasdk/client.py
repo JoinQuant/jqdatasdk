@@ -57,19 +57,28 @@ class JQDataClient(object):
         """
         return cls.request_timeout + 5
 
+    @staticmethod
+    def _get_auth_param_from_env(name):
+        for prefix in ["JQDATA", "JQDATASDK"]:
+            value = getenv('_'.join([prefix, name]).upper())
+            if value:
+                return value
+
     @classmethod
     def instance(cls):
         _instance = getattr(cls._threading_local, '_instance', None)
         if _instance is None:
             if not cls._auth_params:
-                username = getenv("JQDATA_USERNAME")
-                password = getenv("JQDATA_PASSWORD")
+                username = cls._get_auth_param_from_env("username")
+                password = cls._get_auth_param_from_env("password")
+                host = cls._get_auth_param_from_env("host")
+                port = cls._get_auth_param_from_env("port")
                 if username and password:
                     cls._auth_params = {
                         "username": username,
                         "password": password,
-                        "host": getenv("JQDATA_HOST") or cls._default_host,
-                        "port": getenv("JQDATA_PORT") or cls._default_port,
+                        "host": host or cls._default_host,
+                        "port": port or cls._default_port,
                         "version": current_version,
                     }
             if cls._auth_params:
