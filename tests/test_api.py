@@ -39,6 +39,13 @@ def assert_dict_equal(a, b, error=1e-5):
             assert v == b[k]
 
 
+def test_base():
+    assert get_test()
+    assert float(get_now_time()) > time.time() - 10
+    print("Server Version: {}".format(get_server_version()))
+    print("Privilege: {}".format(get_privilege()))
+
+
 def test_get_index_stocks():
     assert len(get_index_stocks('000300.XSHG')) == 300
     assert len(get_index_stocks('000300.XSHG', '2015-11-01')) == 300
@@ -801,10 +808,17 @@ def test_macro():
 
 def test_ticks():
     assert len(get_ticks("CU1901.XSGE", end_dt="2018-03-16", count=100)) == 100
-    assert get_ticks("CU1901.XSGE", end_dt="2018-03-16", count=10, fields=["current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]).shape == (10, 7)
+    assert get_ticks(
+        "CU1901.XSGE", end_dt="2018-03-16", count=10,
+        fields=["time", "current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]
+    ).shape == (10, 8)
     assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10)) == 10
     assert str(get_ticks("SM1809.XZCE", '2018-07-06', '2018-07-07').iloc[3][0]) == '2018-07-06 09:00:01'
-    assert get_ticks("000001.XSHE", end_dt="2018-03-16", count=10, fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"]).shape == (10, 10)
+    df = get_ticks(
+        "000001.XSHE", end_dt="2018-03-16", count=10, df=True,
+        fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"],
+    )
+    assert df.shape[0] == 10 and df.shape[1] >= 10
 
 
 def test_billboard_list():

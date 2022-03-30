@@ -2,7 +2,8 @@
 
 from __future__ import print_function
 
-from jqdatasdk import opt, finance, macro, bond, sup, query
+import pytest
+from jqdatasdk import opt, finance, macro, bond, sup, query, get_server_version
 
 
 def test_opt():
@@ -52,6 +53,8 @@ def test_bond():
 
 
 def test_sup():
+    if get_server_version() >= "2":
+        pytest.skip("new version is not supported")
     df = sup.run_query(query(sup.STK_FINANCE_SUPPLEMENT).limit(10))
     print(df)
     assert len(df) == 10

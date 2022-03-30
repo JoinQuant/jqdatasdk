@@ -1005,7 +1005,17 @@ def get_now_time():
     return JQDataClient.instance().get_now_time()
 
 
+def get_server_version():
+    """获取服务器版本"""
+    try:
+        version = JQDataClient.instance().get_server_version()
+    except Exception:
+        version = "1.0"
+    return version
+
+
 def get_test():
+    """测试连通性"""
     return JQDataClient.instance().get_test()
 
 
