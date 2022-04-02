@@ -384,13 +384,25 @@ def test_get_price2():
     # print(get_price([], end_date='2016-12-31', skip_paused=False)['open'][-2:])
 
 
+def test_get_price3():
+    codes = ["600000.XSHG", "000001.XSHG", "A2205.XDCE"]
+    df = get_price('000001.XSHE', start_date='2022-01-01', end_date=u'2022-01-15')
+    print(df)
+    assert len(df) == 9
+    fields = ['open', 'close']
+    df = get_price('600000.XSHG', start_date='2022-01-04 14:30:00',
+                   end_date=u'2022-01-05 09:45:00', frequency="1m",
+                   fields=fields)
+    print(df)
+    assert len(df.index.date) == 46 and len(set(df.index.date)) == 2
+    assert list(df.columns) == fields
+
+
 def test_get_price_minute():
-    print(get_price('000001.XSHE', start_date='2015-01-01', end_date=u'2015-02-01',
-                    frequency=u'60m', fields=(u'open', 'close')))
-    pass
+    p = get_price('000001.XSHE', start_date='2015-01-01', end_date=u'2015-02-01',
+                  frequency=u'60m', fields=(u'open', 'close'))
+    print(p)
 
-
-def test_get_price_minute1():
     p = get_price('000001.XSHE', '2014-01-10 09:30:00', '2014-01-11 10:30:00', fields=['close'])
     assert len(p.index) == 1
     p = get_price('000001.XSHE', '2014-01-09 09:30:00',
@@ -961,6 +973,20 @@ def test_get_bars():
     )
     df = get_bars(["000688.XSHG"], count=6, unit="1M", end_dt="2020-03-10", include_now=False)
     assert df.empty
+
+
+def test_get_bars2():
+    codes = ["600000.XSHG", "000001.XSHG", "A2205.XDCE"]
+    df = get_bars(codes, end_dt="2022-04-01", count=2)
+    df = df.reset_index(level=1, drop=True)
+    assert len(df) == 6
+    assert set(codes) == set(df.index)
+
+    df = get_bars(codes, count=6, unit="1m", end_dt="2023-04-01", include_now=True)
+    print(df)
+    df = df.reset_index(level=1, drop=True)
+    assert len(df) == 6 * 3
+    assert set(codes) == set(df.index)
 
 
 def test_get_fund_info():
