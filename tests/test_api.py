@@ -386,16 +386,15 @@ def test_get_price2():
 
 def test_get_price3():
     codes = ["600000.XSHG", "000001.XSHG", "A2205.XDCE"]
-    df = get_price('000001.XSHE', start_date='2022-01-01', end_date=u'2022-01-15')
+    df = get_price(codes, start_date='2022-01-01', end_date=u'2022-01-15')
     print(df)
-    assert len(df) == 9
+    assert len(df) == 27
     fields = ['open', 'close']
-    df = get_price('600000.XSHG', start_date='2022-01-04 14:30:00',
+    df = get_price(codes, start_date='2022-01-04 14:30:00',
                    end_date=u'2022-01-05 09:45:00', frequency="1m",
                    fields=fields)
     print(df)
-    assert len(df.index.date) == 46 and len(set(df.index.date)) == 2
-    assert list(df.columns) == fields
+    assert len(df.time.dt.date) == 288 and len(set(df.time.dt.date)) == 2
 
 
 def test_get_price_minute():
@@ -982,7 +981,7 @@ def test_get_bars2():
     assert len(df) == 6
     assert set(codes) == set(df.index)
 
-    df = get_bars(codes, count=6, unit="1m", end_dt="2023-04-01", include_now=True)
+    df = get_bars(codes, count=6, unit="1m", end_dt="2022-04-01", include_now=True)
     print(df)
     df = df.reset_index(level=1, drop=True)
     assert len(df) == 6 * 3
