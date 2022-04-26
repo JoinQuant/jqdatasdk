@@ -300,7 +300,7 @@ def assert_auth(func):
     def _wrapper(*args, **kwargs):
         from .client import JQDataClient
         if not JQDataClient.instance():
-            print("run jqdatasdk.auth first")
+            raise Exception("Please run jqdatasdk.auth first")
         else:
             return func(*args, **kwargs)
     return _wrapper

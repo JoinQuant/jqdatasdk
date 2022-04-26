@@ -80,7 +80,8 @@ class JQDataClient(object):
                         "host": host or cls._default_host,
                         "port": port or cls._default_port,
                     }
-            _instance = JQDataClient(**cls._auth_params)
+            if cls._auth_params:
+                _instance = JQDataClient(**cls._auth_params)
             cls._threading_local._instance = _instance
         return _instance
 
@@ -118,7 +119,10 @@ class JQDataClient(object):
                 cls.request_timeout = (
                     request_timeout if request_timeout > 0 else None
                 )
-            instance = cls.instance()
+            try:
+                instance = cls.instance()
+            except Exception:
+                instance = None
             if instance and instance.inited and instance.client:
                 try:
                     try:
