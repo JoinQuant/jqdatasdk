@@ -17,7 +17,6 @@ def auth(username, password, host=None, port=None):
         port=port,
         username=username,
         password=password,
-        version=__version__
     )
 
 

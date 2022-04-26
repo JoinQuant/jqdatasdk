@@ -79,20 +79,17 @@ class JQDataClient(object):
                         "password": password,
                         "host": host or cls._default_host,
                         "port": port or cls._default_port,
-                        "version": current_version,
                     }
-            if cls._auth_params:
-                _instance = JQDataClient(**cls._auth_params)
+            _instance = JQDataClient(**cls._auth_params)
             cls._threading_local._instance = _instance
         return _instance
 
-    def __init__(self, host, port, username="", password="", token="", version=""):
+    def __init__(self, host=None, port=None, username="", password="", token=""):
         self.host = host or self._default_host
         self.port = int(port or self._default_port)
         self.username = username
         self.password = password
         self.token = token
-        self.version = version
 
         assert self.host, "host is required"
         assert self.port, "port is required"
@@ -141,7 +138,7 @@ class JQDataClient(object):
     def set_auth_params(cls, **params):
         if params != cls._auth_params and cls.instance():
             cls.instance()._reset()
-            cls.instance()._threading_local._instance = None
+            cls._threading_local._instance = None
         cls._auth_params = params
         cls.instance().ensure_auth()
 
@@ -155,48 +152,51 @@ class JQDataClient(object):
         return self.client
 
     def ensure_auth(self):
-        if not self.inited:
-            if not self.username and not self.token:
-                raise RuntimeError("not inited")
-            self._create_client()
-            self.inited = True
-            if self.username:
-                error, response = None, None
-                for _ in range(self.request_attempt_count):
-                    try:
-                        response = self.client.auth(
-                            self.username,
-                            self.password,
-                            self.compress,
-                            get_mac_address(),
-                            self.version
-                        )
-                        break
-                    except socket_error as ex:
-                        error = ex
-                        time.sleep(0.5)
-                        self.client.close()
-                        self._create_client()
-                        continue
-                else:
-                    if error and not response:
-                        raise error
-                if response and response.error:
-                    self.data_api_url = response.error
-                else:
-                    self.data_api_url = AUTH_API_URL
+        if self.inited:
+            return
+
+        if not self.username and not self.token:
+            raise RuntimeError("not inited")
+
+        self._create_client()
+        if self.username:
+            error, response = None, None
+            for _ in range(self.request_attempt_count):
+                try:
+                    response = self.client.auth(
+                        self.username,
+                        self.password,
+                        self.compress,
+                        get_mac_address(),
+                        current_version,
+                    )
+                    break
+                except socket_error as ex:
+                    error = ex
+                    time.sleep(0.5)
+                    self.client.close()
+                    self._create_client()
+                    continue
             else:
-                response = self.client.auth_by_token(self.token)
-            auth_message = response.msg
-            if not isatty():
-                auth_message = ""
-            if not response.status:
-                self._threading_local._instance = None
-                raise self.get_error(response)
+                if error and not response:
+                    raise error
+            if response and response.error:
+                self.data_api_url = response.error
             else:
-                if self.not_auth:
-                    print("auth success %s" % auth_message)
-                    self.not_auth = False
+                self.data_api_url = AUTH_API_URL
+        else:
+            response = self.client.auth_by_token(self.token)
+        auth_message = response.msg
+        if not isatty():
+            auth_message = ""
+        if not response.status:
+            self._threading_local._instance = None
+            raise self.get_error(response)
+        else:
+            if self.not_auth:
+                print("auth success %s" % auth_message)
+                self.not_auth = False
+        self.inited = True
 
     def _reset(self):
         if self.client:
