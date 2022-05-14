@@ -4,7 +4,6 @@ from __future__ import print_function
 
 import re
 import time
-import warnings
 import datetime
 import logging
 
@@ -12,6 +11,7 @@ import pytest
 import numpy as np
 import pandas as pd
 
+import jqdatasdk
 from jqdatasdk.utils import ParamsError
 from jqdatasdk.table import DBTable
 from jqdatasdk import *  # noqa
@@ -501,6 +501,16 @@ def test_get_fundamentals2():
         valuation.code == '000895.XSHE'
     )
     df = get_fundamentals(q, statDate='2017')
+
+
+def test_get_fundamentals3():
+    cli = jqdatasdk.JQDataClient.instance()
+    with pytest.raises(Exception):
+        cli.get_fundamentals(sql="select * from income_statement limit 10005")
+    with pytest.raises(Exception):
+        cli.get_fundamentals(sql="select * from a limit 1")
+    df = cli.get_fundamentals(sql="select * from income_statement limit 10")
+    assert len(df) == 10
 
 
 def test_get_fundamentals_continuously():

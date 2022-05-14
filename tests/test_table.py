@@ -21,6 +21,9 @@ def test_opt():
     assert item.underlying_symbol == "C2101.XDCE"
     assert str(item.delist_date) == "2020-12-08"
 
+    df = opt.run_query(query(opt.OPT_CONTRACT_INFO.code).limit(10005))
+    assert len(df) <= 10000
+
 
 def test_fin():
     q = query(finance.FINANCE_BALANCE_SHEET).limit(5).offset(100)
