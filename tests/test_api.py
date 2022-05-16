@@ -298,8 +298,6 @@ def test_get_price():
 2015-01-20,14.78,13.83,15.62,13.56,768918808.0,11241922304.0
 """
 
-    get_price('000300.XSHG', fields='price')
-
     fields = ['open', 'close', 'low', 'high', 'volume', 'money', 'factor',
               'high_limit','low_limit', 'avg', 'pre_close', 'paused']
     data = get_price('000300.XSHG', fields=fields)
