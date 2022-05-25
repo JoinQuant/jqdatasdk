@@ -981,6 +981,10 @@ def test_get_bars():
     df = get_bars(["000688.XSHG"], count=6, unit="1M", end_dt="2020-03-10", include_now=False)
     assert df.empty
 
+    df = get_bars('600000.XSHG', end_dt='2022-05-18', count=10, fields=['close'])
+    print(df)
+    assert not df.empty
+
 
 def test_get_bars2():
     codes = ["600000.XSHG", "000001.XSHG", "A2205.XDCE"]
