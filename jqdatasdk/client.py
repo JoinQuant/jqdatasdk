@@ -117,7 +117,7 @@ class JQDataClient(object):
             else:
                 request_timeout = float(request_timeout)
                 cls.request_timeout = (
-                    request_timeout if request_timeout > 0 else None
+                    request_timeout if request_timeout > 0 else 300
                 )
             try:
                 instance = cls.instance()
