@@ -111,14 +111,13 @@ class JQDataClient(object):
     @classmethod
     def set_request_params(cls, **params):
         if "request_timeout" in params:
-            request_timeout = params["request_timeout"]
-            if not request_timeout:
-                cls.request_timeout = None
-            else:
-                request_timeout = float(request_timeout)
-                cls.request_timeout = (
-                    request_timeout if request_timeout > 0 else 300
-                )
+            try:
+                request_timeout = float(params["request_timeout"])
+                if request_timeout < 0:
+                    raise ValueError()
+            except (TypeError, ValueError):
+                raise ValueError("请求的超时时间需要为一个大于等于 0 的数")
+            cls.request_timeout = request_timeout
             try:
                 instance = cls.instance()
             except Exception:
@@ -133,9 +132,12 @@ class JQDataClient(object):
                 except Exception:
                     pass
         if "request_attempt_count" in params:
-            request_attempt_count = int(params["request_attempt_count"])
-            if request_attempt_count > 10:
-                raise Exception("请求的尝试次数不能大于 10 次")
+            try:
+                request_attempt_count = int(params["request_attempt_count"])
+                if request_attempt_count <= 0 or request_attempt_count > 10:
+                    raise ValueError()
+            except (TypeError, ValueError):
+                raise ValueError("请求的尝试次数需要为一个大于 0 且小于等于 10 的整数")
             cls.request_attempt_count = request_attempt_count
 
     @classmethod
