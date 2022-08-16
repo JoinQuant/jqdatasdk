@@ -931,7 +931,7 @@ def get_factor_kanban_values(universe=None, bt_cycle=None, category=None, model=
 
 
 @assert_auth
-def get_factor_barra_returns(factors=None, start_date=None, end_date=None, count=None):
+def get_factor_style_returns(factors=None, start_date=None, end_date=None, count=None):
     """获取 barra 因子暴露收益率
     参数：
         factors : 因子名称，单个因子（字符串）或一个因子列表
@@ -946,7 +946,27 @@ def get_factor_barra_returns(factors=None, start_date=None, end_date=None, count
         raise ParamsError("(start_date, count) only one param is required")
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
-    return JQDataClient.instance().get_factor_barra_returns(**locals())
+    return JQDataClient.instance().get_factor_style_returns(**locals())
+
+
+@assert_auth
+def get_factor_specific_returns(security, start_date=None, end_date=None, count=None):
+    """获取风格因子的特异收益率
+
+    参数:
+        security : 股票代码, 或者股票代码组成的list
+        start_date : 开始日期，字符串或 datetime 对象
+        end_date : 结束日期，字符串或 datetime 对象，可以与 start_date 或 count 配合使用
+        count: 截止 end_date 之前交易日的数量（含 end_date 当日）
+
+    返回:
+        个股在风格因子上的特异收益率
+    """
+    if count and start_date:
+        raise ParamsError("(start_date, count) only one param is required")
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    return JQDataClient.instance().get_factor_specific_returns(**locals())
 
 
 @assert_auth
