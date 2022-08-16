@@ -931,7 +931,9 @@ def get_factor_kanban_values(universe=None, bt_cycle=None, category=None, model=
 
 
 @assert_auth
-def get_factor_style_returns(factors=None, start_date=None, end_date=None, count=None):
+def get_factor_style_returns(factors=None, start_date=None,
+                             end_date=None, count=None,
+                             universe=None, industry='sw_l1'):
     """获取风格因子暴露收益率
 
     参数：
