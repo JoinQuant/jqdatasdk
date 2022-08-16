@@ -1360,11 +1360,11 @@ def test_get_factor_kanban_values():
         kbv = get_factor_kanban_values(model='hhh')
 
 
-def test_get_factor_barra_returns():
-    data = get_factor_barra_returns()
+def test_get_factor_style_returns():
+    data = get_factor_style_returns()
     print(data)
     assert not data.empty
-    data2 = get_factor_barra_returns(
+    data2 = get_factor_style_returns(
         factors=['beta', 'growth', 'HY001'],
         start_date='2021-01-01',
         end_date='2021-01-10'
@@ -1372,6 +1372,22 @@ def test_get_factor_barra_returns():
     print(data2)
     assert not data2.empty
 
+    factors = ["size", "801010", "HY001"]
+    data3 = get_factor_style_returns(factors=factors,
+                                     start_date='2022-08-05',
+                                     end_date='2022-08-16',
+                                     universe=None,
+                                     industry='sw_l1')
+    print(data3)
+    assert not data3.empty
+
+
+def test_get_factor_specific_returns():
+    data = get_factor_specific_returns(security='000001.XSHE',
+                                       end_date='2022-08-16',
+                                       count=7)
+    print(data)
+    assert not data.empty
 
 @pytest.mark.skip()
 def test_get_factor_stats():

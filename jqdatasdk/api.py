@@ -931,22 +931,47 @@ def get_factor_kanban_values(universe=None, bt_cycle=None, category=None, model=
 
 
 @assert_auth
-def get_factor_barra_returns(factors=None, start_date=None, end_date=None, count=None):
-    """获取 barra 因子暴露收益率
+def get_factor_style_returns(factors=None, start_date=None,
+                             end_date=None, count=None,
+                             universe=None, industry='sw_l1'):
+    """获取风格因子暴露收益率
+
     参数：
-        factors : 因子名称，单个因子（字符串）或一个因子列表
+        factors : 因子名称，单个因子（字符串）或一个因子列表,支持风格因子如"size"及申万/聚宽一级行业如 "801010"和"HY001"
         start_date : 开始日期，字符串或 datetime 对象
         end_date : 结束日期，字符串或 datetime 对象，可以与 start_date 或 count 配合使用
         count: 截止 end_date 之前交易日的数量（含 end_date 当日）
+        universe : 市场范围,默认为None代表全市场, 可选 : 'hs300': 沪深300 ; 'zz500': 中证500'; zz800': 中证800; 'zz1000':中证1000; 'zzqz':中证全指
+        industry : 行业选取,默认为'sw_l1', 可选 : 'sw_l1':申万一级,'jq_l1':聚宽一级
 
     返回：
-        一个 DataFrame, index 是日期, value 是 barra 因子暴露收益率
+        一个 DataFrame, index 是日期, columns为因子名, 值为因子暴露收益率
     """
     if count and start_date:
         raise ParamsError("(start_date, count) only one param is required")
     start_date = to_date_str(start_date)
     end_date = to_date_str(end_date)
-    return JQDataClient.instance().get_factor_barra_returns(**locals())
+    return JQDataClient.instance().get_factor_style_returns(**locals())
+
+
+@assert_auth
+def get_factor_specific_returns(security, start_date=None, end_date=None, count=None):
+    """获取风格因子的特异收益率
+
+    参数:
+        security : 股票代码, 或者股票代码组成的list
+        start_date : 开始日期，字符串或 datetime 对象
+        end_date : 结束日期，字符串或 datetime 对象，可以与 start_date 或 count 配合使用
+        count: 截止 end_date 之前交易日的数量（含 end_date 当日）
+
+    返回:
+        个股在风格因子上的特异收益率
+    """
+    if count and start_date:
+        raise ParamsError("(start_date, count) only one param is required")
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    return JQDataClient.instance().get_factor_specific_returns(**locals())
 
 
 @assert_auth
