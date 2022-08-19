@@ -65,12 +65,26 @@ class JQDataClient(object):
                 return value
 
     @classmethod
+    def _get_username_from_env(cls):
+        for name in ["username", "user", "account", "mob"]:
+            value = cls._get_auth_param_from_env(name)
+            if value:
+                return value
+
+    @classmethod
+    def _get_password_from_env(cls):
+        for name in ["password", "passwd"]:
+            value = cls._get_auth_param_from_env(name)
+            if value:
+                return value
+
+    @classmethod
     def instance(cls):
         _instance = getattr(cls._threading_local, '_instance', None)
         if _instance is None:
             if not cls._auth_params:
-                username = cls._get_auth_param_from_env("username")
-                password = cls._get_auth_param_from_env("password")
+                username = cls._get_username_from_env()
+                password = cls._get_password_from_env()
                 host = cls._get_auth_param_from_env("host")
                 port = cls._get_auth_param_from_env("port")
                 if username and password:
