@@ -1015,6 +1015,25 @@ def test_get_fund_info():
     #     'heavy_hold_stocks_proportion': ''
     # }
 
+def test_get_futures_info():
+    data = get_futures_info('SN2107.XSGE')
+    assert data == {'SN2107.XSGE':
+                        {'tick_size': 10.0,
+                         'trade_time': [['2020-07-16', '2021-07-15', '21:00~01:00',
+                                         '09:00~10:15', '10:30~11:30', '13:30~15:00']],
+                         'contract_multiplier': 1.0}}
+    data = get_futures_info(['SN2107.XSGE', 'SN2207.XSGE'])
+    assert data == {'SN2207.XSGE':
+                        {'tick_size': 10.0,
+                         'trade_time': [['2021-07-16', '2022-07-15',
+                                         '21:00~01:00', '09:00~10:15',
+                                         '10:30~11:30', '13:30~15:00']],
+                         'contract_multiplier': 1.0},
+                    'SN2107.XSGE': {'tick_size': 10.0,
+                                    'trade_time': [['2020-07-16', '2021-07-15',
+                                                    '21:00~01:00', '09:00~10:15',
+                                                    '10:30~11:30', '13:30~15:00']],
+                                    'contract_multiplier': 1.0}}
 
 def test_get_current_tick():
     today = datetime.date.today()

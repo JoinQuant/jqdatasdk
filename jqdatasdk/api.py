@@ -754,6 +754,23 @@ def get_fund_info(security, date=None):
 
 
 @assert_auth
+@hashable_lru(maxsize=3)
+def get_futures_info(securities=None, fields=('contract_multiplier',
+                                              'tick_size',
+                                              'trade_time')):
+    """
+    期货信息数据接口
+
+    :param securities: 一个或多个标的
+    :param fields: 期货属性字段：['contract_multiplier', 'tick_size', 'trade_time']
+    :return: {}
+    """
+    assert securities, "securities is required"
+    securities = convert_security(securities)
+    return JQDataClient.instance().get_futures_info(**locals())
+
+
+@assert_auth
 def get_query_count(field=None):
     """
     查询当日可请求条数/剩余请求条数
