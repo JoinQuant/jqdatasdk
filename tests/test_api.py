@@ -16,6 +16,7 @@ from jqdatasdk.utils import ParamsError
 from jqdatasdk.table import DBTable
 from jqdatasdk import *  # noqa
 from jqdatasdk.technical_analysis import *  # noqa
+from jqdatasdk.finance_service import get_fundamentals_sql
 
 
 log = logging
@@ -503,12 +504,24 @@ def test_get_fundamentals2():
 
 def test_get_fundamentals3():
     cli = jqdatasdk.JQDataClient.instance()
+    sql = "select * from income_statement"
     with pytest.raises(Exception):
-        cli.get_fundamentals(sql="select * from income_statement limit 10005")
+        cli.get_fundamentals(sql=sql)
+    sql = "select * from income_statement where statDate='2022-08-25'"
+    with pytest.raises(Exception):
+        cli.get_fundamentals(sql=sql + " limit 10005")
+    df = cli.get_fundamentals(sql=sql + " limit 10")
+    assert len(df) <= 10
     with pytest.raises(Exception):
         cli.get_fundamentals(sql="select * from a limit 1")
-    df = cli.get_fundamentals(sql="select * from income_statement limit 10")
-    assert len(df) == 10
+
+    q = query(
+        income.statDate, income.code, income.basic_eps,
+        balance.cash_equivalents,
+        cash_flow.goods_sale_and_service_render_cash
+    ).filter(income.code == '000001.XSHE')
+    sql = get_fundamentals_sql(q, statDate='2018q1')
+    cli.get_fundamentals(sql=sql)
 
 
 def test_get_fundamentals_continuously():
@@ -909,7 +922,6 @@ def test_finance_tables():
     assert set(stk_list_columns) - set(df.columns) == set(["status"])
 
 
-@pytest.mark.skip()
 def test_finance_tables2():
     # 测试连表查询的情况
     with pytest.raises(Exception):
@@ -1408,7 +1420,7 @@ def test_get_factor_specific_returns():
     print(data)
     assert not data.empty
 
-@pytest.mark.skip()
+
 def test_get_factor_stats():
     # 测试默认值
     data = get_factor_stats()
