@@ -74,12 +74,15 @@ class Security2(Security):
                  "type", "parent",)
 
     def __repr__(self):
+        if sys.version_info[0] < 3:
+            display_name = self.display_name.encode('utf-8')
+        else:
+            display_name = self.display_name
         return (
             "Security(code='{}', type='{}', start_date='{}', end_date='{}', "
             "display_name='{}')"
         ).format(
-            self.code, self.type, self.start_date, self.end_date,
-            self.display_name
+            self.code, self.type, self.start_date, self.end_date, display_name
         )
 
     def __str__(self):

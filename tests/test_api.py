@@ -199,6 +199,7 @@ def test_get_security_info():
     assert get_security_info("180801.XSHE").type == 'reits'
 
     info = get_security_info2("600000.XSHG")
+    print(repr(info))
     assert info.type == "stock"
     assert info.to_dict()["code"] == "600000.XSHG"
     assert "start_date" in repr(info)
@@ -385,13 +386,14 @@ def test_get_price2():
 
 def test_get_price3():
     codes = ["600000.XSHG", "000001.XSHG", "A2205.XDCE"]
-    df = get_price(codes, start_date='2022-01-01', end_date=u'2022-01-15')
+    df = get_price(codes, start_date='2022-01-01', end_date=u'2022-01-15',
+                   panel=False)
     print(df)
     assert len(df) == 27
     fields = ['open', 'close']
     df = get_price(codes, start_date='2022-01-04 14:30:00',
                    end_date=u'2022-01-05 09:45:00', frequency="1m",
-                   fields=fields)
+                   fields=fields, panel=False)
     print(df)
     assert len(df.time.dt.date) == 288 and len(set(df.time.dt.date)) == 2
 
