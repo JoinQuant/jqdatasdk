@@ -178,11 +178,11 @@ class JQDataClient(object):
         if not self.username and not self.token:
             raise RuntimeError("not inited")
 
-        self._create_client()
         if self.username:
             error, response = None, None
             for _ in range(self.request_attempt_count):
                 try:
+                    self._create_client()
                     response = self.client.auth(
                         self.username,
                         self.password,
@@ -194,8 +194,9 @@ class JQDataClient(object):
                 except socket_error as ex:
                     error = ex
                     time.sleep(0.5)
-                    self.client.close()
-                    self._create_client()
+                    if self.client:
+                        self.client.close()
+                        self.client = None
                     continue
             else:
                 if error and not response:
