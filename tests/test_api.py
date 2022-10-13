@@ -192,7 +192,7 @@ def test_get_security_info():
     info = get_security_info('000001.XSHE', date="2019-06-06")
     for f in res:
         assert getattr(info, f) == res[f]
-    assert get_security_info('000001.XSHE').type == 'stock'
+    assert get_security_info('111000.XSHG').type == 'conbond'
     assert get_security_info('510300.XSHG').type == 'etf'
     assert get_security_info('510300.XSHG').parent is None
     assert get_security_info('502050.XSHG').parent == '502048.XSHG'
@@ -216,6 +216,36 @@ def test_normalize_code():
 
 def round_df(df, decimal):
     return np.round(df, decimal)
+
+
+def test_get_price_conbond():
+    d = get_security_info("111000.XSHG")
+    assert str(d) == "111000.XSHG"
+    d = get_price('111000.XSHG',
+                  start_date=datetime.date(2022, 1, 1),
+                  end_date=datetime.date(2022, 2, 1),
+                  frequency='daily',
+                  fields=(u'open', 'close', 'paused'))
+    assert len(d) == 19
+    d = get_price('125301.XSHE',
+                  start_date=datetime.date(2022, 1, 1),
+                  end_date=datetime.date(2022, 2, 1),
+                  frequency='minute',
+                  fields=(u'open', 'close', 'paused'))
+    assert len(d) == 4560
+    d = get_ticks(security='111000.XSHG', end_dt='2022-05-24', start_dt='2022-05-01',
+                  skip=False)
+    assert len(d) == 40423
+    get_price(['125301.XSHE', '111000.XSHG'],
+              start_date=datetime.date(2022, 1, 1),
+              end_date=datetime.date(2022, 2, 1),
+              frequency='minute',
+              fields=(u'open', 'close', 'paused'))
+    get_price(['125301.XSHE', '125301.XSHE'],
+              start_date=datetime.date(2022, 1, 1),
+              end_date=datetime.date(2022, 2, 1),
+              frequency='minute',
+              fields=(u'open', 'close', 'paused'))
 
 
 def test_get_price():
