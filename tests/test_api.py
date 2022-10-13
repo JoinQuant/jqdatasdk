@@ -192,6 +192,7 @@ def test_get_security_info():
     info = get_security_info('000001.XSHE', date="2019-06-06")
     for f in res:
         assert getattr(info, f) == res[f]
+    assert get_security_info('000001.XSHE').type == 'stock'
     assert get_security_info('111000.XSHG').type == 'conbond'
     assert get_security_info('510300.XSHG').type == 'etf'
     assert get_security_info('510300.XSHG').parent is None
