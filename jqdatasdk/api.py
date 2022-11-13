@@ -344,6 +344,29 @@ def get_all_securities(types=[], date=None):
     return JQDataClient.instance().get_all_securities(**locals())
 
 
+def get_all_securities2(types=[], date=None, exchange=None):
+    """
+    获取平台支持的所有股票、基金、指数、期货、期权等信息
+
+    :param types list: 用来过滤 securities 的类型, list 元素可选:
+        stock, fund, index, futures, etf, lof, fja, fjb.
+        types 为空时返回所有股票, 即不包括基金, 指数和期货等
+    :param date 日期, 一个日期字符串或者 datetime.datetime/datetime.date 对象,
+        用于获取某日期还在上市的股票信息. 默认值为 None, 表示获取所有日期的股票信息
+    :param exchange: 用来过滤交易所，可以一个字符串，多个交易所时用逗号分割，或者为一个 list
+    :return pandas.DataFrame
+    """
+    df = get_all_securities(types, date)
+    if not exchange:
+        return df
+
+    exchanges = tuple(
+        exchange.split(',') if isinstance(exchange, six.string_types)
+        else exchange
+    )
+    return df[df.index.str.endswith(exchanges)]
+
+
 @assert_auth
 @hashable_lru(maxsize=3)
 def get_security_info(code, date=None):
