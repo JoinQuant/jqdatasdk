@@ -211,6 +211,7 @@ def to_date_str(dt):
         return dt.strftime("%Y-%m-%d %H:%M:%S")
     if isinstance(dt, datetime.date):
         return dt.strftime("%Y-%m-%d")
+    raise Exception("错误的时间格式 {}".format(dt))
 
 
 def is_list(l):
