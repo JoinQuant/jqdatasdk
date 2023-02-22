@@ -886,6 +886,18 @@ def test_ticks():
     assert df.shape[0] == 10 and df.shape[1] >= 10
 
 
+def test_get_ticks_rl():
+    end_dt = datetime.datetime.now()
+    df = get_ticks('000001.XSHE', end_dt=end_dt, count=10, skip=False)
+    assert len(df) == 10
+    df = get_ticks('600000.XSHG', end_dt=end_dt, count=10, skip=False)
+    assert len(df) == 10
+    df = get_ticks('399001.XSHE', end_dt=end_dt, count=10, skip=False)
+    assert len(df) == 10
+    df = get_ticks('000001.XSHG', end_dt=end_dt, count=10, skip=False)
+    assert len(df) == 10
+
+
 def test_billboard_list():
     hs_300 = get_index_stocks('000300.XSHG', '2016-01-10')
     assert len(get_billboard_list(stock_list="300738.XSHE", end_date="2018-03-26", count=5)) == 22
