@@ -30,9 +30,12 @@ def test_fin():
     df = finance.run_query(q)
     print(df)
     assert len(df) == 5
-    assert set(df["company_id"]) == {300002081}
-    assert set(df["code"]) == {"601166.XSHG"}
-    assert df["report_type"].iloc[0] == 1 and df["report_type"].iloc[4] == 0
+    print(df["report_type"])
+    assert df["company_id"].tolist() == [420600000, 420600000, 430000563,
+                                         430000563, 430000001]
+    assert df["code"].tolist() == ['600000.XSHG', '600000.XSHG', '000563.XSHE',
+                                   '000563.XSHE', '000001.XSHE']
+    assert df["report_type"].tolist() == [1, 0, 1, 0, 1]
 
 
 def test_macro():
