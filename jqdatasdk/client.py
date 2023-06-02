@@ -315,7 +315,14 @@ class JQDataClient(object):
                         dtypes = params.pop("dtypes", None)
                         msg = pd.DataFrame(**params)
                         if dtypes:
-                            msg = msg.astype(dtypes, copy=False)
+                            try:
+                                msg = msg.astype(dtypes, copy=False)
+                            except Exception:
+                                for col, dtype in dtypes.items():
+                                    try:
+                                        msg[col] = msg[col].astype(dtype)
+                                    except Exception:
+                                        continue
                     elif data_type == "pandas_series":
                         msg = pd.Series(**params)
             else:

@@ -55,7 +55,7 @@ def test_bond():
     item = df.loc["131801"]
     assert item.short_name == u"花呗01A1" and str(item.maturity_date) == "2017-06-15"
     item = df.loc["111011"]
-    assert item.short_name == "中铁963" and str(item.maturity_date) == "2000-01-20"
+    assert item.short_name == u"中铁963" and str(item.maturity_date) == "2000-01-20"
 
 
 def test_sup():
