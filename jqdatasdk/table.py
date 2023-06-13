@@ -49,6 +49,28 @@ class DBTable(object):
         df = JQDataClient.instance().db_query(db=self.db_name, sql=sql)
         return df
 
+    @assert_auth
+    def run_offset_query(self, query_object):
+        from pandas import concat
+        if self.__disable_join:
+            check_no_join(query_object)
+
+        df_list = []
+        page_index = 0
+        PAGE_CONSTRAINT = 20
+        STEP = 10000
+
+        while page_index < PAGE_CONSTRAINT:
+            q = query_object.limit(STEP).offset(page_index * STEP)
+            sql = compile_query(q)
+            df = JQDataClient.instance().db_query(db=self.db_name, sql=sql)
+            df_list.append(df)
+            page_index += 1
+            if (df.empty):
+                break
+
+        return concat(df_list).reset_index(drop=True)
+
     def __load_table_class(self, table_name):
         from sqlalchemy.dialects.mysql import TINYINT, TIMESTAMP, DECIMAL, DOUBLE  # noqa
         from sqlalchemy import (Date, Column, DateTime, Integer, INTEGER,          # noqa
