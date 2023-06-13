@@ -49,6 +49,31 @@ class DBTable(object):
         df = JQDataClient.instance().db_query(db=self.db_name, sql=sql)
         return df
 
+    @assert_auth
+    def run_offset_query(self, query_object, step=5000):
+        assert 0 <= step <= self.RESULT_ROWS_LIMIT, "step 的合法范围为 [0, 5000]"
+        from pandas import concat
+        if self.__disable_join:
+            check_no_join(query_object)
+
+        df_list = []
+        page_index = 0
+        PAGE_CONSTRAINT = 20
+
+        while page_index < PAGE_CONSTRAINT:
+            q = query_object.limit(step).offset(page_index * step)
+            sql = compile_query(q)
+            df = JQDataClient.instance().db_query(db=self.db_name, sql=sql)
+            df_list.append(df)
+            page_index += 1
+            if (df.empty):
+                break
+
+        concat_df = concat(df_list).reset_index(drop=True)
+        # 保持与 run_query() 返回的 DataFrame 索引类型一致
+        concat_df.index = list(concat_df.index)
+        return concat_df
+
     def __load_table_class(self, table_name):
         from sqlalchemy.dialects.mysql import TINYINT, TIMESTAMP, DECIMAL, DOUBLE  # noqa
         from sqlalchemy import (Date, Column, DateTime, Integer, INTEGER,          # noqa

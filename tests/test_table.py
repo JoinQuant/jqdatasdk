@@ -67,3 +67,18 @@ def test_sup():
     assert set(df["company_id"]) == {300000062}
     assert set(df["code"]) == {"002054.XSHE"}
     assert df["report_type"].iloc[3] == 1 and df["report_type"].iloc[8] == 0
+
+    finance_query = query(finance.FINANCE_BALANCE_SHEET)
+    finance_df = finance.run_query(finance_query)
+    finance_offset_df = finance.run_offset_query(query(finance.FINANCE_BALANCE_SHEET), 0)
+    assert type(finance_df) is type(finance_offset_df)
+    with pytest.raises(AssertionError):
+        # "step 的合法范围为 [0, 5000]"
+        finance.run_offset_query(query(finance.FINANCE_BALANCE_SHEET), -1)
+        finance.run_offset_query(query(finance.FINANCE_BALANCE_SHEET), 9999)
+
+    bond_empty_query = query(bond.BOND_BASIC_INFO).filter(bond.BOND_BASIC_INFO.last_cash_date > '20250101')
+    bond_df = bond.run_query(bond_empty_query)
+    bond_offset_df = bond.run_offset_query(bond_empty_query, 250)
+    from pandas.testing import assert_frame_equal
+    assert_frame_equal(bond_df, bond_offset_df)
