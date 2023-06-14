@@ -616,13 +616,14 @@ def get_index_weights(index_id, date=None):
 
 @assert_auth
 @hashable_lru(maxsize=3)
-def get_industry(security, date=None):
+def get_industry(security, date=None, df=False):
     """
     查询股票所属行业
 
     :param security 标的代码
     :date 查询的日期，默认为空
-    :return 字典格式
+    :df 是否返回 DataFrame 类型
+    :return 返回类型, dict 或 DataFrane
     """
     assert security, "security is required"
     security = convert_security(security)
