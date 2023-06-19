@@ -17,7 +17,6 @@ from jqdatasdk.table import DBTable
 from jqdatasdk import *  # noqa
 from jqdatasdk.technical_analysis import *  # noqa
 from jqdatasdk.finance_service import get_fundamentals_sql
-from jqdatasdk.api import *
 
 
 log = logging
@@ -594,7 +593,6 @@ def test_get_industries():
 
 
 def test_get_industry():
-    from jqdata.apis import get_industry
     dic = get_industry("000001.XSHE", date="2018-12-03")
     assert set(dic["000001.XSHE"].keys()) == set(['sw_l1', 'sw_l2', 'sw_l3', 'zjw', 'jq_l2', 'jq_l1',])
     df = get_industry("000001.XSHE", date="2018-12-03", df=True)
