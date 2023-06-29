@@ -1533,7 +1533,7 @@ def test_get_factor_stats():
 def test_get_all_alpha():
     date = '2022-10-10'
     alpha = ['alpha_001', 'alpha_002', 'alpha_003', 'alpha_004']
-    codes = ['000001.XSHE', '000002.XSHE', '000003.XSHE']
+    codes = ['000001.XSHE', '000002.XSHE', '000004.XSHE']
 
     alpha101_sub = get_all_alpha_101(date, codes, alpha)
     alpha191_sub = get_all_alpha_191(date, codes, alpha)
