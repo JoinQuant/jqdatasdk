@@ -1528,3 +1528,18 @@ def test_get_factor_stats():
     # 测试 date
     with pytest.raises(Exception):
         get_factor_stats(start_date='2021-08-30', end_date='2021-08-20')
+
+
+def test_get_all_alpha():
+    date = '2022-10-10'
+    alpha = ['alpha_001', 'alpha_002', 'alpha_003', 'alpha_004']
+    codes = ['000001.XSHE', '000002.XSHE', '000003.XSHE']
+
+    alpha101_sub = get_all_alpha_101(date, codes, alpha)
+    alpha191_sub = get_all_alpha_191(date, codes, alpha)
+    alpha101_all = get_all_alpha_101(date)
+    alpha191_all = get_all_alpha_191(date)
+
+    assert len(alpha101_sub) > 0
+    assert len(alpha191_sub) > 0
+    assert len(alpha101_all) == len(alpha191_all) == 4830

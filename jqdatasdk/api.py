@@ -1050,6 +1050,52 @@ def get_factor_stats(factor_names=None, universe_type='hs300',
 
 
 @assert_auth
+def get_all_alpha_101(date, code=None, alpha=None):
+    """获取以全部已实现的 alpha101 因子
+
+    :param date 日期
+    :param code 标的 code 字符串列表或者单个标的字符串, 默认为全部
+    :param alpha 因子名称, 默认为全部
+
+    返回 DataFrame, index 是标的列表, columns 是因子名
+    """
+    date = to_date_str(date)
+
+    if code is not None:
+        code = convert_security(code)
+
+    if alpha is not None:
+        if isinstance(alpha, str):
+            alpha = [alpha]
+        assert isinstance(alpha, list), "不合法的 alpha 类型"
+
+    return JQDataClient.instance().get_all_alpha_101(**locals())
+
+
+@assert_auth
+def get_all_alpha_191(date, code=None, alpha=None):
+    """获取以全部已实现的 alpha191 因子
+
+    :param date 日期
+    :param code 标的 code 字符串列表或者单个标的字符串, 默认为全部
+    :param alpha 因子名称, 默认为全部
+
+    返回 DataFrame, index 是标的列表, columns 是因子名
+    """
+    date = to_date_str(date)
+
+    if code is not None:
+        code = convert_security(code)
+
+    if alpha is not None:
+        if isinstance(alpha, str):
+            alpha = [alpha]
+        assert isinstance(alpha, list), "不合法的 alpha 类型"
+
+    return JQDataClient.instance().get_all_alpha_191(**locals())
+
+
+@assert_auth
 def get_data(api_name, **kwargs):
     """通用数据获取接口
 
