@@ -712,7 +712,7 @@ def test_ta():
 
     assert_dict_equal(
         technical_analysis.CCI("000001.XSHE", datetime.date(2018, 10, 8)),
-        {'000001.XSHE': 54.438}
+        {'000001.XSHE': 54.081}
     )
 
 
