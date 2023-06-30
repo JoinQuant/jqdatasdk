@@ -4,9 +4,11 @@
 财经/宏观经济数据
 """
 
-from .client import JQDataClient
+import six
 from sqlalchemy.types import *  # noqa
 from sqlalchemy.ext.declarative import declarative_base
+
+from .client import JQDataClient
 from .utils import assert_auth, check_no_join, compile_query
 
 
@@ -82,8 +84,11 @@ class DBTable(object):
             column = eval(v)
             dct[k] = column
             column.name = k
-        dct["__tablename__"] = data["name"]
-        return type(data["name"], (declarative_base(),), dct)
+        tablename = data["name"]
+        if six.PY2 and isinstance(tablename, unicode):  # noqa
+            tablename = tablename.encode('utf8')
+        dct["__tablename__"] = tablename
+        return type(tablename, (declarative_base(),), dct)
 
     def __getattr__(self, key):
         # 如果没有预先加载了table名字, 加载它
