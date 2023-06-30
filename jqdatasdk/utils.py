@@ -203,15 +203,24 @@ def is_str(s):
 
 def to_date_str(dt):
     if dt is None:
-        return None
-
-    if isinstance(dt, six.string_types):
         return dt
-    if isinstance(dt, datetime.datetime):
-        return dt.strftime("%Y-%m-%d %H:%M:%S")
-    if isinstance(dt, datetime.date):
-        return dt.strftime("%Y-%m-%d")
-    raise Exception("错误的时间格式 {}".format(dt))
+    try:
+        if isinstance(dt, datetime.datetime):
+            return dt.strftime("%04Y-%m-%d %H:%M:%S")
+        elif isinstance(dt, datetime.date):
+            return dt.strftime("%04Y-%m-%d")
+        elif isinstance(dt, six.string_types):
+            ts = to_datetime(dt)
+            if len(dt) > 10:
+                return ts.strftime("%04Y-%m-%d %H:%M:%S")
+            else:
+                return ts.strftime("%04Y-%m-%d")
+        elif isinstance(dt, int):
+            return to_date_str(str(dt))
+        else:
+            return to_datetime(dt).strftime("%04Y-%m-%d %H:%M:%S")
+    except ValueError:
+        raise ValueError("无效的日期：{!r}".format(dt))
 
 
 def is_list(l):
@@ -272,31 +281,54 @@ def normal_security_code(code):
         raise ParamsError("security type is invalid! type is {}".format(type(code)))
 
 
-def to_date(date):
-    """
-    >>> convert_date('2015-1-1')
-    datetime.date(2015, 1, 1)
+def to_date(value):
+    """转化为 datetime.date 类型"""
+    if not value:
+        return value
+    if isinstance(value, six.string_types):
+        date = value[:10]
+        try:
+            separator = date[4]
+            if separator in {'-', '/'}:
+                return datetime.date(*map(int, date.split(separator)))
+            else:
+                return datetime.date(int(value[:4]), int(value[4:6]), int(value[6:8]))
+        except Exception:
+            pass
+    elif isinstance(value, datetime.datetime):
+        return value.date()
+    elif isinstance(value, datetime.date):
+        return value
+    elif isinstance(value, int):
+        return to_date(str(value))
+    elif isinstance(value, bytes):
+        return to_date(value.decode('utf8'))
+    raise ValueError("无效的日期：{!r}".format(value))
 
-    >>> convert_date('2015-01-01 00:00:00')
-    datetime.date(2015, 1, 1)
 
-    >>> convert_date(datetime.datetime(2015, 1, 1))
-    datetime.date(2015, 1, 1)
-
-    >>> convert_date(datetime.date(2015, 1, 1))
-    datetime.date(2015, 1, 1)
-    """
-    if is_str(date):
-        if ':' in date:
-            date = date[:10]
-        return datetime.datetime.strptime(date, '%Y-%m-%d').date()
-    elif isinstance(date, datetime.datetime):
-        return date.date()
-    elif isinstance(date, datetime.date):
-        return date
-    elif date is None:
-        return None
-    raise ParamsError("type error")
+def to_datetime(value):
+    """转化为 datetime.datetime 类型"""
+    if not value:
+        return value
+    elif isinstance(value, six.string_types):
+        try:
+            slen = len(value)
+            if slen == 12 or slen == 14:  # 202101010000 or 20210101000000
+                return datetime.datetime(
+                    int(value[:4]),
+                    *map(int, (value[idx:(idx + 2)] for idx in range(4, slen, 2)))
+                )
+            else:
+                return datetime.datetime(*map(int, re.split(r"\W+", value)))
+        except Exception:
+            return datetime.datetime.strptime(str(to_date(value)), '%Y-%m-%d')
+    elif isinstance(value, datetime.datetime):
+        return value
+    elif isinstance(value, datetime.date):
+        return datetime.datetime.combine(value, datetime.time.min)
+    elif isinstance(value, bytes):
+        return to_datetime(value.decode('utf8'))
+    raise ValueError("无效的日期：{!r}".format(value))
 
 
 def assert_auth(func):
