@@ -1550,3 +1550,10 @@ def test_get_all_alpha():
     assert len(alpha101_sub) > 0
     assert len(alpha191_sub) > 0
     assert len(alpha101_all) == len(alpha191_all) == 4830
+
+
+def test_acc_info():
+    info = get_account_info()
+    print(info)
+    assert list(info.keys()) == ['license', 'date_range_start', 'query_count_limit',
+                                 'date_range_end', 'expire_time', 'mob']

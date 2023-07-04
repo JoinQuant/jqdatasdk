@@ -1107,6 +1107,11 @@ def get_data(api_name, **kwargs):
     return JQDataClient.instance().get_data(api_name=api_name, args=kwargs)
 
 
+def get_account_info():
+    """获取账号明细"""
+    return JQDataClient.instance().get_account_info()
+
+
 def get_privilege():
     """获取当前拥有的权限"""
     return JQDataClient.instance().get_privilege()
