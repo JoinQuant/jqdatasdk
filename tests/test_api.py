@@ -429,6 +429,13 @@ def test_get_price3():
     assert len(df.time.dt.date) == 288 and len(set(df.time.dt.date)) == 2
 
 
+def test_get_price4():
+    round_df = get_price('600000.XSHG', end_date='2022-01-15', count=3, round=False)
+    df = get_price('600000.XSHG', end_date='2022-01-15', count=3, round=True)
+    res = round_df.values - df.values
+    assert res.sum() != 0
+
+
 def test_get_price_minute():
     p = get_price('000001.XSHE', start_date='2015-01-01', end_date=u'2015-02-01',
                   frequency=u'60m', fields=(u'open', 'close'))

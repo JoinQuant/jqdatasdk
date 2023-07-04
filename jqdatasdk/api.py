@@ -8,8 +8,8 @@ from .client import JQDataClient
 
 
 @assert_auth
-def get_price(security, start_date=None, end_date=None, frequency='daily',
-              fields=None, skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True):
+def get_price(security, start_date=None, end_date=None, frequency='daily', fields=None,
+              skip_paused=False, fq='pre', count=None, panel=True, fill_paused=True, round=True):
     """
     获取一支或者多只证券的行情数据
 
