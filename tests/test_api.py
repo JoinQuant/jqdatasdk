@@ -430,8 +430,8 @@ def test_get_price3():
 
 
 def test_get_price4():
-    round_df = get_price('600000.XSHG', end_date='2022-01-15', count=3, round=False)
-    df = get_price('600000.XSHG', end_date='2022-01-15', count=3, round=True)
+    df = get_price('600000.XSHG', end_date='2022-01-15', count=3, round=False)
+    round_df = get_price('600000.XSHG', end_date='2022-01-15', count=3, round=True)
     res = round_df.values - df.values
     assert res.sum() != 0
 
