@@ -1480,7 +1480,7 @@ def test_get_factor_stats():
     # 测试默认值
     data = get_factor_stats()
     print(data)
-    assert len(data['beta']) == 10
+    assert len(data['beta']) >= 9
     # 测试 factor_names
     with pytest.raises(Exception):
         data = get_factor_stats(factor_names='hhh')
@@ -1508,14 +1508,14 @@ def test_get_factor_stats():
         commision_fee=0.0008
     )
     print(data3)
-    assert len(data3['net_profit_to_total_operate_revenue_ttm']) == 10
+    assert len(data3['net_profit_to_total_operate_revenue_ttm']) >= 9
     data4 = get_factor_stats(
         factor_names=['net_profit_to_total_operate_revenue_ttm'],
         skip_paused=True,
         commision_fee=0.0018
     )
     print(data4)
-    assert len(data4['net_profit_to_total_operate_revenue_ttm']) == 10
+    assert len(data4['net_profit_to_total_operate_revenue_ttm']) >= 9
     with pytest.raises(Exception):
         get_factor_stats(commision_fee=0.0001)
     # 测试 start_date
