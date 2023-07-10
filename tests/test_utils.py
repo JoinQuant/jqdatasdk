@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import datetime
 from jqdatasdk.utils import to_date_str, to_date
-
+import pytest
 
 def test_date_convert():
 
@@ -35,3 +35,13 @@ def test_date_convert():
     assert to_date(20190101) == datetime.date(2019, 1, 1)
     assert to_date(202307010830) == datetime.date(2023, 7, 1)
     assert to_date(20230701083059) == datetime.date(2023, 7, 1)
+
+    illegal_dt_list = ["Sep/2/2023 09:30:00", "time", "99999999"]
+    for dt in illegal_dt_list:
+        with pytest.raises(ValueError):
+            to_date(dt)
+
+    illegal_dt_list = ["Sep/2/2023 09:30:00", "time", "99999999"]
+    for dt in illegal_dt_list:
+        with pytest.raises(ValueError):
+            to_date_str(dt)
