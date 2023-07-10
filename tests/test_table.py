@@ -85,7 +85,4 @@ def test_offset_query():
     bond_empty_query = query(bond.BOND_BASIC_INFO).filter(bond.BOND_BASIC_INFO.last_cash_date > '22001231')
     bond_df = bond.run_query(bond_empty_query)
     bond_offset_df = bond.run_offset_query(bond_empty_query)
-    bond_empty_query = query(bond.BOND_BASIC_INFO).filter(bond.BOND_BASIC_INFO.last_cash_date > '22001231')
-    bond_df = bond.run_query(bond_empty_query)
-    bond_offset_df = bond.run_offset_query(bond_empty_query)
     assert len(bond_df) == len(bond_offset_df)

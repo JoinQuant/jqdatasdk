@@ -206,19 +206,22 @@ def to_date_str(dt):
         return dt
     try:
         if isinstance(dt, datetime.datetime):
-            return dt.strftime("%04Y-%m-%d %H:%M:%S")
+            return "{:0>4}-{:0>2}-{:0>2} {:0>2}:{:0>2}:{:0>2}".format(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
         elif isinstance(dt, datetime.date):
-            return dt.strftime("%04Y-%m-%d")
+            return "{:0>4}-{:0>2}-{:0>2}".format(dt.year, dt.month, dt.day)
         elif isinstance(dt, six.string_types):
             ts = to_datetime(dt)
             if len(dt) > 10:
-                return ts.strftime("%04Y-%m-%d %H:%M:%S")
+                return "{:0>4}-{:0>2}-{:0>2} {:0>2}:{:0>2}:{:0>2}".format(ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second)
             else:
-                return ts.strftime("%04Y-%m-%d")
+                return "{:0>4}-{:0>2}-{:0>2}".format(ts.year, ts.month, ts.day)
         elif isinstance(dt, int):
             return to_date_str(str(dt))
+        elif isinstance(dt, six.binary_type):
+            return to_date_str(dt.decode('utf-8'))
         else:
-            return to_datetime(dt).strftime("%04Y-%m-%d %H:%M:%S")
+            ts = to_datetime(dt)
+            return "{:0>4}-{:0>2}-{:0>2} {:0>2}:{:0>2}:{:0>2}".format(ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second)
     except ValueError:
         raise ValueError("无效的日期：{!r}".format(dt))
 
