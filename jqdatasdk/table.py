@@ -5,7 +5,7 @@
 """
 
 import six
-import logging
+import warnings
 from sqlalchemy.types import *  # noqa
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -70,7 +70,7 @@ class DBTable(object):
             df_list.append(df)
             page_index += 1
             if len(df) == STEP and page_index == PAGE_CONSTRAINT:
-                logging.warning("您调用 'run_offset_query' 达到单次查询上限20万条，返回数据可能不完整，请限定查询范围查询。")
+                warnings.warn("您调用 'run_offset_query' 达到单次查询上限20万条，返回数据可能不完整，请限定查询范围查询")
             if (df.empty):
                 break
 

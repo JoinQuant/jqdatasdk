@@ -1051,7 +1051,7 @@ def get_factor_stats(factor_names=None, universe_type='hs300',
 
 @assert_auth
 def get_all_alpha_101(date, code=None, alpha=None):
-    """获取以全部 alpha101 因子
+    """获取全部 alpha101 因子
 
     :param date 日期
     :param code 标的 code 字符串列表或者单个标的字符串, 默认为全部
@@ -1074,7 +1074,7 @@ def get_all_alpha_101(date, code=None, alpha=None):
 
 @assert_auth
 def get_all_alpha_191(date, code=None, alpha=None):
-    """获取以全部 alpha191 因子
+    """获取全部 alpha191 因子
 
     :param date 日期
     :param code 标的 code 字符串列表或者单个标的字符串, 默认为全部
