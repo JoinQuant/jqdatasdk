@@ -4,7 +4,7 @@
 财经/宏观经济数据
 """
 
-import six
+import sys
 import warnings
 from sqlalchemy.types import *  # noqa
 from sqlalchemy.ext.declarative import declarative_base
@@ -88,8 +88,10 @@ class DBTable(object):
             dct[k] = column
             column.name = k
         tablename = data["name"]
-        if six.PY2 and isinstance(tablename, unicode):  # noqa
+        if sys.version_info[0] < 3 and isinstance(tablename, unicode):  # noqa
             tablename = tablename.encode('utf8')
+        elif sys.version_info[0] >= 3 and isinstance(tablename, bytes):  # noqa
+            tablename = tablename.decode('utf8')
         dct["__tablename__"] = tablename
         return type(tablename, (declarative_base(),), dct)
 
