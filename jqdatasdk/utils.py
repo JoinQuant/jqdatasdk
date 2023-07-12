@@ -443,3 +443,45 @@ def isatty(stream=None):
     stream = stream or sys.stdout
     _isatty = getattr(stream, 'isatty', None)
     return _isatty and _isatty()
+
+
+class suppress(object):
+
+    def __init__(self, *exceptions, **kwargs):
+        self.exceptions = exceptions or Exception
+        self.logger = kwargs.get("logger") or kwargs.get("log")
+        self.loglevel = kwargs.get("loglevel", "exception")
+
+        self._log = None
+        if self.logger:
+            self._log = getattr(self.logger, self.loglevel, None)
+
+        self.error_count = 0
+
+    def __enter__(self):
+        return
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if not exc_type or not issubclass(exc_type, self.exceptions):
+            return
+        if exc_val and self._log:
+            self._log(exc_val)
+        self.error_count += 1
+        return True
+
+    def __call__(self, func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            with self:
+                try:
+                    return func(*args, **kwargs)
+                except self.exceptions as ex:
+                    try:
+                        func_name = func.__name__
+                    except AttributeError:
+                        func_name = str(func)
+                    msg = "call {}(args={}, kwargs={}) error: {}".format(
+                        func_name, args, kwargs, ex
+                    )
+                    raise Exception(msg)
+        return wrapper

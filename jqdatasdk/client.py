@@ -23,7 +23,7 @@ try:
 except ImportError:
     from urllib import quote as urlquote
 
-from .utils import classproperty, isatty, get_mac_address
+from .utils import classproperty, isatty, suppress, get_mac_address
 from .version import __version__ as current_version
 from .compat import pickle_compat as pc
 from .thriftclient import thrift
@@ -198,7 +198,8 @@ class JQDataClient(object):
                     error = ex
                     time.sleep(0.5)
                     if self.client:
-                        self.client.close()
+                        with suppress():
+                            self.client.close()
                         self.client = None
                     continue
             else:
@@ -224,7 +225,8 @@ class JQDataClient(object):
 
     def _reset(self):
         if self.client:
-            self.client.close()
+            with suppress():
+                self.client.close()
             self.client = None
         self.inited = False
         self.http_token = ""
