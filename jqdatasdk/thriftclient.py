@@ -21,7 +21,12 @@ struct St_Query_Req {
 
 service JqDataService {
     St_Query_Rsp query(1:St_Query_Req rsp),
-    St_Query_Rsp auth(1:string username, 2:string password, 5:bool compress, 8:string mac, 10:string version),
+    St_Query_Rsp auth(1:string username,
+                      2:string password,
+                      5:bool compress,
+                      8:string mac,
+                      10:string version2,
+                      11:string pyversion),
     St_Query_Rsp auth_by_token(1: string token)
 }
 """

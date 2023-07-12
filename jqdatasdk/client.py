@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import sys
 import platform
 import time
 import socket
@@ -180,6 +181,7 @@ class JQDataClient(object):
 
         if self.username:
             error, response = None, None
+            python_version = '.'.join(map(str, sys.version_info[:3]))
             for _ in range(self.request_attempt_count):
                 try:
                     self._create_client()
@@ -189,6 +191,7 @@ class JQDataClient(object):
                         self.compress,
                         get_mac_address(),
                         current_version,
+                        python_version,
                     )
                     break
                 except socket_error as ex:
