@@ -1555,5 +1555,7 @@ def test_get_all_alpha():
 def test_acc_info():
     info = get_account_info()
     print(info)
-    assert list(info.keys()) == ['license', 'date_range_start', 'query_count_limit',
-                                 'date_range_end', 'expire_time', 'mob']
+    assert set(info.keys()) == {
+        'license', 'date_range_start', 'query_count_limit',
+        'date_range_end', 'expire_time', 'mob'
+    }
