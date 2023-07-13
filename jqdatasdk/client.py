@@ -330,6 +330,18 @@ class JQDataClient(object):
                                         continue
                     elif data_type == "pandas_series":
                         msg = pd.Series(**params)
+                    elif data_type == "pandas_panel":
+                        dtypes = params.pop("dtypes", None)
+                        msg = pd.Panel(**params)
+                        if dtypes:
+                            try:
+                                msg = msg.astype(dtypes, copy=False)
+                            except Exception:
+                                for col, dtype in dtypes.items():
+                                    try:
+                                        msg[col] = msg[col].astype(dtype)
+                                    except Exception:
+                                        continue
             else:
                 msg = {
                     key: cls.convert_message(val)
