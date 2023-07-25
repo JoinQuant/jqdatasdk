@@ -42,9 +42,6 @@ def load_reduce(self):
     args = stack.pop()
     func = stack[-1]
 
-    if len(args) and type(args[0]) is type:
-        n = args[0].__name__  # noqa
-
     try:
         stack[-1] = func(*args)
         return
@@ -267,7 +264,7 @@ def load(fh, encoding, is_verbose=True):
     """
     try:
         return _load(fh, encoding=encoding)
-    except (ValueError, TypeError, IndexError, ImportError) as ex:
+    except Exception as ex:
         try:
             fh.seek(0)
             if encoding is not None:
