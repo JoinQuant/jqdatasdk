@@ -1559,3 +1559,13 @@ def test_acc_info():
         'license', 'date_range_start', 'query_count_limit',
         'date_range_end', 'expire_time', 'mob'
     }
+
+
+def test_get_empty_data():
+    ret = get_price(["000001.XSHE"], end_date='2001-01-01')
+    print(ret)
+    assert ret.empty
+
+    ret = get_price('000001.XSHE', end_date='2001-01-01', count=1)
+    print(ret)
+    assert ret.empty

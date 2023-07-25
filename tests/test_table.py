@@ -72,7 +72,8 @@ def test_sup():
 def test_offset_query():
     opt_query = query(opt.OPT_DAILY_PRICE)
     opt_df = opt.run_query(opt_query)
-    opt_offset_df = opt.run_offset_query(opt_query)
+    with pytest.warns(UserWarning):
+        opt_offset_df = opt.run_offset_query(opt_query)
     assert len(opt_df) == 5000
     assert len(opt_offset_df) == 10000 * 20
     assert list(opt_df.columns) == list(opt_offset_df.columns)
@@ -82,7 +83,11 @@ def test_offset_query():
     finance_offset_df = finance.run_offset_query(query(finance.FINANCE_BALANCE_SHEET))
     assert type(finance_df) is type(finance_offset_df)
 
-    bond_empty_query = query(bond.BOND_BASIC_INFO).filter(bond.BOND_BASIC_INFO.last_cash_date > '22001231')
+    bond_empty_query = query(
+        bond.BOND_BASIC_INFO
+    ).filter(
+        bond.BOND_BASIC_INFO.last_cash_date > '22001231'
+    )
     bond_df = bond.run_query(bond_empty_query)
     bond_offset_df = bond.run_offset_query(bond_empty_query)
     assert len(bond_df) == len(bond_offset_df)
