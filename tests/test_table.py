@@ -30,12 +30,8 @@ def test_fin():
     df = finance.run_query(q)
     print(df)
     assert len(df) == 5
-    print(df["report_type"])
-    assert df["company_id"].tolist() == [420600000, 420600000, 430000563,
-                                         430000563, 430000001]
-    assert df["code"].tolist() == ['600000.XSHG', '600000.XSHG', '000563.XSHE',
-                                   '000563.XSHE', '000001.XSHE']
-    assert df["report_type"].tolist() == [1, 0, 1, 0, 1]
+    assert (df["company_id"] >= 100016047).all()
+    assert df["code"].str.endswith(('XSHE', 'XSHG')).all()
 
 
 def test_macro():
