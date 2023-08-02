@@ -1136,6 +1136,18 @@ def get_test():
     return JQDataClient.instance().get_test()
 
 
+def test_network_speed(size=10000000, count=5):
+    """测试网络下行速度
+
+    参数：
+        size: 每次下载的数据大小，默认为 10M
+        count: 测试次数
+
+    返回结果单位为 M/s
+    """
+    return JQDataClient.instance().test_network_speed(size=size, count=count)
+
+
 def read_file(path):
     """读取文件"""
     with open(path, 'rb') as f:
@@ -1150,5 +1162,9 @@ def write_file(path, content, append=False):
         return f.write(content)
 
 
-__all__ = ["normalize_code", "attribute_history_engine", "history_engine"]
-__all__.extend([name for name in globals().keys() if name.startswith("get")])
+__all__ = [
+    "normalize_code",
+    "attribute_history_engine",
+    "history_engine",
+    "test_network_speed"
+] + [name for name in globals().keys() if name.startswith("get")]

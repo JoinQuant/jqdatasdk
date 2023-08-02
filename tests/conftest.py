@@ -25,3 +25,9 @@ def pytest_sessionstart(session):
 def pytest_sessionfinish(session, exitstatus):
     import_module("jqdatasdk").logout()
     logging.info("test session finish, exit status: %s", exitstatus)
+
+
+def pytest_collection_modifyitems(items):
+    for item in import_module("copy").copy(items):
+        if item.name == 'test_network_speed':
+            items.remove(item)

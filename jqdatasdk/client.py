@@ -302,51 +302,53 @@ class JQDataClient(object):
 
     @classmethod
     def convert_message(cls, msg):
-        if isinstance(msg, dict):
-            data_type = msg.get("data_type", None)
-            data_value = msg.get("data_value", None)
-            if data_type is not None and data_value is not None:
-                params = data_value
-                if data_type.startswith("pandas"):
-                    data_index_type = params.pop("index_type", None)
-                    if data_index_type == "Index":
-                        params["index"] = pd.Index(params["index"])
-                    elif data_index_type == "MultiIndex":
-                        params["index"] = (
-                            pd.MultiIndex.from_tuples(params["index"])
-                            if len(params["index"]) > 0 else None
-                        )
-                    if data_type == "pandas_dataframe":
-                        dtypes = params.pop("dtypes", None)
-                        msg = pd.DataFrame(**params)
-                        if dtypes:
-                            try:
-                                msg = msg.astype(dtypes, copy=False)
-                            except Exception:
-                                for col, dtype in dtypes.items():
-                                    try:
-                                        msg[col] = msg[col].astype(dtype)
-                                    except Exception:
-                                        continue
-                    elif data_type == "pandas_series":
-                        msg = pd.Series(**params)
-                    elif data_type == "pandas_panel":
-                        dtypes = params.pop("dtypes", None)
-                        msg = pd.Panel(**params)
-                        if dtypes:
-                            try:
-                                msg = msg.astype(dtypes, copy=False)
-                            except Exception:
-                                for col, dtype in dtypes.items():
-                                    try:
-                                        msg[col] = msg[col].astype(dtype)
-                                    except Exception:
-                                        continue
-            else:
-                msg = {
-                    key: cls.convert_message(val)
-                    for key, val in msg.items()
-                }
+        if not isinstance(msg, dict):
+            return msg
+
+        data_type = msg.get("data_type", None)
+        data_value = msg.get("data_value", None)
+        if data_type is not None and data_value is not None:
+            params = data_value
+            if data_type.startswith("pandas"):
+                data_index_type = params.pop("index_type", None)
+                if data_index_type == "Index":
+                    params["index"] = pd.Index(params["index"])
+                elif data_index_type == "MultiIndex":
+                    params["index"] = (
+                        pd.MultiIndex.from_tuples(params["index"])
+                        if len(params["index"]) > 0 else None
+                    )
+                if data_type == "pandas_dataframe":
+                    dtypes = params.pop("dtypes", None)
+                    msg = pd.DataFrame(**params)
+                    if dtypes:
+                        try:
+                            msg = msg.astype(dtypes, copy=False)
+                        except Exception:
+                            for col, dtype in dtypes.items():
+                                try:
+                                    msg[col] = msg[col].astype(dtype)
+                                except Exception:
+                                    continue
+                elif data_type == "pandas_series":
+                    msg = pd.Series(**params)
+                elif data_type == "pandas_panel":
+                    dtypes = params.pop("dtypes", None)
+                    msg = pd.Panel(**params)
+                    if dtypes:
+                        try:
+                            msg = msg.astype(dtypes, copy=False)
+                        except Exception:
+                            for col, dtype in dtypes.items():
+                                try:
+                                    msg[col] = msg[col].astype(dtype)
+                                except Exception:
+                                    continue
+        else:
+            msg = {
+                key: cls.convert_message(val)
+                for key, val in msg.items()
+            }
         return msg
 
     def __call__(self, method, **kwargs):
@@ -370,6 +372,37 @@ class JQDataClient(object):
 
     def __getattr__(self, method):
         return lambda **kwargs: self(method, **kwargs)
+
+    def test_network_speed(self, size=10000000, count=5):
+        request = thrift.St_Query_Req()
+        request.method_name = 'test_network_speed'
+        params = dict(size=size)
+        request.params = msgpack.packb(params)
+        speeds = []
+        for _ in range(count + 5):
+            self.ensure_auth()
+            try:
+                start_time = time.time() * 1e9
+                response = self.client.query(request)
+                end_time = time.time() * 1e9
+            except socket_error:
+                if not self._ping_server():
+                    self._reset()
+                continue
+            if not response.status:
+                raise self.get_error(response)
+            try:
+                start_time = int(response.msg[:50])
+            except ValueError:
+                pass
+            seconds = (end_time - start_time) / 1e9
+            data_size = len(response.msg) / 1e6
+            speed = round(data_size / seconds, 6)
+            speeds.append(speed)
+            if len(speeds) == count:
+                break
+        speeds = pd.Series(speeds)
+        return speeds.describe()
 
     def get_data_api_url(self):
         return self.data_api_url
