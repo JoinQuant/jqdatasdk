@@ -382,7 +382,7 @@ class JQDataClient(object):
         for _ in range(count + 5):
             self.ensure_auth()
             try:
-                start_time = time.time() * 1e9
+                start_time_local = int(time.time() * 1e9)
                 response = self.client.query(request)
                 end_time = time.time() * 1e9
             except socket_error:
@@ -394,14 +394,16 @@ class JQDataClient(object):
             try:
                 start_time = int(response.msg[:50])
             except ValueError:
-                pass
+                start_time = start_time_local
             seconds = (end_time - start_time) / 1e9
+            seconds_with_upload = (end_time - start_time_local) / 1e9
             data_size = len(response.msg) / 1e6
             speed = round(data_size / seconds, 6)
-            speeds.append(speed)
+            speed_with_upload = round(data_size / seconds_with_upload, 6)
+            speeds.append([speed, speed_with_upload])
             if len(speeds) == count:
                 break
-        speeds = pd.Series(speeds)
+        speeds = pd.DataFrame(speeds, columns=['speed', 'speed(with upload)'])
         return speeds.describe()
 
     def get_data_api_url(self):
