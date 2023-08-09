@@ -846,16 +846,6 @@ def get_daily_info_engine(security, date=None):
 
 
 @assert_auth
-def get_last_price(codes):
-    """获取标的的最新价格
-    :param codes 一支证券代码或者一个证券代码的list
-    :return 返回dict对象，如果传入的证券没有数据，不包含返回的dict
-    """
-    codes = convert_security(codes)
-    return JQDataClient.instance().get_last_price(**locals())
-
-
-@assert_auth
 @hashable_lru(maxsize=3)
 def get_factor_effect(security, start_date, end_date, period, factor, group_num=5):
     """获取因子分层回测效果
