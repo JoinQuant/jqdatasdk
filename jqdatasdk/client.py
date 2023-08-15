@@ -293,6 +293,7 @@ class JQDataClient(object):
         for _ in range(self.request_attempt_count):
             try:
                 msg = self.query("ping", {})
+                break
             except ResponseError:
                 msg = None
                 continue
