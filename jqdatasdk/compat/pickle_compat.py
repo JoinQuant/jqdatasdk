@@ -3,6 +3,10 @@
 import sys
 import copy
 from inspect import isclass
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 import numpy as np
 from pandas import Index
@@ -263,16 +267,23 @@ def load(fh, encoding, is_verbose=True):
     is_verbose : show exception output
     """
     try:
-        return _load(fh, encoding=encoding)
-    except Exception as ex:
+        if encoding is not None:
+            return pickle.load(fh)
+        else:
+            return pickle.load(fh, encoding=encoding)
+    except Exception:
         try:
             fh.seek(0)
-            if encoding is not None:
-                up = Unpickler2(fh, encoding=encoding)
-            else:
-                up = Unpickler2(fh)
-            up.is_verbose = is_verbose
+            return _load(fh, encoding=encoding)
+        except Exception as ex:
+            try:
+                fh.seek(0)
+                if encoding is not None:
+                    up = Unpickler2(fh, encoding=encoding)
+                else:
+                    up = Unpickler2(fh)
+                up.is_verbose = is_verbose
 
-            return up.load()
-        except Exception:
-            raise ex
+                return up.load()
+            except Exception:
+                raise ex

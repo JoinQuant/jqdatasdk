@@ -10,6 +10,7 @@ import json
 import random
 import itertools
 from os import getenv
+from collections import OrderedDict
 
 import six
 import msgpack
@@ -25,7 +26,7 @@ except ImportError:
 
 from .utils import classproperty, isatty, suppress, get_mac_address
 from .version import __version__ as current_version
-from .compat import pickle_compat as pc
+from .compat.pickle_compat import load as pickle_load
 from .thriftclient import thrift
 from .exceptions import ResponseError
 
@@ -272,7 +273,7 @@ class JQDataClient(object):
                 pickle_encoding = None
                 if six.PY3:
                     pickle_encoding = "latin1"
-                result = pc.load(buffer, encoding=pickle_encoding)
+                result = pickle_load(buffer, encoding=pickle_encoding)
             else:
                 raise self.get_error(response)
         finally:
@@ -321,7 +322,12 @@ class JQDataClient(object):
                     )
                 if data_type == "pandas_dataframe":
                     dtypes = params.pop("dtypes", None)
-                    msg = pd.DataFrame(**params)
+                    data = params.get("data", None)
+                    if isinstance(data, list):
+                        index = params.get("index")
+                        msg = pd.DataFrame(OrderedDict(data), index=index)
+                    else:
+                        msg = pd.DataFrame(**params)
                     if dtypes:
                         try:
                             msg = msg.astype(dtypes, copy=False)
