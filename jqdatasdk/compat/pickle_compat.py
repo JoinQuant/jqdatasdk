@@ -69,7 +69,7 @@ def load_reduce(self):
             except TypeError:
                 pass
 
-        if args and issubclass(args[0], PeriodArray):
+        if args and isclass(args[0]) and issubclass(args[0], PeriodArray):
             try:
                 cls = args[0]
                 stack[-1] = NDArrayBacked.__new__(*args)
