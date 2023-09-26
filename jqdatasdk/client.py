@@ -360,15 +360,16 @@ class JQDataClient(object):
 
     def __call__(self, method, **kwargs):
         err, result = None, None
-        for _ in range(self.request_attempt_count):
+        for attempt_index in range(self.request_attempt_count):
             try:
                 result = self.query(method, kwargs)
                 break
             except socket_error as ex:
-                if not self._ping_server():
+                if isinstance(ex, socket.timeout) or not self._ping_server():
                     self._reset()
                 err = ex
-                time.sleep(0.6)
+                if attempt_index < self.request_attempt_count - 1:
+                    time.sleep(0.6)
             except ResponseError as ex:
                 err = ex
 
@@ -392,8 +393,8 @@ class JQDataClient(object):
                 start_time_local = int(time.time() * 1e9)
                 response = self.client.query(request)
                 end_time = time.time() * 1e9
-            except socket_error:
-                if not self._ping_server():
+            except socket_error as ex:
+                if isinstance(ex, socket.timeout) and not self._ping_server():
                     self._reset()
                 continue
             if not response.status:
