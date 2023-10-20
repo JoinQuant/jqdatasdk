@@ -64,7 +64,7 @@ class DBTable(object):
         STEP = 10000
 
         while page_index < PAGE_CONSTRAINT:
-            q = query_object.limit(STEP).offset(page_index * STEP)
+            q = query_object.order_by('id').limit(STEP).offset(page_index * STEP)
             sql = compile_query(q)
             df = JQDataClient.instance().db_query(db=self.db_name, sql=sql)
             df_list.append(df)

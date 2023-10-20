@@ -87,3 +87,6 @@ def test_offset_query():
     bond_df = bond.run_query(bond_empty_query)
     bond_offset_df = bond.run_offset_query(bond_empty_query)
     assert len(bond_df) == len(bond_offset_df)
+
+    dup_oft_df = finance.run_offset_query(query(finance.STK_FIN_FORCAST))
+    assert len(dup_oft_df[dup_oft_df.duplicated(keep=False)].sort_values('id')) == 0
