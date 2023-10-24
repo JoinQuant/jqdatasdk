@@ -888,7 +888,7 @@ def test_ticks():
         fields=["time", "current", "volume", "position", "a1_v", "a1_p", "b1_v", "b1_p"]
     ).shape == (10, 8)
     assert len(get_ticks("000001.XSHE", end_dt="2018-03-16", count=10)) == 10
-    assert str(get_ticks("SM1809.XZCE", '2018-07-06', '2018-07-07').iloc[3][0]) == '2018-07-06 09:00:01'
+    assert str(get_ticks("SM1809.XZCE", '2018-07-06', '2018-07-07').iloc[3, 0]) == '2018-07-06 09:00:01'
     df = get_ticks(
         "000001.XSHE", end_dt="2018-03-16", count=10, df=True,
         fields=["a1_v", "a2_v", "a3_v", "a4_v", "a5_v", "b1_v", "b2_v", "b3_v", "b4_v", "b5_v"],
@@ -1319,12 +1319,12 @@ def test_get_valuation():
     print(res)
     assert len(res) == 4
     assert set(res['code']) == {'000001.XSHE', '000002.XSHE'}
-    assert list(res[res['code'] == '000001.XSHE']['market_cap']) == [2362.6487, 2383.2532]
-    assert list(res[res['code'] == '000002.XSHE']['market_cap']) == [3390.6428, 3387.2522]
+    assert list(res[res['code'] == '000001.XSHE']['market_cap']) == [2362.6486, 2383.2531]
+    assert list(res[res['code'] == '000002.XSHE']['market_cap']) == [3390.6429, 3387.2523]
 
     res = get_valuation('000001.XSHE', end_date='2019-07-24', fields='market_cap', count=5)
     assert len(res) == 5
-    assert list(res['market_cap']) == [2347.1953, 2402.1406, 2378.1021, 2362.6487, 2383.2532]
+    assert list(res['market_cap']) == [2347.1952, 2402.1406, 2378.102, 2362.6486, 2383.2531]
     assert list(res[res['code']=='000001.XSHE']['day']) \
            == [datetime.date(2019, 7, 18), datetime.date(2019, 7, 19), datetime.date(2019, 7, 22),
                datetime.date(2019, 7, 23), datetime.date(2019, 7, 24)]
@@ -1337,7 +1337,7 @@ def test_get_valuation():
 
     res = get_valuation('000001.XSHE', start_date='2019-07-20', end_date='2019-07-24', fields='market_cap')
     assert len(res) == 3
-    assert list(res['market_cap']) ==[2378.1021, 2362.6487, 2383.2532]
+    assert list(res['market_cap']) == [2378.102, 2362.6486, 2383.2531]
     assert list(res['day']) == [datetime.date(2019, 7, 22),
                                 datetime.date(2019, 7, 23),
                                 datetime.date(2019, 7, 24)]

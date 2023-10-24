@@ -1,6 +1,10 @@
 # coding: utf-8
 from sqlalchemy import Column, Date, DateTime, Float, Index, Integer, String, text
-from sqlalchemy.ext.declarative import declarative_base
+try:
+    from sqlalchemy.orm import declarative_base
+except ImportError:
+    from sqlalchemy.ext.declarative import declarative_base
+
 
 __all__ = [
     'BalanceSheet',
@@ -13,8 +17,10 @@ __all__ = [
     'InsuranceIndicatorAcc',
 ]
 
+
 Base = declarative_base()
 metadata = Base.metadata
+
 
 class BalanceSheet(Base):
     """

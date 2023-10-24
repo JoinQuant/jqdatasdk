@@ -6,9 +6,13 @@
 
 import sys
 import warnings
+import pandas as pd
 from sqlalchemy import text
 from sqlalchemy.types import *  # noqa
-from sqlalchemy.ext.declarative import declarative_base
+try:
+    from sqlalchemy.orm import declarative_base
+except ImportError:
+    from sqlalchemy.ext.declarative import declarative_base
 
 from .client import JQDataClient
 from .utils import assert_auth, check_no_join, compile_query
@@ -55,7 +59,6 @@ class DBTable(object):
 
     @assert_auth
     def run_offset_query(self, query_object):
-        from pandas import concat
         if self.__disable_join:
             check_no_join(query_object)
 
@@ -64,18 +67,25 @@ class DBTable(object):
         PAGE_CONSTRAINT = 20
         STEP = 10000
 
+        fields = None
         while page_index < PAGE_CONSTRAINT:
             q = query_object.order_by(text('id')).limit(STEP).offset(page_index * STEP)
             sql = compile_query(q)
             df = JQDataClient.instance().db_query(db=self.db_name, sql=sql)
+            if fields is None:
+                fields = df.columns
+            if df.empty:
+                break
             df_list.append(df)
             page_index += 1
             if len(df) == STEP and page_index == PAGE_CONSTRAINT:
-                warnings.warn("您调用 'run_offset_query' 达到单次查询上限20万条，返回数据可能不完整，请限定查询范围查询")
-            if df.empty:
-                break
+                warnings.warn("您调用 'run_offset_query' 达到单次查询上限20万条，"
+                              "返回数据可能不完整，请限定查询范围查询")
 
-        return concat(df_list).reset_index(drop=True)
+        if not df_list:
+            return pd.DataFrame(columns=fields)
+        else:
+            return pd.concat(df_list).reset_index(drop=True)
 
     def __load_table_class(self, table_name):
         from sqlalchemy.dialects.mysql import TINYINT, TIMESTAMP, DECIMAL, DOUBLE  # noqa
