@@ -16,7 +16,8 @@ import six
 import msgpack
 import requests
 import pandas as pd
-from thriftpy2 import transport, protocol
+from thriftpy2.transport import TTransportException
+from thriftpy2.protocol.cybin import ProtocolError
 from thriftpy2.rpc import make_client
 
 try:
@@ -32,9 +33,9 @@ from .exceptions import ResponseError
 
 
 if platform.system().lower() != "windows":
-    socket_error = (transport.TTransportException, socket.error, protocol.cybin.ProtocolError)
+    socket_error = (TTransportException, socket.error, ProtocolError)
 else:
-    socket_error = (transport.TTransportException, socket.error)
+    socket_error = (TTransportException, socket.error)
 
 AUTH_API_URL = "https://dataapi.joinquant.com/apis"  # 获取token
 
@@ -365,7 +366,11 @@ class JQDataClient(object):
                 result = self.query(method, kwargs)
                 break
             except socket_error as ex:
-                if isinstance(ex, socket.timeout) or not self._ping_server():
+                if (
+                    isinstance(ex, socket.timeout) or
+                    "TSocket read 0 bytes" in str(ex) or
+                    not self._ping_server()
+                ):
                     self._reset()
                 err = ex
                 if attempt_index < self.request_attempt_count - 1:
