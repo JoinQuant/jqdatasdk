@@ -16,9 +16,13 @@ import six
 import msgpack
 import requests
 import pandas as pd
-from thriftpy2.transport import TTransportException
-from thriftpy2.protocol.cybin import ProtocolError
+
 from thriftpy2.rpc import make_client
+from thriftpy2.transport import TTransportException
+try:
+    from thriftpy2.protocol.cybin import ProtocolError
+except ImportError:
+    ProtocolError = type('FakeProtocolError', (Exception,), {})
 
 try:
     from urllib.parse import quote as urlquote
@@ -32,10 +36,7 @@ from .thriftclient import thrift
 from .exceptions import ResponseError
 
 
-if platform.system().lower() != "windows":
-    socket_error = (TTransportException, socket.error, ProtocolError)
-else:
-    socket_error = (TTransportException, socket.error)
+socket_error = (TTransportException, socket.error, ProtocolError)
 
 AUTH_API_URL = "https://dataapi.joinquant.com/apis"  # 获取token
 
