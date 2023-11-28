@@ -1039,6 +1039,29 @@ def get_factor_stats(factor_names=None, universe_type='hs300',
     return JQDataClient.instance().get_factor_stats(**locals())
 
 
+def get_factor_cov(start_date, end_date,
+                   factors=None, columns=None,
+                   industry='sw_l1', universe=None):
+    """获取因子协方差矩阵
+    参数:
+        start_date : 数据开始时间
+        end_date : 数据结束时间
+        factors : 风格因子名, 默认所有风格因子, 用户可以自己加上行业名称, 当行业名称和 industry 不匹配时不返回对应的行业
+        columns : 列名, 默认返回 sw_l1/jq_l1 所有行业
+        industry : 行业, 目前只支持 sw_l1/jq_l1 (库中不加前缀的就是jq_l1, 加了sw 前缀的是申万行业)
+        universe : 市场, 目前只支持全市场 None
+
+    返回:
+        列名 : date,factor,column(1),column(2),...,column(n)
+        eg : date,factor_name,size,beta,..... HY001
+            '2023-11-16',size,0.001,0.2,.....
+            '2023-11-16',beta,0.23,0.0012,....
+    """
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    return JQDataClient.instance().get_factor_cov(**locals())
+
+
 @assert_auth
 def get_all_alpha_101(date, code=None, alpha=None):
     """获取全部 alpha101 因子

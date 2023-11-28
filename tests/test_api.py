@@ -1537,6 +1537,21 @@ def test_get_factor_stats():
         get_factor_stats(start_date='2021-08-30', end_date='2021-08-20')
 
 
+def test_get_factor_cov():
+    data = get_factor_cov('2022-01-01', '2023-10-01',
+                          ['sw_l1_801010'], ['sw_l1_growth'], 'jq_l1')
+    assert data.empty
+    df1 = get_factor_cov('2022-01-01', '2022-02-01')
+    assert set(df1.factor1.tolist()) == set(
+        ["size", 'beta', 'momentum', 'residual_volatility',
+         'non_linear_size', 'book_to_price_ratio', 'liquidity',
+         'earnings_yield', 'growth', 'leverage'])
+    df2 = get_factor_cov('2022-01-01', '2022-05-01',
+                         ['size', 'beta', 'momentum'], ['801180', '801730'])
+    assert set(df2.factor1.tolist()) == set(['size', 'beta', 'momentum'])
+    assert set(['801180', '801730']).issubset(set(df2.columns))
+
+
 def test_get_all_alpha():
     date = '2022-10-10'
     alpha = ['alpha_001', 'alpha_002', 'alpha_003', 'alpha_004']
