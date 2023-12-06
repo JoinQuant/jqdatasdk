@@ -33,6 +33,14 @@ def test_fin():
     assert (df["company_id"] >= 100016047).all()
     assert df["code"].str.endswith(('XSHE', 'XSHG')).all()
 
+    df = finance.run_query(query(finance.FUT_CHARGE))
+    print(df)
+    assert len(df) > 0
+    df = finance.run_query(query(finance.FUT_MARGIN))
+    assert len(df) > 0
+    df = finance.run_query(query(finance.STK_AUDIT_OPINION))
+    assert len(df) > 0
+
 
 def test_macro():
     df = macro.run_query(query(macro.MAC_AREA_DIV).limit(5).offset(1000))
