@@ -380,6 +380,8 @@ class JQDataClient(object):
                 err = ex
 
         if result is None and isinstance(err, Exception):
+            if "TSocket read 0 bytes" in str(err):
+                raise Exception("连接被关闭，请减少数据查询量或检查网络后重试")
             raise err
 
         return self.convert_message(result)
