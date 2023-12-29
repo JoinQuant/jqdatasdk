@@ -540,6 +540,11 @@ def test_get_fundamentals2():
         valuation.code == '000895.XSHE'
     )
     df = get_fundamentals(q, statDate='2017')
+    print(df)
+    assert df.shape == (1, 16)
+    assert "roe" in df.columns
+    assert "pe_ratio" in df.columns
+    assert "pb_ratio" in df.columns
 
 
 def test_get_fundamentals3():
