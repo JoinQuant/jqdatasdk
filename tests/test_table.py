@@ -6,6 +6,12 @@ import pytest
 from jqdatasdk import opt, finance, macro, bond, sup, query, get_server_version
 
 
+def test_load_table_class():
+    assert finance.FUND_MF_DAILY_PROFIT is not None
+    assert finance.FUND_MF_DAILY_PROFIT.code is not None
+    assert finance.FUND_MF_DAILY_PROFIT.name is not None
+
+
 def test_opt():
     df = opt.run_query(query(opt.OPT_CONTRACT_INFO).limit(6).offset(20000))
     print(df)
