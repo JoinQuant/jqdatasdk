@@ -453,6 +453,34 @@ def get_money_flow(security_list, start_date=None, end_date=None, fields=None, c
 
 @assert_auth
 @hashable_lru(maxsize=3)
+def get_money_flow_pro(security_list, start_date=None, end_date=None,
+                       frequency='daily', fields=None, count=None, data_type='money'):
+    """
+    获取资金流向数据, 停牌时无数据
+
+    :param security_list 标的列表或单个标的代码的字符串
+    :param end_date 数据截止日期, 必须指定
+    :param start_date/count 二选一, start_date 和 end_date 可以精确到分钟, count 代表 end_date 往前推的交易日/分钟个数, 且单次数据返回条数小于200万条(获取分钟数据时, 单次获取的数据区间不可超过30个交易日)
+    :param frequency 只支持 minutes/1m 或 daily/1d ;数据按天储存,建议时按天进行获取
+    :param fields 支持 ['inflow_xl', 'inflow_l', 'inflow_m', 'inflow_s', 'outflow_xl', 'outflow_l', 'outflow_m', 'outflow_s', 'netflow_xl', 'netflow_l', 'netflow_m', 'netflow_s'] , netflow = inflow - outflow, 默认不返回
+    :param data_type 统计字段三选一 (1) money 成交额 (2) volume 成交量 (3) deal 成交笔数
+
+    :return dataframe, columns 是 time, code 以及对应的 fields(处理后的)
+    总是返回 time(timestamp), 当 securiy_list 为多个标的时总是返回 code
+    """
+    assert security_list, "security_list is required"
+    security_list = convert_security(security_list)
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    if (not count) and (not start_date):
+        start_date = "2015-01-01"
+    if count and start_date:
+        raise ParamsError("(start_date, count) only one param is required")
+    return JQDataClient.instance().get_money_flow_pro(**locals())
+
+
+@assert_auth
+@hashable_lru(maxsize=3)
 def get_mtss(security_list, start_date=None, end_date=None, fields=None, count=None):
     """
     获取一只或者多只股票在一个时间段内的融资融券信息
