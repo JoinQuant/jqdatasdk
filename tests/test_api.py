@@ -1589,3 +1589,101 @@ def test_get_empty_data():
     ret = get_price('000001.XSHE', end_date='2001-01-01', count=1)
     print(ret)
     assert ret.empty
+
+
+def test_get_money_flow_pro():
+    start_date_1 = datetime.datetime(2015, 1, 1, 16, 0)
+    end_date_1 = datetime.datetime(2015, 1, 10, 16, 0)
+    count_1 = 10
+    fields = ['inflow_xl',
+            'inflow_l',
+            'inflow_m',
+            'inflow_s',
+            'outflow_xl',
+            'outflow_l',
+            'outflow_m',
+            'outflow_s',
+            'netflow_xl']
+    security_list = ['000001.XSHE', '600519.XSHG', '600360.XSHG', '888888.AAA']
+    res_1_1 = get_money_flow_pro(security_list,
+                                 start_date_1,
+                                 end_date_1,
+                                 fields=fields)
+    print(res_1_1)
+    assert not res_1_1[(start_date_1 < res_1_1.time) & (res_1_1.time < end_date_1)].empty
+    assert '888888.AAA' not in res_1_1.code
+
+    res_1_2 = get_money_flow_pro(security_list,
+                                 None,
+                                 end_date_1,
+                                 fields=fields,
+                                 count=count_1)
+    print(res_1_2)
+    assert res_1_1.equals(res_1_2)
+
+    # 测试取分钟级别的历史资金流向数据
+    start_date_2 = datetime.datetime(2023, 9, 1, 16, 0)
+    end_date_2 = datetime.datetime(2023, 9, 10, 16, 0)
+    res_2_1 = get_money_flow_pro(security_list,
+                                 start_date_2,
+                                 end_date_2,
+                                 frequency='1m',
+                                 fields=fields)
+    print(res_2_1)
+    assert not res_2_1[(start_date_2 < res_2_1.time) & (res_2_1.time < end_date_2)].empty
+    assert len(res_2_1) == 3600
+    res_2_2 = get_money_flow_pro(security_list,
+                                 None,
+                                 end_date_2,
+                                 frequency='1m',
+                                 fields=fields,
+                                 count=10)
+    print(res_2_2)
+    assert res_2_2[res_2_2.time > datetime.datetime(2023, 9, 8, 14, 50)].equals(res_2_2)
+    # end_date_2 = datetime.datetime(2023, 7, 10, 16, 0), count=241，应该返回两天的数据
+    res_2_3 = get_money_flow_pro(security_list,
+                                 None,
+                                 end_date_2,
+                                 frequency='1m',
+                                 fields=fields,
+                                 count=241)
+    print(res_2_3)
+    assert res_2_3[res_2_3.time >= datetime.datetime(2023, 9, 7, 15, 00)].equals(res_2_3)
+
+    # 测试取不规则的跨日历史数据
+    start_date_3 = datetime.datetime(2023, 12, 25, 12)
+    end_date_3 = datetime.datetime(2024, 1, 5, 14, 30)
+    res_3_1 = get_money_flow_pro(security_list,
+                                 start_date_3,
+                                 end_date_3,
+                                 frequency='1m',
+                                 fields=fields)
+    print(res_3_1)
+    assert res_3_1[(res_3_1.time > datetime.datetime(2023, 12, 23, 13)) & (res_3_1.time <= end_date_3)].equals(res_3_1)
+    res_3_2 = get_money_flow_pro(security_list,
+                                 None,
+                                 end_date_3,
+                                 frequency='1m',
+                                 fields=fields,
+                                 count=240)
+    print(res_3_2)
+    assert res_3_2[res_3_2.time >= datetime.datetime(2024, 1, 3, 14, 31)].equals(res_3_2)
+
+    # # 测试取实时数据
+    end_date_4 = datetime.datetime.today()
+    start_date_4 = end_date_4 - datetime.timedelta(3)
+    res_4_1 = get_money_flow_pro(security_list,
+                                 start_date_4,
+                                 end_date_4,
+                                 frequency='1m',
+                                 fields=fields)
+    print(res_4_1)
+    assert end_date_4.date() in set(dt.date() for dt in res_4_1.time)
+
+    # 测试取交易日当天不存在的标的数据
+    res_non_exits_m = get_money_flow_pro(['688981.XSHG'],
+                                         datetime.datetime(2020, 7, 12, 8),
+                                         datetime.datetime(2020, 7, 14, 8),
+                                         frequency='1m',
+                                         fields=fields)
+    assert res_non_exits_m.empty
