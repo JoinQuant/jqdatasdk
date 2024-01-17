@@ -452,7 +452,6 @@ def get_money_flow(security_list, start_date=None, end_date=None, fields=None, c
 
 
 @assert_auth
-@hashable_lru(maxsize=3)
 def get_money_flow_pro(security_list, start_date=None, end_date=None,
                        frequency='daily', fields=None, count=None, data_type='money'):
     """
