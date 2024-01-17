@@ -460,7 +460,7 @@ def get_money_flow_pro(security_list, start_date=None, end_date=None,
     :param security_list 标的列表或单个标的代码的字符串
     :param end_date 数据截止日期, 必须指定
     :param start_date/count 二选一, start_date 和 end_date 可以精确到分钟, count 代表 end_date 往前推的交易日/分钟个数, 且单次数据返回条数小于200万条(获取分钟数据时, 单次获取的数据区间不可超过30个交易日)
-    :param frequency 只支持 minutes/1m 或 daily/1d ;数据按天储存,建议时按天进行获取
+    :param frequency 只支持 minutes/1m 或 daily/1d ;数据按天储存,建议按天进行获取
     :param fields 支持 ['inflow_xl', 'inflow_l', 'inflow_m', 'inflow_s', 'outflow_xl', 'outflow_l', 'outflow_m', 'outflow_s', 'netflow_xl', 'netflow_l', 'netflow_m', 'netflow_s'] , netflow = inflow - outflow, 默认不返回
     :param data_type 统计字段三选一 (1) money 成交额 (2) volume 成交量 (3) deal 成交笔数
 
