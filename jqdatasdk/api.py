@@ -1075,7 +1075,7 @@ def get_factor_cov(start_date, end_date,
         end_date : 数据结束时间
         factors : 风格因子名, 默认所有风格因子, 用户可以自己加上行业名称, 当行业名称和 industry 不匹配时不返回对应的行业
         columns : 列名, 默认返回 sw_l1/jq_l1 所有行业
-        industry : 行业, 目前只支持 sw_l1/jq_l1 (库中不加前缀的就是jq_l1, 加了sw 前缀的是申万行业)
+        industry : 行业, 目前只支持 sw_l1/jq_l1
         universe : 市场, 目前只支持全市场 None
 
     返回:
