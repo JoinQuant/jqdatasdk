@@ -659,8 +659,9 @@ def get_industry(security, date=None, df=False):
 
 
 @assert_auth
-def get_bars(security, count, unit="1d", fields=("date", "open", "high", "low", "close"), include_now=False, end_dt=None,
-             fq_ref_date=None, df=True):
+def get_bars(security, count, unit="1d", fields=("date", "open", "high", "low", "close"),
+             include_now=False, end_dt=None, fq_ref_date=None, df=True,
+             start_dt=None, skip_paused=True):
     """
     获取历史数据(包含快照数据), 可查询单个标的多个数据字段
 
@@ -673,6 +674,8 @@ def get_bars(security, count, unit="1d", fields=("date", "open", "high", "low", 
     :param fq_ref_date: 复权基准日期，为None时为不复权数据
     :param df: 默认为True，传入单个标的返回的是一个dataframe，传入多个标的返回的是一个multi-index dataframe
             当df=False的时候，当单个标的的时候，返回一个np.ndarray，多个标的返回一个字典，key是code，value是np.array；
+    :param start_dt: 查询的开始时间
+    :param skip_paused: 是否跳过停牌
     :return numpy.ndarray格式
     """
     assert security, "security is required"
