@@ -45,6 +45,7 @@ def set_params(**params):
                          该值建议在账户认证前设置，否则可能会不生效
         request_attempt_count: 请求的尝试的次数，用于网络异常时重试，默认为 3 次，
                          该次数不能超过 10 次
+        enable_auth_prompt: 是否输出登录提示信息，默认为 True
     """
     JQDataClient.set_request_params(**params)
 

@@ -696,17 +696,6 @@ def get_bars_engine(security, count, unit="1d", fields=("open", "high", "low", "
     return JQDataClient.instance().get_bars_engine(**locals())
 
 
-# @assert_auth
-# def get_current_tick2(security):
-#     """
-#     获取最新的 tick 数据
-#     :param security 标的代码
-#     :return:
-#     """
-#     assert security, "security is required"
-#     security = convert_security(security)
-#     return JQDataClient.instance().get_current_tick(**locals())
-
 def get_current_tick(security):
     """
     获取最新的 tick 数据
@@ -715,8 +704,7 @@ def get_current_tick(security):
     :return:
     """
     if not JQDataClient.instance() or JQDataClient.instance().get_http_token() == "":
-        print("run jqdatasdk.auth first")
-        return
+        raise Exception("Please run jqdatasdk.auth first")
 
     if isinstance(security, six.string_types):
         security = [security]

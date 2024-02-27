@@ -52,6 +52,8 @@ class JQDataClient(object):
     request_timeout = 300
     request_attempt_count = 3
 
+    enable_auth_prompt = True
+
     @classproperty
     def _local_socket_timeout(cls):
         """本地网络超时时间
@@ -157,6 +159,8 @@ class JQDataClient(object):
             except (TypeError, ValueError):
                 raise ValueError("请求的尝试次数需要为一个大于 0 且小于等于 10 的整数")
             cls.request_attempt_count = request_attempt_count
+        if "enable_auth_prompt" in params:
+            cls.enable_auth_prompt = bool(params["enable_auth_prompt"])
 
     @classmethod
     def set_auth_params(cls, **params):
@@ -222,7 +226,8 @@ class JQDataClient(object):
             raise self.get_error(response)
         else:
             if self.not_auth:
-                print("auth success %s" % auth_message)
+                if self.enable_auth_prompt:
+                    print("auth success %s" % auth_message)
                 self.not_auth = False
         self.inited = True
 
@@ -238,7 +243,8 @@ class JQDataClient(object):
         self._reset()
         self._threading_local._instance = None
         self.__class__._auth_params = {}
-        print("已退出")
+        if self.enable_auth_prompt:
+            print("已退出")
 
     def get_error(self, response):
         err = None
