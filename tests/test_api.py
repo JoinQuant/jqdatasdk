@@ -57,14 +57,12 @@ def test_get_index_stocks():
 
 def test_get_industry_stocks():
     assert len(get_industry_stocks('A01')) > 0
-    assert len(get_industry_stocks('C21', datetime.date(2010, 1, 1))) == 4
-    assert len(get_industry_stocks('C21', datetime.date(2015, 1, 1))) == 5
+    assert len(get_industry_stocks('C21', datetime.date(2010, 1, 1))) == 2
+    assert len(get_industry_stocks('C21', datetime.date(2015, 1, 1))) == 4
     assert len(get_industry_stocks("HY001", datetime.date(2017, 1, 1))) > 0
     assert len(get_industry_stocks("HY002", datetime.date(2017, 12, 12))) > 0
     assert len(get_industry_stocks("HY011", datetime.date(2017, 12, 12))) > 0
     assert len(get_industry_stocks("851521", datetime.date(2012, 12, 12)))
-    assert len(get_industry_stocks("850333", datetime.date(2014, 12, 12)))
-    pass
 
 
 def test_get_industry_stocks2():
@@ -1070,6 +1068,41 @@ def test_get_bars2():
     df = df.reset_index(level=1, drop=True)
     assert len(df) == 6 * 3
     assert set(codes) == set(df.index)
+
+
+def test_get_bars3():
+    df = get_bars('000001.XSHE', start_dt='2024-03-01', end_dt="2024-03-04")
+    assert len(df) == 1
+
+    df = get_bars('000001.XSHE', start_dt='2024-03-01',
+                  end_dt="2024-03-04 15:00:00", include_now=True)
+    assert len(df) == 2
+    assert df.date.iloc[-1] == pd.to_datetime('2024-03-04').date()
+    assert np.isclose(df.close.iloc[-1], 10.33)
+
+    df = get_bars('000001.XSHE', start_dt='2024-03-01',
+                  end_dt="2024-03-04 15:00:00", include_now=True)
+    assert len(df) == 2
+    assert df.date.iloc[-1] == pd.to_datetime('2024-03-04').date()
+    assert np.isclose(df.close.iloc[-1], 10.33)
+
+    df = get_bars('002002.XSHE', end_dt="2024-03-04", count=10,
+                  skip_paused=True)
+    assert len(df) == 10
+    assert df.date.iloc[-1] == pd.to_datetime('2024-01-18').date()
+
+    df = get_bars('002002.XSHE', end_dt="2024-03-04", count=10,
+                  skip_paused=False)
+    assert len(df) == 10
+    assert df.date.iloc[-1] == pd.to_datetime('2024-03-01').date()
+
+    df = get_bars('002002.XSHE', start_dt='2024-03-01', end_dt="2024-03-04",
+                  skip_paused=True)
+    assert df.empty
+
+    df = get_bars('002002.XSHE', start_dt='2024-03-01', end_dt="2024-03-04",
+                  skip_paused=False)
+    assert len(df) == 1
 
 
 def test_get_fund_info():

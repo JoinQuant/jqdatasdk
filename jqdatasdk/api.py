@@ -659,7 +659,7 @@ def get_industry(security, date=None, df=False):
 
 
 @assert_auth
-def get_bars(security, count, unit="1d", fields=("date", "open", "high", "low", "close"),
+def get_bars(security, count=None, unit="1d", fields=("date", "open", "high", "low", "close"),
              include_now=False, end_dt=None, fq_ref_date=None, df=True,
              start_dt=None, skip_paused=True):
     """
