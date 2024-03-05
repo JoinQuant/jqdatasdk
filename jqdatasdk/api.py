@@ -1004,7 +1004,8 @@ def get_factor_style_returns(factors=None, start_date=None,
 
 
 @assert_auth
-def get_factor_specific_returns(security, start_date=None, end_date=None, count=None):
+def get_factor_specific_returns(security, start_date=None, end_date=None, count=None,
+                                category="sytle"):
     """获取风格因子的特异收益率
 
     参数:
@@ -1012,7 +1013,7 @@ def get_factor_specific_returns(security, start_date=None, end_date=None, count=
         start_date : 开始日期，字符串或 datetime 对象
         end_date : 结束日期，字符串或 datetime 对象，可以与 start_date 或 count 配合使用
         count: 截止 end_date 之前交易日的数量（含 end_date 当日）
-
+        category: 数据类别，默认为 sytle, 可选 style_pro
     返回:
         个股在风格因子上的特异收益率
     """
