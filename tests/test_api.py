@@ -8,6 +8,11 @@ import datetime
 import logging
 
 import pytest
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 import numpy as np
 import pandas as pd
 
@@ -45,6 +50,38 @@ def test_base():
     assert float(get_now_time()) > time.time() - 10
     print("Server Version: {}".format(get_server_version()))
     print("Privilege: {}".format(get_privilege()))
+
+
+@pytest.mark.trylast
+def test_set_params():
+    cli = jqdatasdk.JQDataClient.instance()
+
+    set_params(request_timeout=10)
+    assert cli.request_timeout == 10
+    set_params(request_timeout=10000)
+    assert cli.request_timeout == 10000
+    with pytest.raises(ValueError):
+        set_params(request_timeout=-1)
+
+    set_params(request_attempt_count=5)
+    assert cli.request_attempt_count == 5
+    with pytest.raises(ValueError):
+        set_params(request_attempt_count=0)
+    with pytest.raises(ValueError):
+        set_params(request_attempt_count=20)
+
+    username, password = '13888888888', '123456'
+    set_params(request_username=username, request_password=password)
+    assert cli._auth_params['username'] == username
+    assert cli._auth_params['password'] == password
+
+    host, port = '127.0.0.1', 7000
+    set_params(request_host=host, request_port=port)
+    assert cli._auth_params['host'] == host
+    assert cli._auth_params['port'] == port
+
+    set_params(enable_auth_prompt=False)
+    assert cli.enable_auth_prompt is False
 
 
 def test_get_index_stocks():

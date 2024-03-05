@@ -85,23 +85,28 @@ class JQDataClient(object):
                 return value
 
     @classmethod
-    def instance(cls):
+    def instance(cls, enable_env_param=True):
         _instance = getattr(cls._threading_local, '_instance', None)
         if _instance is None:
-            if not cls._auth_params:
-                username = cls._get_username_from_env()
-                password = cls._get_password_from_env()
-                host = cls._get_auth_param_from_env("host")
-                port = cls._get_auth_param_from_env("port")
-                if username and password:
-                    cls._auth_params = {
-                        "username": username,
-                        "password": password,
-                        "host": host or cls._default_host,
-                        "port": port or cls._default_port,
-                    }
+            if enable_env_param:
+                if "username" not in cls._auth_params:
+                    username = cls._get_username_from_env()
+                    if username:
+                        cls._auth_params["username"] = username
+                if "password" not in cls._auth_params:
+                    password = cls._get_password_from_env()
+                    if password:
+                        cls._auth_params["password"] = password
+                if "host" not in cls._auth_params:
+                    host = cls._get_auth_param_from_env("host")
+                    if host:
+                        cls._auth_params["host"] = host
+                if "port" not in cls._auth_params:
+                    port = cls._get_auth_param_from_env("port")
+                    if port:
+                        cls._auth_params["port"] = port
             if cls._auth_params:
-                _instance = JQDataClient(**cls._auth_params)
+                _instance = cls(**cls._auth_params)
             cls._threading_local._instance = _instance
         return _instance
 
@@ -130,42 +135,54 @@ class JQDataClient(object):
 
     @classmethod
     def set_request_params(cls, **params):
-        if "request_timeout" in params:
-            try:
-                request_timeout = float(params["request_timeout"])
-                if request_timeout < 0:
-                    raise ValueError()
-            except (TypeError, ValueError):
-                raise ValueError("请求的超时时间需要为一个大于等于 0 的数")
-            cls.request_timeout = request_timeout
-            try:
-                instance = cls.instance()
-            except Exception:
-                instance = None
-            if instance and instance.inited and instance.client:
+        for key, val in params.items():
+            if "enable_auth_prompt" in params:
+                cls.enable_auth_prompt = bool(val)
+            elif key == "request_timeout":
                 try:
-                    try:
-                        sock = instance.client._iprot.trans._trans.sock
-                    except AttributeError:
-                        sock = instance.client._iprot.trans.sock
-                    sock.settimeout(cls.request_timeout)
+                    request_timeout = float(val)
+                    if request_timeout < 0:
+                        raise ValueError()
+                except (TypeError, ValueError):
+                    raise ValueError("请求超时时间需要为一个 >= 0 的数")
+                cls.request_timeout = request_timeout
+                try:
+                    instance = cls.instance(enable_env_param=False)
                 except Exception:
-                    pass
-        if "request_attempt_count" in params:
-            try:
-                request_attempt_count = int(params["request_attempt_count"])
-                if request_attempt_count <= 0 or request_attempt_count > 10:
-                    raise ValueError()
-            except (TypeError, ValueError):
-                raise ValueError("请求的尝试次数需要为一个大于 0 且小于等于 10 的整数")
-            cls.request_attempt_count = request_attempt_count
-        if "enable_auth_prompt" in params:
-            cls.enable_auth_prompt = bool(params["enable_auth_prompt"])
+                    instance = None
+                if instance and instance.inited and instance.client:
+                    try:
+                        try:
+                            sock = instance.client._iprot.trans._trans.sock
+                        except AttributeError:
+                            sock = instance.client._iprot.trans.sock
+                        sock.settimeout(cls.request_timeout)
+                    except Exception:
+                        pass
+            elif key == "request_attempt_count":
+                try:
+                    request_attempt_count = int(val)
+                    if request_attempt_count <= 0 or request_attempt_count > 10:
+                        raise ValueError()
+                except (TypeError, ValueError):
+                    raise ValueError("请求尝试次数需要为一个 > 0 且 <= 10 的整数")
+                cls.request_attempt_count = request_attempt_count
+            elif key in (
+                "request_username", "request_password",
+                "request_host", "request_port",
+            ):
+                key = key.replace('request_', '')
+                if val is None:
+                    if key in cls._auth_params:
+                        cls._auth_params.pop(key)
+                else:
+                    cls._auth_params[key] = val
 
     @classmethod
     def set_auth_params(cls, **params):
-        if params != cls._auth_params and cls.instance():
-            cls.instance()._reset()
+        instance = cls.instance(enable_env_param=False)
+        if params != cls._auth_params and instance:
+            instance._reset()
             cls._threading_local._instance = None
         cls._auth_params = params
         cls.instance().ensure_auth()
