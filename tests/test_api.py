@@ -1519,6 +1519,11 @@ def test_get_factor_kanban_values():
     assert kbv['commision_slippage'].any() == 1
     with pytest.raises(AssertionError):
         kbv = get_factor_kanban_values(model='hhh')
+    zz1000 = get_factor_kanban_values(
+        universe='zz1000', bt_cycle='year_1', skip_paused=False,
+        commision_slippage=1, category='style_pro', model='long_short'
+    )
+    assert set(zz1000.category) == set(['style_pro'])
 
 
 def test_get_factor_style_returns():
@@ -1541,6 +1546,14 @@ def test_get_factor_style_returns():
                                      industry='sw_l1')
     print(data3)
     assert not data3.empty
+
+    with pytest.raises(Exception):
+        style_pro_factors = ['financial_leverage', 'relative_momentum']
+        get_factor_style_returns(factors=style_pro_factors,
+                                 start_date='2023-09-01',
+                                 end_date='2023-09-10',
+                                 universe='zz2000',
+                                 industry='sw_l1')
 
 
 def test_get_factor_specific_returns():

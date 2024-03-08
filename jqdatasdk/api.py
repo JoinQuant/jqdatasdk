@@ -961,6 +961,7 @@ def get_factor_kanban_values(universe=None, bt_cycle=None, category=None, model=
             'barra': 风险因子 - 风格因子
             'technical': 技术类
             'momentum': 动量类
+            'style_pro': 新风格因子
         model: 组合构建模型
             'long_only': 纯多头组合
             'long_short': 多空组合
@@ -986,12 +987,12 @@ def get_factor_style_returns(factors=None, start_date=None,
     """获取风格因子暴露收益率
 
     参数：
-        factors : 因子名称，单个因子（字符串）或一个因子列表,支持风格因子如"size"及申万/聚宽一级行业如 "801010"和"HY001"
+        factors : 因子名称，单个因子（字符串）或一个因子列表,支持风格因子如 "size" 及申万/聚宽一级行业如 "801010" 和 "HY001", 以及国家因子 "country", 注意为了避免混淆, 风格因子仅支持传递 style 和 style_pro 中的一类
         start_date : 开始日期，字符串或 datetime 对象
         end_date : 结束日期，字符串或 datetime 对象，可以与 start_date 或 count 配合使用
         count: 截止 end_date 之前交易日的数量（含 end_date 当日）
-        universe : 市场范围,默认为None代表全市场, 可选 : 'hs300': 沪深300 ; 'zz500': 中证500'; zz800': 中证800; 'zz1000':中证1000; 'zzqz':中证全指
-        industry : 行业选取,默认为'sw_l1', 可选 : 'sw_l1':申万一级,'jq_l1':聚宽一级
+        universe : 市场范围, 默认为 None 代表全市场, 可选 : 'hs300':沪深300; 'zz500':中证500'; zz800':中证800; 'zz1000':中证1000; 'zzqz':中证全指; 'zz2000':中证2000
+        industry : 行业选取, 默认为 'sw_l1',可选 : 'sw_l1':申万一级, 'jq_l1':聚宽一级; 为了避免混淆, factors 中的行业因子仅返回 industy 下的行业
 
     返回：
         一个 DataFrame, index 是日期, columns为因子名, 值为因子暴露收益率
@@ -1005,15 +1006,15 @@ def get_factor_style_returns(factors=None, start_date=None,
 
 @assert_auth
 def get_factor_specific_returns(security, start_date=None, end_date=None, count=None,
-                                category="sytle"):
+                                category="style"):
     """获取风格因子的特异收益率
 
     参数:
         security : 股票代码, 或者股票代码组成的list
         start_date : 开始日期，字符串或 datetime 对象
         end_date : 结束日期，字符串或 datetime 对象，可以与 start_date 或 count 配合使用
-        count: 截止 end_date 之前交易日的数量（含 end_date 当日）
-        category: 数据类别，默认为 sytle, 可选 style_pro
+        count : 截止 end_date 之前交易日的数量（含 end_date 当日）
+        category : 风格因子分类, 可选 'style' 和 'style_pro', 默认 'style'
     返回:
         个股在风格因子上的特异收益率
     """
@@ -1065,8 +1066,8 @@ def get_factor_cov(start_date, end_date,
     参数:
         start_date : 数据开始时间
         end_date : 数据结束时间
-        factors : 风格因子名, 默认所有风格因子, 用户可以自己加上行业名称, 当行业名称和 industry 不匹配时不返回对应的行业
-        columns : 列名, 默认返回 sw_l1/jq_l1 所有行业
+        factors : 风格因子名, 默认所有风格因子, 可以自己加上行业名称, 当行业名称和 industry 不匹配时不返回对应的行业, 也可以传递国家因子名 "contry"
+        columns : 列名, 默认返回包含 industry 下的所有行业(默认不含国家因子 "contry", 可指定返回)
         industry : 行业, 目前只支持 sw_l1/jq_l1
         universe : 市场, 目前只支持全市场 None
 
