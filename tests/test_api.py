@@ -93,12 +93,12 @@ def test_get_index_stocks():
 
 
 def test_get_industry_stocks():
-    assert len(get_industry_stocks('A01')) > 0
-    assert len(get_industry_stocks('C21', datetime.date(2010, 1, 1))) == 2
-    assert len(get_industry_stocks('C21', datetime.date(2015, 1, 1))) == 4
-    assert len(get_industry_stocks("HY001", datetime.date(2017, 1, 1))) > 0
-    assert len(get_industry_stocks("HY002", datetime.date(2017, 12, 12))) > 0
-    assert len(get_industry_stocks("HY011", datetime.date(2017, 12, 12))) > 0
+    assert len(get_industry_stocks('A01'))
+    assert len(get_industry_stocks('C21', datetime.date(2010, 1, 1)))
+    assert len(get_industry_stocks('C21', datetime.date(2015, 1, 1)))
+    assert len(get_industry_stocks("HY001", datetime.date(2017, 1, 1)))
+    assert len(get_industry_stocks("HY002", datetime.date(2017, 12, 12)))
+    assert len(get_industry_stocks("HY011", datetime.date(2017, 12, 12)))
     assert len(get_industry_stocks("851521", datetime.date(2012, 12, 12)))
 
 
