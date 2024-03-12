@@ -1548,7 +1548,7 @@ def test_get_factor_style_returns():
     assert not data3.empty
 
     with pytest.raises(Exception):
-        style_pro_factors = ['financial_leverage', 'relative_momentum']
+        style_pro_factors = ['financial_leverage', 'size']
         get_factor_style_returns(factors=style_pro_factors,
                                  start_date='2023-09-01',
                                  end_date='2023-09-10',
