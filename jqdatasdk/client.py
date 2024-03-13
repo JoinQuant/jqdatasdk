@@ -180,11 +180,14 @@ class JQDataClient(object):
 
     @classmethod
     def set_auth_params(cls, **params):
-        instance = cls.instance(enable_env_param=False)
+        try:
+            instance = cls.instance(enable_env_param=False)
+        except Exception:
+            instance = None
         if params != cls._auth_params and instance:
             instance._reset()
             cls._threading_local._instance = None
-        cls._auth_params = params
+        cls._auth_params.update(params)
         cls.instance().ensure_auth()
 
     def _create_client(self):
