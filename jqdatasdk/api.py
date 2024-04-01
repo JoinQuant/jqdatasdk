@@ -147,18 +147,22 @@ def get_valuation(security_list, start_date=None, end_date=None, fields=None, co
         start_date: 查询开始时间，不能与count共用
         count: 表示往前查询每一个标的count个交易日的数据，如果期间标的停牌，则该标的返回的市值数据数量小于count
         fields: 财务数据中市值表的字段，返回结果中总会包含code、day字段，可用字段如下：
-            code	股票代码	带后缀.XSHE/.XSHG
-            day	日期	取数据的日期
-            capitalization	总股本(万股)
-            circulating_cap	流通股本(万股)
-            market_cap	总市值(亿元)
-            circulating_market_cap	流通市值(亿元)
-            turnover_ratio	换手率(%)
-            pe_ratio	市盈率(PE, TTM)
-            pe_ratio_lyr	市盈率(PE)s
-            pb_ratio	市净率(PB)
-            ps_ratio	市销率(PS, TTM)
-            pcf_ratio	市现率(PCF, 现金净流量TTM)
+            code    股票代码        带后缀.XSHE/.XSHG
+            day     日期            取数据的日期
+            capitalization	        总股本(万股)
+            circulating_cap	        流通股本(万股)
+            market_cap	            总市值(亿元)
+            circulating_market_cap  流通市值(亿元)
+            turnover_ratio	        换手率(%)
+            pe_ratio	            市盈率(PE, TTM)
+            pe_ratio_lyr	        市盈率(PE)s
+            pb_ratio	            市净率(PB)
+            ps_ratio	            市销率(PS, TTM)
+            pcf_ratio	            市现率(PCF, 现金净流量TTM)
+            pcf_ratio2              市现率(PCF, 经营活动现金流TTM)
+            free_cap                自由流通股本
+            a_cap                   A 股总股本
+            dividend_ratio          股息率
     Returns:
         返回一个dataframe，索引默认是pandas的整数索引，返回的结果中总会包含code、day字段。
     """
@@ -166,6 +170,41 @@ def get_valuation(security_list, start_date=None, end_date=None, fields=None, co
     end_date = to_date_str(end_date)
     security_list = convert_security(security_list)
     return JQDataClient.instance().get_valuation(**locals())
+
+
+@assert_auth
+@hashable_lru(maxsize=3)
+def get_index_valuation(security_list, start_date=None, end_date=None, fields=None, count=None):
+    """ 获取多个指数及申万/聚宽一级行业在指定交易日范围内的市值表数据
+    Args:
+        security_list: 标的code字符串列表或者单个标的字符串
+        end_date: 查询结束时间
+        start_date: 查询开始时间，不能与count共用
+        count: 表示往前查询每一个指数count个交易日的数据，如果期间无指数，则该指数返回的市值数据数量小于count
+        fields: 财务数据中市值表的字段，返回结果中总会包含code、day字段，可用字段如下：
+            code    指数和行业代码   指数需带后缀.XSHE/.XSHG/.CSI
+            day     日期            取数据的日期
+            capitalization          总股本(万股)
+            circulating_cap         流通股本(万股)
+            market_cap              总市值(亿元)
+            circulating_market_cap  流通市值(亿元)
+            turnover_ratio          换手率(%)
+            pe_ratio                市盈率(PE, TTM)
+            pe_ratio_lyr            市盈率(PE)s
+            pb_ratio                市净率(PB)
+            ps_ratio                市销率(PS, TTM)
+            pcf_ratio               市现率(PCF, 现金净流量TTM)
+            pcf_ratio2              市现率(PCF, 经营活动现金流TTM)
+            free_cap                自由流通股本
+            a_cap                   A 股总股本
+            dividend_ratio          股息率
+    Returns:
+        返回一个dataframe，索引默认是pandas的整数索引，返回的结果中总会包含code、day字段。
+    """
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    security_list = convert_security(security_list)
+    return JQDataClient.instance().get_index_valuation(**locals())
 
 
 @assert_auth
