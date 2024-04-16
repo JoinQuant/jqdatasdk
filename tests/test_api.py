@@ -1770,3 +1770,29 @@ def test_get_money_flow_pro():
                                          frequency='1m',
                                          fields=fields)
     assert res_non_exits_m.empty
+
+
+def test_get_order_future_bar():
+    data = get_order_future_bar(symbol='IC',
+                                future_type='1',
+                                start_dt='2020-03-01',
+                                end_dt='2021-03-01',
+                                unit='1d')
+    assert data.date.min() == datetime.date(2020, 3, 2)
+    assert data.date.max() == datetime.date(2021, 2, 26)
+    assert set(data.code) == {
+        'IC2007.CCFX', 'IC2101.CCFX', 'IC2008.CCFX', 'IC2010.CCFX',
+        'IC2005.CCFX', 'IC2004.CCFX', 'IC2006.CCFX', 'IC2009.CCFX',
+        'IC2103.CCFX', 'IC2102.CCFX', 'IC2011.CCFX', 'IC2104.CCFX',
+        'IC2012.CCFX'}
+
+    data = get_order_future_bar(symbol='SC',
+                                future_type='4',
+                                start_dt='1999-03-01 09:00:00',
+                                end_dt='2019-02-27 21:30:00',
+                                unit='1m',
+                                fields=['date', 'close', 'volume'])
+    assert set(data.columns) == {'date', 'close', 'volume', 'code'}
+    assert set(data.code) == {
+        'SC1904.XINE', 'SC1903.XINE', 'SC1902.XINE', 'SC1906.XINE',
+        'SC1905.XINE', 'SC1901.XINE', 'SC1907.XINE'}

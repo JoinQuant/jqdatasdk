@@ -1129,6 +1129,34 @@ def get_all_alpha_191(date, code=None, alpha=None):
 
 
 @assert_auth
+def get_order_future_bar(symbol,
+                         future_type,
+                         start_dt,
+                         end_dt,
+                         unit='1d',
+                         fields=('date', 'open', 'high', 'low', 'close','volume', 'money', 'open_interest'),
+                         include_now=True):
+    """获取当月/次月/当季/隔季等合约拼接而成的行情数据
+    参数
+        symbol : 品种代码, 如 'IF'
+        future_type : 合约类型, 按当前可交易的合约顺序推算, 0 为当月, 1 为次月, 也可以按季度, '0q' 为当季(最近一个季月), '1q' 为次季 .....
+        start_dt : 开始时间
+        end_dt : 结束时间
+        unit : bar 频率, 只支持 (x)m 或者 1d, 划分方式同 get_bars, 不支持 1w 和 1M
+        fields : 获取字段, 同 get_bars, 默认为全部
+        include_now : 是否包含当前 bar
+    返回
+        DataFrame, columns 是 code + 参数 fields 中指定的列
+    """
+    start_dt = to_date_str(start_dt)
+    end_dt = to_date_str(end_dt)
+    assert unit.endswith("m") or unit.endswith("d"), 'unit 只支持 (x)m 或者 1d'
+    if not isinstance(fields, (list, tuple, set)):
+        fields = [fields]
+    return JQDataClient.instance().get_order_future_bar(**locals())
+
+
+@assert_auth
 def get_data(api_name, **kwargs):
     """通用数据获取接口
 
