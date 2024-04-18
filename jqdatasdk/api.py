@@ -1005,8 +1005,9 @@ def get_factor_style_returns(factors=None, start_date=None,
 
 
 @assert_auth
-def get_factor_specific_returns(security, start_date=None, end_date=None, count=None,
-                                category="style"):
+def get_factor_specific_returns(security, start_date=None, end_date=None,
+                                count=None, category='style',
+                                universe=None, industry='sw_l1'):
     """获取风格因子的特异收益率
 
     参数:
@@ -1015,6 +1016,9 @@ def get_factor_specific_returns(security, start_date=None, end_date=None, count=
         end_date : 结束日期，字符串或 datetime 对象，可以与 start_date 或 count 配合使用
         count : 截止 end_date 之前交易日的数量（含 end_date 当日）
         category : 风格因子分类, 可选 'style' 和 'style_pro', 默认 'style'
+        universe : 市场范围, 默认为 None 代表全市场, 可选 : 'hs300':沪深300; 'zz500':中证500'; zz800':中证800; 'zz1000':中证1000; 'zzqz':中证全指; 'zz2000':中证2000
+        industry : 行业选取, 默认为 'sw_l1',可选 : 'sw_l1':申万一级, 'jq_l1':聚宽一级
+
     返回:
         个股在风格因子上的特异收益率
     """
