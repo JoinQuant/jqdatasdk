@@ -551,6 +551,10 @@ def test_get_fundamentals():
     assert(len(df.index)) == 10
     with pytest.raises(Exception) as e:
         get_fundamentals(query(income.day).limit(10), date='2016-07-01', statDate='2016-07-01')
+    df = get_fundamentals(query(income).limit(10))
+    assert 'rd_expenses' in df.columns
+    df = get_fundamentals(query(balance).limit(10))
+    assert 'lease_liability' in df.columns
 
 
 def test_get_fundamentals2():

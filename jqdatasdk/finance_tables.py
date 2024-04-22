@@ -110,6 +110,31 @@ class BalanceSheetDay(Base):
     minority_interests = Column(Float(20), doc="少数股东权益(元)")
     total_owner_equities = Column(Float(20), doc="股东权益合计(元)")
     total_sheet_owner_equities = Column(Float(20), doc="负债和股东权益合计")
+    other_comprehensive_income = Column(Float(20), doc="其他综合收益(元)")
+    deferred_earning = Column(Float(20), doc="非流动负债-递延收益(元)")
+    loan_and_advance_current_assets = Column(Float(20), doc="流动资产-发放贷款及垫款(元)")
+    derivative_financial_asset = Column(Float(20), doc="衍生金融资产(元)")
+    hold_sale_asset = Column(Float(20), doc="划分为持有待售的资产(元)")
+    loan_and_advance_noncurrent_assets = Column(Float(20), doc="非流动资产-发放贷款及垫款(元)")
+    derivative_financial_liability = Column(Float(20), doc="衍生金融负债(元)")
+    hold_sale_liability = Column(Float(20), doc="划分为持有待售的负债(元)")
+    estimate_liability_current = Column(Float(20), doc="流动负债-预计负债(元)")
+    deferred_earning_current = Column(Float(20), doc="流动负债-递延收益(元)")
+    preferred_shares_noncurrent = Column(Float(20), doc="非流动负债-优先股(元)")
+    pepertual_liability_noncurrent = Column(Float(20), doc="非流动负债-永续债(元)")
+    longterm_salaries_payable = Column(Float(20), doc="长期应付职工薪酬(元)")
+    other_equity_tools = Column(Float(20), doc="其他权益工具(元)")
+    preferred_shares_equity = Column(Float(20), doc="其中：优先股-所有者权益")
+    pepertual_liability_equity = Column(Float(20), doc="所有者权益-永续债(元)")
+    receivable_fin = Column(Float(20), doc="应收款项融资(元)")
+    usufruct_assets = Column(Float(20), doc="使用权资产(元)")
+    contract_assets = Column(Float(20), doc="合同资产")
+    bond_invest = Column(Float(20), doc="债权投资")
+    other_bond_invest = Column(Float(20), doc="其他债权投资")
+    other_equity_tools_invest = Column(Float(20), doc="其他权益工具投资")
+    other_non_current_financial_assets = Column(Float(20), doc="其他非流动金融资产")
+    contract_liability = Column(Float(20), doc="合同负债")
+    lease_liability = Column(Float(20), doc="租赁负债")
 
 
 class CashFlowStatementDay(Base):
@@ -230,7 +255,16 @@ class IncomeStatementDay(Base):
     total_composite_income = Column(Float(20), doc="综合收益总额(元)")
     ci_parent_company_owners = Column(Float(20), doc="归属于母公司所有者的综合收益总额(元)")
     ci_minority_owners = Column(Float(20), doc="归属于少数股东的综合收益总额(元)")
-
+    rd_expenses = Column(Float(20), doc="研发费用")
+    asset_deal_income = Column(Float(20), doc="资产处置收益")
+    sust_operate_net_profit = Column(Float(20), doc="持续经营净利润")
+    discon_operate_net_profit = Column(Float(20), doc="终止经营净利润")
+    credit_impairment_loss = Column(Float(20), doc="信用减值损失")
+    net_open_hedge_income = Column(Float(20), doc="净敞口套期收益")
+    interest_cost_fin = Column(Float(20), doc="财务费用 - 利息费用")
+    interest_income_fin = Column(Float(20), doc="财务费用 - 利息收入")
+    other_earnings = Column(Float(20), doc="其他收益")
+    other_composite_income_mino_at = Column(Float(20), doc="归属于少数股东的其他综合收益的税后净额")
 
 class StockValuation(Base):
     """
@@ -414,5 +448,3 @@ class InsuranceIndicatorAcc(Base):
     solvency_adequacy_ratio = Column(Float(10), doc="偿付能力充足率(%)")
     actual_capital = Column(Float(20), doc="实际资本(元)")
     minimum_capital = Column(Float(20), doc="最低资本(元)")
-
-
