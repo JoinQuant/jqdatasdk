@@ -1210,6 +1210,35 @@ def test_get_current_tick():
         get_current_tick(trade_codes + ["AU8888.XSGE"])
 
 
+def test_get_today_tick_period():
+    today_str = str(datetime.date.today())
+    latest_trade_day = str(get_trade_days(end_date=today_str, count=1)[0])
+    codes = get_all_securities('stock', latest_trade_day).index.tolist()[:10]
+    data = get_today_tick_period(codes, end_date=datetime.datetime.now())
+    assert len(data) == 10
+    assert set(data.columns) == set([
+        'datetime', 'current', 'high', 'low', 'volume', 'money',
+        'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
+        'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p'])
+
+    codes = get_all_securities('options', latest_trade_day).index.tolist()[:10]
+    data = get_today_tick_period(codes, end_date=datetime.datetime.now())
+    assert len(data) == 10
+    assert set(data.columns) == set(['datetime', 'current', 'high', 'low',
+                                     'volume', 'money', 'position',
+                                     'a1_v', 'a1_p', 'b1_v', 'b1_p'])
+
+    with pytest.raises(Exception):
+        get_today_tick_period(
+            codes,
+            start_date=datetime.datetime.now(),
+            end_date=datetime.datetime.now())
+
+    with pytest.raises(Exception):
+        get_today_tick_period(
+            'AU8888.XSGE',
+            end_date=datetime.datetime.now())
+
 def del_test_get_price_engine():
     df = get_price_engine(["000001.XSHE", "000002.XSHE"], end_date='2018-10-01', count=1, fq=None)
     assert type(df) == pd.core.panel.Panel

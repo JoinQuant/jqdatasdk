@@ -748,6 +748,23 @@ def get_current_tick(security):
         df.index = [0]
     return df
 
+
+@assert_auth
+def get_today_tick_period(security, start_date=None, end_date=None):
+    """获取一个/多个标的当天最新/一段时间内的tick
+    只可以查询当天标的, (期货可含夜盘, start_dt/end_dt必须大于当前交易日的开始时间 20:55)
+    :param security 标的代码,可以为一个标的或者多个标的组成的list
+    :param start_date 默认为 None, 不指定 start_date 时返回截至 end_date 最新的一条 tick, 指定时返回 start_date (含)到 end_date (含)之间的所有 tick
+    :param end_date 默认为None, 即当前时间
+    :return 同 get_current_tick 的格式
+    """
+    assert security, "security is required"
+    security = convert_security(security)
+    start_date = to_date_str(start_date) if start_date else None
+    end_date = to_date_str(end_date) or to_date_str(datetime.datetime.now())
+    return JQDataClient.instance().get_today_tick_period(**locals())
+
+
 def request_data(security):
     http_token = JQDataClient.instance().get_http_token()
     codes = ",".join(security)
