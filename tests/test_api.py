@@ -712,6 +712,24 @@ def test_get_dominant_future():
         get_dominant_future("AG", date="2004-06-30")
     assert len(get_dominant_future("AG", end_date="2004-06-30")) == 0
 
+    res = get_dominant_future(underlying_symbol="ag", date='2020-05-08', end_date="2020-05-08 21:00:00")
+    assert res.equals(pd.Series({'2020-05-08': 'AG2006.XSGE', '2020-05-11': 'AG2012.XSGE'}).sort_index())
+    today_date = str(datetime.date.today())
+    assert set(get_dominant_future().index) == set(get_dominant_future(
+        None, date=today_date, end_date=today_date).columns)
+    res = get_dominant_future('RR')
+    assert isinstance(res, str)
+    res = get_dominant_future('RR', end_date=today_date)
+    assert isinstance(res, pd.Series)
+    res = get_dominant_future(underlying_symbol=['AG', 'PX', 'SH', 'x'], date='2024-05-06')
+    assert res.equals(pd.Series({'AG': 'AG2406.XSGE', 'PX': 'PX2409.XZCE', 'SH': 'SH2409.XZCE', 'X': ''}))
+    res = get_dominant_future(underlying_symbol=['AG', 'RR'], date='2019-08-16', end_date='2019-08-20')
+    assert set(res.index) == set(['2019-08-16', '2019-08-19', '2019-08-20'])
+    assert set(res.AG) == set(['AG1912.XSGE'])
+    assert set(res.RR) == set(['', 'RR2001.XDCE'])
+    res = get_dominant_future(underlying_symbol=None, date='2019-08-01', end_date='2019-08-10')
+    assert 'RR' not in res.columns
+
 
 def test_get_future_contracts():
     fc = get_future_contracts('IF', datetime.datetime(2016, 9, 12, 10, 0))

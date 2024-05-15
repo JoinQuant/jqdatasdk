@@ -534,7 +534,7 @@ def get_future_contracts(underlying_symbol, date=None):
 
 
 @assert_auth
-def get_dominant_future(underlying_symbol, date=None, end_date=None):
+def get_dominant_future(underlying_symbol=None, date=None, end_date=None):
     """
     获取主力合约对应的标的
 
