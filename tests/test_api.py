@@ -1851,7 +1851,7 @@ def test_get_order_future_bar():
                                 start_dt='1999-03-01 09:00:00',
                                 end_dt='2019-02-27 21:30:00',
                                 unit='1m',
-                                fields=['date', 'close', 'volume'])
+                                fields=['code', 'date', 'close', 'volume'])
     assert set(data.columns) == {'date', 'close', 'volume', 'code'}
     assert set(data.code) == {
         'SC1904.XINE', 'SC1903.XINE', 'SC1902.XINE', 'SC1906.XINE',

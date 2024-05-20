@@ -322,6 +322,12 @@ class StockValuation(Base):
     day = Column(Date, nullable=False, doc="日期")
     # compId = Column(String(16), nullable=False, unique=True, server_default=text("''"))
     pe_ratio_lyr = Column(Float(20), doc="市盈率LYR")
+    pcf_ratio2 = Column(Float(20), doc="市现率(PCF, 经营活动现金流TTM)")
+    free_cap = Column(Float(20), doc="自由流通股本")
+    a_cap = Column(Float(20), doc=" A 股总股本")
+    dividend_ratio = Column(Float(20), doc="股息率")
+    a_market_cap = Column(Float(20), doc="A 股总市值")
+    free_market_cap = Column(Float(20), doc="自由流通市值")
 
 
 class FinancialIndicator(Base):

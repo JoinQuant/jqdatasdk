@@ -163,6 +163,8 @@ def get_valuation(security_list, start_date=None, end_date=None, fields=None, co
             free_cap                自由流通股本
             a_cap                   A 股总股本
             dividend_ratio          股息率
+            a_market_cap            A 股总市值
+            free_market_cap         自由流通市值
     Returns:
         返回一个dataframe，索引默认是pandas的整数索引，返回的结果中总会包含code、day字段。
     """
@@ -198,6 +200,8 @@ def get_index_valuation(security_list, start_date=None, end_date=None, fields=No
             free_cap                自由流通股本
             a_cap                   A 股总股本
             dividend_ratio          股息率
+            a_market_cap            A 股总市值
+            free_market_cap         自由流通市值
     Returns:
         返回一个dataframe，索引默认是pandas的整数索引，返回的结果中总会包含code、day字段。
     """
@@ -1194,7 +1198,7 @@ def get_order_future_bar(symbol,
                          start_dt,
                          end_dt,
                          unit='1d',
-                         fields=('date', 'open', 'high', 'low', 'close','volume', 'money', 'open_interest'),
+                         fields=('code', 'date', 'open', 'high', 'low', 'close','volume', 'money', 'open_interest'),
                          include_now=True):
     """获取当月/次月/当季/隔季等合约拼接而成的行情数据
     参数
