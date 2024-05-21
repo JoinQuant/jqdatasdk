@@ -1242,9 +1242,18 @@ def test_get_today_tick_period():
     codes = get_all_securities('options', latest_trade_day).index.tolist()[:10]
     data = get_today_tick_period(codes, end_date=datetime.datetime.now())
     assert len(data) == 10
-    assert set(data.columns) == set(['datetime', 'current', 'high', 'low',
-                                     'volume', 'money', 'position',
-                                     'a1_v', 'a1_p', 'b1_v', 'b1_p'])
+    assert set(data.columns) == set([
+        'datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+        'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
+        'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p'])
+
+    codes = get_all_securities('futures', latest_trade_day)
+    codes = codes[~codes.index.str.contains(('8888|9999'))].index.tolist()[:10]
+    data = get_today_tick_period(codes, end_date=datetime.datetime.now())
+    assert len(data) == 10
+    assert set(data.columns) == set([
+        'datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+        'a1_v', 'a1_p', 'b1_v','b1_p'])
 
     with pytest.raises(Exception):
         get_today_tick_period(
