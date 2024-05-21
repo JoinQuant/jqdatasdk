@@ -428,7 +428,11 @@ class JQDataClient(object):
                 response = self.client.query(request)
                 end_time = time.time() * 1e9
             except socket_error as ex:
-                if isinstance(ex, socket.timeout) and not self._ping_server():
+                if (
+                    isinstance(ex, socket.timeout) or
+                    "TSocket read 0 bytes" in str(ex) or
+                    not self._ping_server()
+                ):
                     self._reset()
                 continue
             if not response.status:
