@@ -6,6 +6,7 @@ import re
 import time
 import datetime
 import logging
+import six
 
 import pytest
 try:
@@ -718,7 +719,7 @@ def test_get_dominant_future():
     assert set(get_dominant_future().index) == set(get_dominant_future(
         None, date=today_date, end_date=today_date).columns)
     res = get_dominant_future('RR')
-    assert isinstance(res, str)
+    assert isinstance(res, (str, six.string_types))
     res = get_dominant_future('RR', end_date=today_date)
     assert isinstance(res, pd.Series)
     res = get_dominant_future(underlying_symbol=['AG', 'PX', 'SH', 'x'], date='2024-05-06')
