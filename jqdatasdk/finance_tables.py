@@ -286,12 +286,11 @@ class StockValuation(Base):
     circulating_market_cap = Column(Float(20), doc="总市值(亿元)")
     pe_ratio_lyr = Column(Float(20), doc="市盈率LYR")
     pcf_ratio2 = Column(Float(20), doc="市现率(PCF, 经营活动现金流TTM)")
-    free_cap = Column(Float(20), doc="自由流通股本")
-    a_cap = Column(Float(20), doc="A 股总股本")
     dividend_ratio = Column(Float(20), doc="股息率")
-    a_market_cap = Column(Float(20), doc="A 股总市值")
+    free_cap = Column(Float(20), doc="自由流通股本")
     free_market_cap = Column(Float(20), doc="自由流通市值")
-
+    a_cap = Column(Float(20), doc="A 股总股本")
+    a_market_cap = Column(Float(20), doc="A 股总市值")
 
 
 class FinancialIndicatorDay(Base):
