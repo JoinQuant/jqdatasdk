@@ -1754,7 +1754,7 @@ def test_get_money_flow_pro():
                                  end_date_1,
                                  fields=fields)
     print(res_1_1)
-    assert not res_1_1[(start_date_1 < res_1_1.time) & (res_1_1.time < end_date_1)].empty
+    assert not res_1_1[res_1_1.time.between(start_date_1, end_date_1)].empty
     assert '888888.AAA' not in res_1_1.code
 
     res_1_2 = get_money_flow_pro(security_list,
@@ -1774,7 +1774,7 @@ def test_get_money_flow_pro():
                                  frequency='1m',
                                  fields=fields)
     print(res_2_1)
-    assert not res_2_1[(start_date_2 < res_2_1.time) & (res_2_1.time < end_date_2)].empty
+    assert not res_2_1[res_2_1.time.between(start_date_2, end_date_2)].empty
     assert len(res_2_1) == 3600
     res_2_2 = get_money_flow_pro(security_list,
                                  None,
@@ -1857,3 +1857,8 @@ def test_get_order_future_bar():
     assert set(data.code) == {
         'SC1904.XINE', 'SC1903.XINE', 'SC1902.XINE', 'SC1906.XINE',
         'SC1905.XINE', 'SC1901.XINE', 'SC1907.XINE'}
+
+
+def test_get_index_valuation():
+    data = get_index_valuation('932000.CSI', '2024-01-01', '2024-02-01')
+    assert not data.empty
