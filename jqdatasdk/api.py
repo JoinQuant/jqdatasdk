@@ -149,22 +149,23 @@ def get_valuation(security_list, start_date=None, end_date=None, fields=None, co
         fields: 财务数据中市值表的字段，返回结果中总会包含code、day字段，可用字段如下：
             code    股票代码        带后缀.XSHE/.XSHG
             day     日期            取数据的日期
-            capitalization	        总股本(万股)
-            circulating_cap	        流通股本(万股)
-            market_cap	            总市值(亿元)
-            circulating_market_cap  流通市值(亿元)
-            turnover_ratio	        换手率(%)
             pe_ratio	            市盈率(PE, TTM)
-            pe_ratio_lyr	        市盈率(PE)s
+            turnover_ratio	        换手率(%)
             pb_ratio	            市净率(PB)
             ps_ratio	            市销率(PS, TTM)
             pcf_ratio	            市现率(PCF, 现金净流量TTM)
+            capitalization	        总股本(万股)
+            market_cap	            总市值(亿元)
+            circulating_cap	        流通股本(万股)
+            circulating_market_cap  流通市值(亿元)
+            pe_ratio_lyr	        市盈率(PE)s
             pcf_ratio2              市现率(PCF, 经营活动现金流TTM)
-            free_cap                自由流通股本
-            a_cap                   A 股总股本
             dividend_ratio          股息率
-            a_market_cap            A 股总市值
+            free_cap                自由流通股本
             free_market_cap         自由流通市值
+            a_cap                   A 股总股本
+            a_market_cap            A 股总市值
+
     Returns:
         返回一个dataframe，索引默认是pandas的整数索引，返回的结果中总会包含code、day字段。
     """
