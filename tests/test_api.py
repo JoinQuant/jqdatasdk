@@ -1115,6 +1115,10 @@ def test_get_bars():
     print(df)
     assert not df.empty
 
+    arr = get_bars("M9999.XDCE", 48, unit='1M', fields='close', end_dt=None, df=False)
+    assert isinstance(arr, np.ndarray)
+    assert len(arr) == 48
+
 
 def test_get_bars2():
     codes = ["600000.XSHG", "000001.XSHG", "A2205.XDCE"]
