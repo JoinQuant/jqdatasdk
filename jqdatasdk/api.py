@@ -1,8 +1,11 @@
 # coding=utf-8
 
+import datetime
 from io import StringIO
+
 import requests
 import pandas as pd
+
 from .utils import *  # noqa
 from .client import JQDataClient
 
@@ -982,8 +985,10 @@ def get_call_auction(security, start_date, end_date, fields=None):
             get_call_auction('000001.XSHE','2019-08-10','2019-08-12')
         2. start_date和end_date不能为None，否则将抛出异常
     """
-    if str(end_date) >= str(datetime.datetime.today()):
-        if datetime.datetime.now().time() < datetime.time(9, 30):
+    start_date = to_date_str(start_date)
+    end_date = to_date_str(end_date)
+    if start_date[:10] >= today_str():
+        if get_now().now().time() < datetime.time(9, 30):
             # 当天9:30之前数据可能变化, 不用缓存
             return JQDataClient.instance().get_call_auction(**locals())
     return exec_call_auction(security, start_date=start_date, end_date=end_date, fields=fields)

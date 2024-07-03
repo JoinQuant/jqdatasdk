@@ -1568,8 +1568,20 @@ def test_get_call_auction():
     assert len(data) == len(data2)
     print(data)
 
+    # test missing 'end_date' argument
     with pytest.raises(TypeError):
         get_call_auction('000001.XSHE', start_date='2021-09-15')
+
+    # test get today data
+    date = datetime.date.today()
+    df = get_call_auction('600000.XSHG', start_date=date, end_date=date)
+    print(df)
+
+    # test get future data
+    date = datetime.date.today() + datetime.timedelta(days=1)
+    df = get_call_auction('600000.XSHG', start_date=date, end_date=date)
+    print(df)
+    assert df.empty
 
 
 def test_get_factor_kanban_values():
@@ -1817,7 +1829,7 @@ def test_get_money_flow_pro():
     print(res_3_2)
     assert res_3_2[res_3_2.time >= datetime.datetime(2024, 1, 3, 14, 31)].equals(res_3_2)
 
-    # # 测试取实时数据
+    # 测试取实时数据
     end_date_4 = datetime.datetime.today()
     start_date_4 = end_date_4 - datetime.timedelta(3)
     res_4_1 = get_money_flow_pro(security_list,

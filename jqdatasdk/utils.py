@@ -193,8 +193,12 @@ class ParamsError(Exception):
     pass
 
 
-def today():
-    return datetime.date.today()
+get_today = today = datetime.date.today
+get_now = datetime.datetime.now
+
+
+def today_str():
+    return str(get_today())
 
 
 def is_str(s):
