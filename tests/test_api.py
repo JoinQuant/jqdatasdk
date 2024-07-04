@@ -1905,3 +1905,24 @@ def test_get_order_future_bar():
 def test_get_index_valuation():
     data = get_index_valuation('932000.CSI', '2024-01-01', '2024-02-01')
     assert not data.empty
+
+
+def test_get_table_info():
+    data1_1 = get_table_info(valuation)
+    assert len(data1_1) == len(valuation.__table__.columns)
+    data1_2 = get_table_info('valuation')
+    assert data1_1.equals(data1_2)
+
+    data2 = get_table_info('OPT_EXERCISE_INFO')
+    assert {'id', 'underlying_symbol',
+            'underlying_name', 'exercise_date',
+            'contract_type', 'exercise_number'} == set(data2.name_en)
+
+    data3 = get_table_info('CONBOND_BASIC_INFO')
+    assert len(data3) == 45
+
+    data4 = get_table_info(finance.STK_INCOME_STATEMENT)
+    assert len(data4) == 68
+
+    with pytest.raises(Exception):
+        get_table_info('finance_table')

@@ -8,7 +8,7 @@ import pandas as pd
 
 from .utils import *  # noqa
 from .client import JQDataClient
-
+from .finance_tables import Base
 
 @assert_auth
 def get_price(security, start_date=None, end_date=None, frequency='daily', fields=None,
@@ -1224,6 +1224,48 @@ def get_order_future_bar(symbol,
     if not isinstance(fields, (list, tuple, set)):
         fields = [fields]
     return JQDataClient.instance().get_order_future_bar(**locals())
+
+
+@assert_auth
+@hashable_lru(maxsize=3)
+def get_table_info(table):
+    """查询数据表中的字段信息
+    参数
+        table : 数据表, 可以是表名字符串或者 ORM 对象
+    返回
+        DataFrame, 包含各字段的中英文名称以及类型等信息
+    """
+    import jqdatasdk
+    import sqlalchemy
+
+    def _convert_df(orm_object):
+        from sqlalchemy.dialects.mysql import dialect
+        from collections import defaultdict
+        dic = defaultdict(list)
+        for column in orm_object.__table__.columns:
+                dic['name_en'].append(column.name)
+                dic['name_zh'].append(column.doc)
+                dic['type'].append(column.type.compile(dialect=dialect()))
+                dic['nullable'].append(column.nullable)
+        return pd.DataFrame(dic)
+
+    if isinstance(table, six.string_types):
+        # 处理形式如 'balance', 'income' 等 ORM 变量的字符串
+        if table in jqdatasdk.finance_service.__all__[1:]:
+            orm = getattr(jqdatasdk.finance_service, table)
+            return _convert_df(orm)
+        # 处理参数直接为数据库表名字符串的情况
+        else:
+            return JQDataClient.instance().get_table_info(table=table)
+    elif isinstance(table, sqlalchemy.ext.declarative.api.DeclarativeMeta):
+        if issubclass(table, Base):
+            # 处理形式如 valuation, balance 等 ORM 对象
+            return _convert_df(table)
+        else:
+            # 处理形式如 finance.STK_INCOME_STATEMENT 等 ORM 对象
+            return JQDataClient.instance().get_table_info(table=table.__tablename__)
+    else:
+        raise Exception("未知的 table 对象: %s, 类型 %s" % (table, type(table)))
 
 
 @assert_auth
