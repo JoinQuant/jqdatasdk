@@ -781,8 +781,8 @@ def test_ta():
     assert isinstance(data[0], dict) and sorted([i for i in data[0].keys()]) == security_list
 
     assert_dict_equal(
-        technical_analysis.CCI("000001.XSHE", datetime.date(2018, 10, 8)),
-        {'000001.XSHE': 54.081}
+        technical_analysis.CCI("000001.XSHE", datetime.date(2024, 7, 5)),
+        {'000001.XSHE': -58.770}
     )
 
 
@@ -1576,12 +1576,21 @@ def test_get_call_auction():
     date = datetime.date.today()
     df = get_call_auction('600000.XSHG', start_date=date, end_date=date)
     print(df)
+    assert 'time' in df.columns
 
     # test get future data
     date = datetime.date.today() + datetime.timedelta(days=1)
     df = get_call_auction('600000.XSHG', start_date=date, end_date=date)
     print(df)
     assert df.empty
+
+    date = '2024-07-04'
+    with pytest.raises(Exception):
+        get_call_auction('000001.XSHE', date, date, fields='money')
+
+    df = get_call_auction('000001.XSHE', date, date, fields=['money'])
+    print(df)
+    assert set(df.columns) == {'code', 'money'}
 
 
 def test_get_factor_kanban_values():
