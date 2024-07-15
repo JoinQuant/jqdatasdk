@@ -263,7 +263,7 @@ def convert_security(s):
 
 def convert_fields_to_str(s):
     if isinstance(s, (list, tuple)):
-        res = [str(item) for item in s]
+        res = [item.__str__() for item in s]
         return res
     else:
         raise ParamsError("fields's type should be list or tuple")

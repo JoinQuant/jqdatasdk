@@ -136,6 +136,10 @@ class BalanceSheetDay(Base):
     contract_liability = Column(Float(20), doc="合同负债")
     lease_liability = Column(Float(20), doc="租赁负债")
 
+    @classmethod
+    def __str__(cls):
+        return cls.__name__
+
 
 class CashFlowStatementDay(Base):
     """
@@ -204,6 +208,10 @@ class CashFlowStatementDay(Base):
     cash_equivalents_at_beginning = Column(Float(20), doc="加:期初现金及现金等价物余额(元)")
     cash_and_equivalents_at_end = Column(Float(20), doc="期末现金及现金等价物余额(元)")
 
+    @classmethod
+    def __str__(cls):
+        return cls.__name__
+
 
 class IncomeStatementDay(Base):
     """
@@ -266,6 +274,11 @@ class IncomeStatementDay(Base):
     other_earnings = Column(Float(20), doc="其他收益")
     other_composite_income_mino_at = Column(Float(20), doc="归属于少数股东的其他综合收益的税后净额")
 
+    @classmethod
+    def __str__(cls):
+        return cls.__name__
+
+
 class StockValuation(Base):
     """
     市值表
@@ -291,6 +304,10 @@ class StockValuation(Base):
     free_market_cap = Column(Float(20), doc="自由流通市值")
     a_cap = Column(Float(20), doc="A 股总股本")
     a_market_cap = Column(Float(20), doc="A 股总市值")
+
+    @classmethod
+    def __str__(cls):
+        return cls.__name__
 
 
 class FinancialIndicatorDay(Base):
@@ -336,6 +353,10 @@ class FinancialIndicatorDay(Base):
     inc_net_profit_annual = Column(Float(10), doc="净利润环比增长率(%)")
     inc_net_profit_to_shareholders_year_on_year = Column(Float(10), doc="归属母公司股东的净利润同比增长率(%)")
     inc_net_profit_to_shareholders_annual = Column(Float(10), doc="归属母公司股东的净利润环比增长率(%)")
+
+    @classmethod
+    def __str__(cls):
+        return cls.__name__
 
 
 class BankIndicatorAcc(Base):
@@ -401,6 +422,10 @@ class BankIndicatorAcc(Base):
     savings_deposit_average_balance = Column(Float(20), doc="储蓄存款-平均余额(元)")
     savings_deposit_average_interest_rate = Column(Float(10), doc="储蓄存款-年平均利率(%)")
 
+    @classmethod
+    def __str__(cls):
+        return cls.__name__
+
 
 class SecurityIndicatorAcc(Base):
     """券商指标表"""
@@ -430,6 +455,10 @@ class SecurityIndicatorAcc(Base):
     margin_trading_reserve = Column(Float(20), doc="融资融券业务风险资本准备(元)")
     branch_risk_reserve = Column(Float(20), doc="分支机构风险资本准备(元)")
 
+    @classmethod
+    def __str__(cls):
+        return cls.__name__
+
 
 class InsuranceIndicatorAcc(Base):
     """保险业指标表"""
@@ -454,3 +483,7 @@ class InsuranceIndicatorAcc(Base):
     solvency_adequacy_ratio = Column(Float(10), doc="偿付能力充足率(%)")
     actual_capital = Column(Float(20), doc="实际资本(元)")
     minimum_capital = Column(Float(20), doc="最低资本(元)")
+
+    @classmethod
+    def __str__(cls):
+        return cls.__name__

@@ -1556,6 +1556,24 @@ def test_get_history_fundamentals():
         get_history_fundamentals(['000001.XSHE'],
                                  fields=income.total_operating_revenue,
                                  stat_date='2019q1')
+    # 测试直接输入表名
+    df = get_history_fundamentals(
+        ['600519.XSHG', '000001.XSHE'],
+        fields=[income.code, 'income.net_profit', cash_flow],
+        stat_date='2022q3',
+        interval='1q',
+        count=1
+    )
+    assert not df.empty
+
+    with pytest.raises(Exception):
+        df = get_history_fundamentals(
+            ['600519.XSHG', '000001.XSHE'],
+            fields=[valuation],
+            watch_date='2024-03-31',
+            interval='1y',
+            count=1
+        )
 
 
 def test_get_call_auction():
