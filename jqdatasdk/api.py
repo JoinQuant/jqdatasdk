@@ -1269,6 +1269,19 @@ def get_table_info(table):
 
 
 @assert_auth
+def get_preopen_infos(security, fields=("paused", "factor", "high_limit", "low_limit")):
+    """获取股票当日盘前交易信息, 交易日 08:40 后可获取到数据
+    参数
+        security : 股票代码或者股票代码的 list
+        fields : 请求字段, 默认为全部: paused(停牌标志), factor(后复权因子), high_limit(涨停价), low_limit(跌停价)
+    返回
+        DataFrame : index 为标的列表, columns 为字段名
+    """
+    security = convert_security(security)
+    return JQDataClient.instance().get_preopen_infos(**locals())
+
+
+@assert_auth
 def get_data(api_name, **kwargs):
     """通用数据获取接口
 

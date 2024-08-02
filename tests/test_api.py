@@ -1926,3 +1926,27 @@ def test_get_table_info():
 
     with pytest.raises(Exception):
         get_table_info('finance_table')
+
+
+def test_get_preopen_infos():
+    with pytest.raises(Exception):
+        data = get_preopen_infos(
+            ['600519.XSHG', '000001.XSHE'],
+            ['paused', 'factor', 'b1_p']
+        )
+
+    with pytest.raises(Exception):
+        data = get_preopen_infos(
+            ['600519.XSHG', '000001.XSHE', 'AG2409.XSGE'],
+            ['paused', 'factor']
+        )
+    today = datetime.date.today()
+    # 非交易日跳过
+    if today == get_trade_days(end_date=today, count=1)[0]:
+        codes = ['600519.XSHG', '000001.XSHE']
+        data = get_preopen_infos(codes)
+        assert set(data.index) == {'600519.XSHG', '000001.XSHE'}
+
+        fields = 'paused'
+        data = get_preopen_infos(codes, fields=fields)
+        assert set(data.paused) == {0.0}
