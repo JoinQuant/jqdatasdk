@@ -1257,13 +1257,12 @@ def get_table_info(table):
         # 处理参数直接为数据库表名字符串的情况
         else:
             return JQDataClient.instance().get_table_info(table=table)
-    elif isinstance(table, sqlalchemy.ext.declarative.api.DeclarativeMeta):
-        if issubclass(table, Base):
-            # 处理形式如 valuation, balance 等 ORM 对象
-            return _convert_df(table)
-        else:
-            # 处理形式如 finance.STK_INCOME_STATEMENT 等 ORM 对象
-            return JQDataClient.instance().get_table_info(table=table.__tablename__)
+    # 处理形式如 valuation, balance 等 ORM 对象
+    elif issubclass(table, Base):
+        return _convert_df(table)
+    # 处理形式如 finance.STK_INCOME_STATEMENT 等 ORM 对象
+    elif hasattr(table, "__tablename__"):
+        return JQDataClient.instance().get_table_info(table=table.__tablename__)
     else:
         raise Exception("未知的 table 对象: %s, 类型 %s" % (table, type(table)))
 
