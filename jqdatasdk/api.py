@@ -1281,6 +1281,19 @@ def get_preopen_infos(security, fields=("paused", "factor", "high_limit", "low_l
 
 
 @assert_auth
+def get_history_industry(name, securities=None):
+    """获取某个行业的所有历史成分股纳入剔除历史
+    参数
+        name : 行业名称, 如 zjw, sw_l1 等
+        securities : 标的代码, 默认为所有
+    返回
+        DataFrame, 包含成分股标的纳入剔除日期
+    """
+    securities = convert_security(securities)
+    return JQDataClient.instance().get_history_industry(**locals())
+
+
+@assert_auth
 def get_data(api_name, **kwargs):
     """通用数据获取接口
 

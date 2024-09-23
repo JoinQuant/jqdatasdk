@@ -1950,3 +1950,12 @@ def test_get_preopen_infos():
         fields = 'paused'
         data = get_preopen_infos(codes, fields=fields)
         assert set(data.paused) == {0.0}
+
+
+def test_get_history_industry():
+    codes = ['600519.XSHG', '000001.XSHE']
+    data = get_history_industry('zjw', codes)
+    assert set(data.code) == {'C15', 'J66'}
+
+    data = get_history_industry('jq_l1', codes)
+    assert set(data.code) == {'HY005', 'HY007'}
