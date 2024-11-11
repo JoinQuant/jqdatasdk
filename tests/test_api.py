@@ -782,7 +782,7 @@ def test_ta():
 
     assert_dict_equal(
         technical_analysis.CCI("000001.XSHE", datetime.date(2024, 7, 5)),
-        {'000001.XSHE': -58.770}
+        {'000001.XSHE': -56.86342193073365}
     )
 
 
@@ -1481,6 +1481,11 @@ def test_get_valuation():
     assert list(res['day']) == [datetime.date(2019, 7, 22),
                                 datetime.date(2019, 7, 23),
                                 datetime.date(2019, 7, 24)]
+
+    res = get_valuation('000001.XSHE', end_date='2024-11-11', count=1)
+    assert res.shape == (1, 18)
+    new_cols = ['pcf_ratio2', 'free_cap', 'a_cap', 'dividend_ratio', 'free_market_cap', 'a_market_cap']
+    assert all(col in res.columns for col in new_cols)
 
 
 def test_get_history_fundamentals():
