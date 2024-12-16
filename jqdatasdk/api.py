@@ -1294,6 +1294,22 @@ def get_history_industry(name, securities=None):
 
 
 @assert_auth
+def get_index_style_exposure(index, factors=None,
+                             start_date=None, end_date=None, count=None):
+    """获取指数的风格暴露
+    index : 指数代码,可选 ['000300.XSHG', '000905.XSHG', '000906.XSHG', '000852.XSHG', '932000.CSI', '000985.XSHG'] 中的一个
+    factors : 因子名称，单个因子（字符串）或一个因子列表
+            支持风格因子如 "size", 支持申万/聚宽一级行业如 "801010" 和 "HY001",
+            注意为了避免混淆, 风格因子仅支持传递 style 和 style_pro 中的一类, 也可以指定因子分类 ('style' 或 'style_pro') 表示分类下的所有风格因子
+    start_date : 开始日期, 字符串或 datetime 对象
+    end_date : 结束日期, 字符串或 datetime 对象, 可以与 start_date 或 count 配合使用
+    count: 截止 end_date 之前交易日的数量（含 end_date 当日）
+    """
+    index = convert_security(index)
+    return JQDataClient.instance().get_index_style_exposure(**locals())
+
+
+@assert_auth
 def get_data(api_name, **kwargs):
     """通用数据获取接口
 

@@ -1964,3 +1964,46 @@ def test_get_history_industry():
 
     data = get_history_industry('jq_l1', codes)
     assert set(data.code) == {'HY005', 'HY007'}
+
+
+def test_get_index_style_exposure():
+    with pytest.raises(Exception):
+        get_index_style_exposure('399006.XSHG', 'style', '2024-12-01', '2024-12-10')
+
+    with pytest.raises(Exception):
+        get_index_style_exposure('000985.XSHG', 'style', '2024-12-01', '2024-12-10', count=5)
+
+    with pytest.raises(Exception):
+        get_index_style_exposure('000905.XSHG', ['size', 'market_beta'], '2024-01-01', '2024-12-01')
+
+    df1 = get_index_style_exposure('000300.XSHG', 'style', '2015-01-01', '2016-01-01')
+    df2 = get_index_style_exposure(
+        '000300.XSHG',
+        ['size', 'beta', 'momentum', 'residual_volatility', 'non_linear_size',
+         'book_to_price_ratio', 'liquidity', 'earnings_yield', 'growth', 'leverage'],
+        '2015-01-01', '2016-01-01'
+    )
+    assert df1.equals(df2)
+
+    df3 = get_index_style_exposure('932000.CSI', 'style_pro', '2024-01-01', '2024-12-01')
+    df4 = get_index_style_exposure(
+        '932000.CSI',
+        ['market_beta', 'relative_momentum', 'ltrevrsl', 'resvol', 'liquidty',
+         'market_size', 'midcap', 'btop', 'profit', 'financial_leverage', 'invsqlty',
+         'divyild', 'earnqlty', 'earnyild', 'long_growth', 'earnvar'],
+        '2024-01-01', '2024-12-01'
+    )
+    assert df3.equals(df4)
+
+    df5 = get_index_style_exposure('000906.XSHG',
+                                   ['size', 'beta', '801740', '801020', '801060'],
+                                   '2024-12-01',
+                                   '2024-12-10')
+    assert df5.shape == (21, 4)
+    assert any(df5.factor.str.endswith('801060')) == False
+
+    df6 = get_index_style_exposure('000906.XSHG',
+                                   ['earnyild', 'long_growth', 'HY001', 'HY002', 'HY003'],
+                                   '2024-12-01',
+                                   '2024-12-10')
+    assert df6.shape == (35, 4)
