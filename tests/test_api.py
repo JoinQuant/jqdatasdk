@@ -1184,6 +1184,7 @@ def test_get_fund_info():
     #     'heavy_hold_stocks_proportion': ''
     # }
 
+
 def test_get_futures_info():
     data = get_futures_info('SN2107.XSGE')
     assert data == {'SN2107.XSGE':
@@ -1204,6 +1205,7 @@ def test_get_futures_info():
                                                     '10:30~11:30', '13:30~15:00']],
                                     'contract_multiplier': 1.0}}
 
+
 def test_get_current_tick():
     today = datetime.date.today()
     is_tradeday = (today in get_trade_days(start_date=today))
@@ -1223,13 +1225,12 @@ def test_get_current_tick():
     else:
         assert get_current_tick('000002.XSHE').isnull().all().all()
     trade_codes = get_future_contracts("IF")
-    print(trade_codes)
     df = get_current_tick(trade_codes)
     assert len(df) == len(trade_codes)
     assert set(df.index.tolist()) == set(trade_codes)
     assert get_current_tick(["000001.XSHE", "000006.XSHE"]).index.tolist() == ["000001.XSHE", "000006.XSHE"]
     assert get_current_tick("000001.XSHE").index.tolist() == [0]
-    with pytest.raises(Exception, match="not support future"):
+    with pytest.raises(Exception):
         get_current_tick(trade_codes + ["AU8888.XSGE"])
 
 

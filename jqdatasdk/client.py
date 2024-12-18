@@ -38,7 +38,7 @@ from .exceptions import ResponseError
 
 socket_error = (TTransportException, socket.error, ProtocolError)
 
-AUTH_API_URL = "https://dataapi.joinquant.com/apis"  # 获取token
+AUTH_API_URL = "https://dataapi.joinquant.com/v2/apis"  # 获取token
 
 
 class JQDataClient(object):
@@ -128,6 +128,7 @@ class JQDataClient(object):
         self.compress = True
         self.data_api_url = ""
         self._http_token = ""
+        self._http_user_agent = ""
 
         self._request_id_generator = itertools.count(
             random.choice(range(0, 1000, 10))
@@ -258,6 +259,7 @@ class JQDataClient(object):
             self.client = None
         self.inited = False
         self.http_token = ""
+        self._http_user_agent = ""
 
     def logout(self):
         self._reset()
@@ -469,24 +471,54 @@ class JQDataClient(object):
     def http_token(self):
         self._http_token = ""
 
+    def request_http(self, params):
+        if not self._http_user_agent:
+            self._http_user_agent = 'JQDataSDK/{}'.format(current_version)
+            try:
+                self._http_user_agent += " {}/{}".format(
+                    platform.system(), platform.release()
+                )
+            except Exception:
+                pass
+            self._http_user_agent += " User/{}".format(self.username)
+
+        headers = {'User-Agent': self._http_user_agent}
+        for attempt_index in range(self.request_attempt_count):
+            try:
+                resp = requests.post(
+                    AUTH_API_URL,
+                    data=json.dumps(params),
+                    headers=headers,
+                    timeout=self.request_timeout
+                )
+                if resp.status_code == 200 or resp.text[:5] == 'error':
+                    return resp
+                elif resp.status_code == 429:
+                    raise Exception("请求频率过高，请稍后再试")
+                elif resp.status_code < 500:
+                    raise Exception(resp.text[:100])
+                else:
+                    resp.raise_for_status()
+            except requests.exceptions.RequestException as ex:
+                if attempt_index < self.request_attempt_count - 1:
+                    time.sleep(0.1)
+                else:
+                    raise
+
     def set_http_token(self):
         username, password = self.username, self.password
         if not username or not password:
             return
-        body = {
+        params = {
             "method": "get_current_token",
             "mob": username,
             "pwd": urlquote(password),  # 给密码编码，防止使用特殊字符登录失败
         }
-        headers = {'User-Agent': 'JQDataSDK/{}'.format(current_version)}
         try:
-            res = requests.post(
-                AUTH_API_URL,
-                data=json.dumps(body),
-                headers=headers,
-                timeout=self.request_timeout
-            )
-            self._http_token = res.text.strip()
+            resp = self.request_http(params)
+            if resp.text[:5] == 'error':
+                raise Exception(resp.text)
+            self._http_token = resp.text.strip()
         except Exception:
             pass
         return self._http_token

@@ -758,6 +758,18 @@ def get_bars_engine(security, count, unit="1d", fields=("open", "high", "low", "
     return JQDataClient.instance().get_bars_engine(**locals())
 
 
+def _request_http_current_tick(security):
+    client = JQDataClient.instance()
+    http_token = client.get_http_token()
+    codes = ",".join(security)
+    params = {
+        "method": "get_current_ticks2",
+        "token": http_token,
+        "code": codes
+    }
+    return client.request_http(params)
+
+
 def get_current_tick(security):
     """
     获取最新的 tick 数据
@@ -765,40 +777,56 @@ def get_current_tick(security):
     :param security 标的代码
     :return:
     """
-    if not JQDataClient.instance() or JQDataClient.instance().get_http_token() == "":
+    client = JQDataClient.instance()
+    if not client or not client.get_http_token():
         raise Exception("Please run jqdatasdk.auth first")
 
     if isinstance(security, six.string_types):
         security = [security]
     elif isinstance(security, Security):
         security = [str(security)]
-    res = request_data(security)
-    if not res or res.text == "":
+
+    resp = _request_http_current_tick(security)
+    if not resp or resp.text == "":
         return None
-    content = res.text
+    content = resp.text
     if content[:5] == 'error':
-        if content in ["error: token无效，请重新获取","error: token过期，请重新获取"]:
-            JQDataClient.instance().set_http_token()
-            res = request_data(security)  # 重试一次
-            if not res or res.text == "":
+        if "token无效" in content or "token过期" in content:
+            client.set_http_token()
+            resp = _request_http_current_tick(security)  # 重试一次
+            if not resp or resp.text == "":
                 return None
-            content = res.text
+            content = resp.text
             if content[:5] == 'error':
                 raise Exception(content)
         else:
             raise Exception(content)
 
-    stock_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money',
-                         'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p', 'a4_v', 'a5_p', 'a5_v',
-                         'b1_p', 'b1_v', 'b2_p', 'b2_v', 'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v']
-    option_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
-                         'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
-                         'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p']
-    future_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money', 'position', 'a1_p', 'a1_v', 'b1_p', 'b1_v']
+    stock_tick_fields = [
+        'datetime', 'current', 'high', 'low', 'volume', 'money',
+        'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p', 'a4_v', 'a5_p', 'a5_v',
+        'b1_p', 'b1_v', 'b2_p', 'b2_v', 'b3_p', 'b3_v', 'b4_p', 'b4_v', 'b5_p', 'b5_v',
+    ]
+    option_tick_fields = [
+        'datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+        'a1_v', 'a2_v', 'a3_v', 'a4_v', 'a5_v', 'a1_p', 'a2_p', 'a3_p', 'a4_p', 'a5_p',
+        'b1_v', 'b2_v', 'b3_v', 'b4_v', 'b5_v', 'b1_p', 'b2_p', 'b3_p', 'b4_p', 'b5_p'
+    ]
+    future_tick_fields = [
+        'datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
+        'a1_p', 'a1_v', 'b1_p', 'b1_v'
+    ]
     index_tick_fields = ['datetime', 'current', 'high', 'low', 'volume', 'money']
 
-    tick_fields_list = [stock_tick_fields,future_tick_fields,stock_tick_fields,index_tick_fields,option_tick_fields]
-    # content[0]返回数据第一个字符为标的类型  "0":"stock","1":"future","2":"fund","3":"index","4":"option"
+    # content[0] 返回数据第一个字符为标的类型
+    # "0":"stock", "1":"future", "2":"fund", "3":"index", "4":"option"
+    tick_fields_list = [
+        stock_tick_fields,
+        future_tick_fields,
+        stock_tick_fields,
+        index_tick_fields,
+        option_tick_fields,
+    ]
     tick_fields = tick_fields_list[int(content[0])]
 
     str2time = lambda x: datetime.datetime.strptime(x, '%Y%m%d%H%M%S.%f') if x else pd.NaT
@@ -826,28 +854,6 @@ def get_today_tick_period(security, start_date=None, end_date=None):
     end_date = to_date_str(end_date) if end_date else None
     return JQDataClient.instance().get_today_tick_period(**locals())
 
-
-def request_data(security):
-    http_token = JQDataClient.instance().get_http_token()
-    codes = ",".join(security)
-    headers = {
-        'Accept-Encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-        'Connection': 'keep-alive'
-    }
-    body = {
-        "method": "get_current_ticks2",
-        "token": http_token,
-        "code": codes
-    }
-    data_api_url = JQDataClient.instance().get_data_api_url()
-    res = requests.post(
-        data_api_url,
-        data=json.dumps(body),
-        headers=headers,
-        timeout=JQDataClient.request_timeout
-    )
-    return res
 
 @assert_auth
 def get_current_tick_engine(security):
