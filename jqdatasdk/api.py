@@ -1,14 +1,27 @@
 # coding=utf-8
 
+import json
 import datetime
 from io import StringIO
+from importlib import import_module
 
+import six
 import requests
 import pandas as pd
 
-from .utils import *  # noqa
+from .utils import (
+    assert_auth, hashable_lru, PandasChecker, ParamsError,
+    to_date, to_date_str, today_str, convert_fields_to_str,
+    Security, Security2, convert_security, normal_security_code,
+    remove_duplicated_tables
+)
 from .client import JQDataClient
 from .finance_tables import Base
+
+
+get_today = today = datetime.date.today
+get_now = datetime.datetime.now
+
 
 @assert_auth
 def get_price(security, start_date=None, end_date=None, frequency='daily', fields=None,
@@ -99,6 +112,7 @@ def get_fundamentals(query_object, date=None, statDate=None):
         return JQDataClient.instance().get_fundamentals(sql=sql)
     return exec_fundamentals(sql)
 
+
 @hashable_lru(maxsize=3)
 def exec_fundamentals(sql):
     return JQDataClient.instance().get_fundamentals(sql=sql)
@@ -139,6 +153,7 @@ def get_fundamentals_continuously(query_object, end_date=None, count=1, panel=Tr
             df.sort_values(by=['code', 'day'], inplace=True)
         df.reset_index(drop=True, inplace=True)
         return df
+
 
 @assert_auth
 @hashable_lru(maxsize=3)
@@ -1035,8 +1050,8 @@ def get_factor_kanban_values(universe=None, bt_cycle=None, category=None, model=
             https://www.joinquant.com/help/api/help?name=api#get_factor_kanban_values
 
     """
-    assert  model in ('long_only', 'long_short'),\
-            "model 的值应为 'long_only', 'long_short' 中的一个"
+    if model not in ('long_only', 'long_short'):
+        raise ValueError("model 的值应为 'long_only', 'long_short' 中的一个")
     return JQDataClient.instance().get_factor_kanban_values(
             universe=universe,
             bt_cycle=bt_cycle,
@@ -1235,24 +1250,23 @@ def get_table_info(table):
     返回
         DataFrame, 包含各字段的中英文名称以及类型等信息
     """
-    import jqdatasdk
-    import sqlalchemy
 
     def _convert_df(orm_object):
         from sqlalchemy.dialects.mysql import dialect
         from collections import defaultdict
         dic = defaultdict(list)
         for column in orm_object.__table__.columns:
-                dic['name_en'].append(column.name)
-                dic['name_zh'].append(column.doc)
-                dic['type'].append(column.type.compile(dialect=dialect()))
-                dic['nullable'].append(column.nullable)
+            dic['name_en'].append(column.name)
+            dic['name_zh'].append(column.doc)
+            dic['type'].append(column.type.compile(dialect=dialect()))
+            dic['nullable'].append(column.nullable)
         return pd.DataFrame(dic)
 
     if isinstance(table, six.string_types):
         # 处理形式如 'balance', 'income' 等 ORM 变量的字符串
-        if table in jqdatasdk.finance_service.__all__[1:]:
-            orm = getattr(jqdatasdk.finance_service, table)
+        finance_service = import_module(".finance_service", __package__)
+        if table in finance_service.__all__[1:]:
+            orm = getattr(finance_service, table)
             return _convert_df(orm)
         # 处理参数直接为数据库表名字符串的情况
         else:

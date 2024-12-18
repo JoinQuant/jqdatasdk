@@ -112,7 +112,7 @@ def get_tables_from_sql(sql):
     )
     matchs = re.findall(pattern, sql)
     tables = ' '.join(matchs).replace(',', ' ')
-    return {tab for tab in tables.split()}
+    return set(tables.split())
 
 
 @no_sa_warnings

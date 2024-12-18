@@ -1626,7 +1626,7 @@ def test_get_factor_kanban_values():
     assert set(kbv['bt_cycle']) == set(['year_1'])
     assert set(kbv['category']) == set(['emotion'])
     assert kbv['commision_slippage'].any() == 1
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         kbv = get_factor_kanban_values(model='hhh')
     zz1000 = get_factor_kanban_values(
         universe='zz1000', bt_cycle='year_1', skip_paused=False,

@@ -2,9 +2,12 @@
 
 import re
 import datetime
+
+import six
 from sqlalchemy.orm.query import Query
-from .utils import *
-from .finance_tables import *
+
+from .utils import to_date, compile_query, query
+from .finance_tables import *  # noqa
 
 
 FUNDAMENTAL_RESULT_LIMIT = 10000
@@ -21,14 +24,16 @@ def get_tables_from_sql(sql):
 
 
 def get_table_class(tablename):
-    for t in (BalanceSheetDay, CashFlowStatementDay, FinancialIndicatorDay,
-              IncomeStatementDay, StockValuation, BankIndicatorAcc, SecurityIndicatorAcc,
-              InsuranceIndicatorAcc):
+    for t in (
+        BalanceSheetDay, CashFlowStatementDay, FinancialIndicatorDay,  # noqa
+        IncomeStatementDay, StockValuation, BankIndicatorAcc,  # noqa
+        SecurityIndicatorAcc, InsuranceIndicatorAcc, # noqa
+    ):
         if t.__tablename__ == tablename:
             return t
 
 
-def get_stat_date_column(cls):
+def get_stat_date_column(cls, only_year=False):
     if only_year:
         # 只支持按年份查询的表没有 day 字段
         return cls.statDate
@@ -117,7 +122,7 @@ def get_fundamentals_sql(query_object, date=None, statDate=None):
             else:
                 # 估值表, 在非交易日没有数据
                 # 所以如果传入的非交易日, 就需要取得前一个交易日
-                assert table is StockValuation
+                assert table is StockValuation  # noqa
                 if trade_day_not_after_stat_date is None:
                     trade_day_not_after_stat_date = CalendarService.get_previous_trade_date(stat_date)
                 query_object = query_object.filter(table.day == trade_day_not_after_stat_date)
@@ -156,7 +161,8 @@ def fundamentals_redundant_continuously_query_to_sql(query, trade_day):
 
     from .fundamentals_tables_gen import (
         BalanceSheet, IncomeStatement, CashFlowStatement, FinancialIndicator,
-        BankIndicatorAcc, SecurityIndicatorAcc, InsuranceIndicatorAcc, StockValuation)
+        BankIndicatorAcc, SecurityIndicatorAcc, InsuranceIndicatorAcc, StockValuation
+    )
 
     if query.limit_value:
         limit = min(FUNDAMENTAL_RESULT_LIMIT, query.limit_value)
@@ -175,8 +181,10 @@ def fundamentals_redundant_continuously_query_to_sql(query, trade_day):
     def get_tables_from_sql(sql):
         m = re.findall(
             r'cash_flow_statement_day|balance_sheet_day|financial_indicator_day|'
-            r'income_statement_day|stock_valuation|bank_indicator_acc|security_indicator_acc|'
-            r'insurance_indicator_acc', sql)
+            r'income_statement_day|stock_valuation|bank_indicator_acc|'
+            r'security_indicator_acc|insurance_indicator_acc',
+            sql
+        )
         return list(set(m))
     # 从query对象获取表对象
     tablenames = get_tables_from_sql(str(query.statement))
@@ -184,12 +192,12 @@ def fundamentals_redundant_continuously_query_to_sql(query, trade_day):
     query = query.filter(StockValuation.day.in_(trade_day))
     # 根据stock valuation 表的code和day字段筛选
     for table in tables:
-            if table is not StockValuation:
-                query = query.filter(StockValuation.code == table.code)
-                if hasattr(table, 'day'):
-                    query = query.filter(StockValuation.day == table.day)
-                else:
-                    query = query.filter(StockValuation.day == table.statDate)
+        if table is not StockValuation:
+            query = query.filter(StockValuation.code == table.code)
+            if hasattr(table, 'day'):
+                query = query.filter(StockValuation.day == table.day)
+            else:
+                query = query.filter(StockValuation.day == table.statDate)
 
     # 连表
     for table in tables[1:]:
@@ -219,10 +227,16 @@ def get_continuously_query_to_sql(query, trade_day):
     offset = query.offset_value
     query = query.limit(None).offset(None)
 
+    from .fundamentals_tables_gen import (
+        BalanceSheet, CashFlowStatement, FinancialIndicator,
+    )
+
     def get_table_class(tablename):
-        for t in (BalanceSheet, CashFlowStatement, FinancialIndicator,
-                  IncomeStatementDay, StockValuation, BankIndicatorAcc, SecurityIndicatorAcc,
-                  InsuranceIndicatorAcc):
+        for t in (
+            BalanceSheet, CashFlowStatement, FinancialIndicator,  # noqa
+            IncomeStatementDay, StockValuation, BankIndicatorAcc,  # noqa
+            SecurityIndicatorAcc, InsuranceIndicatorAcc  # noqa
+        ):
             if t.__tablename__ == tablename:
                 return t
 
@@ -235,13 +249,14 @@ def get_continuously_query_to_sql(query, trade_day):
     # 从query对象获取表对象
     tablenames = get_tables_from_sql(str(query.statement))
     tables = [get_table_class(name) for name in tablenames]
-    query = query.filter(StockValuation.day.in_(trade_day))
+    valuation = StockValuation  # noqa
+    query = query.filter(valuation.day.in_(trade_day))
     # 根据stock valuation 表的code和day字段筛选
     for table in tables:
-            if table is StockValuation:
-                query = query.filter(StockValuation.code == table.code)
-                query = query.filter(StockValuation.day >= table.periodStart)
-                query = query.filter(StockValuation.day <= table.periodEnd)
+        if table is valuation:  # noqa
+            query = query.filter(valuation.code == table.code)
+            query = query.filter(valuation.day >= table.periodStart)
+            query = query.filter(valuation.day <= table.periodEnd)
 
     # 连表
     for table in tables[1:]:
@@ -255,16 +270,16 @@ def get_continuously_query_to_sql(query, trade_day):
     return sql
 
 
-balance = balance_sheet = BalanceSheetDay
-income = income_statement = IncomeStatementDay
-cash_flow = cash_flow_statement = CashFlowStatementDay
-indicator = financial_indicator = FinancialIndicatorDay
+balance = balance_sheet = BalanceSheetDay  # noqa
+income = income_statement = IncomeStatementDay  # noqa
+cash_flow = cash_flow_statement = CashFlowStatementDay  # noqa
+indicator = financial_indicator = FinancialIndicatorDay  # noqa
 
-bank_indicator = bank_indicator_acc = BankIndicatorAcc
-security_indicator = security_indicator_acc = SecurityIndicatorAcc
-insurance_indicator = insurance_indicator_acc = InsuranceIndicatorAcc
+bank_indicator = bank_indicator_acc = BankIndicatorAcc  # noqa
+security_indicator = security_indicator_acc = SecurityIndicatorAcc  # noqa
+insurance_indicator = insurance_indicator_acc = InsuranceIndicatorAcc  # noqa
 
-valuation = stock_valuation = StockValuation
+valuation = stock_valuation = StockValuation  # noqa
 
 
 __all__ = [
