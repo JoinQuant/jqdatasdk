@@ -2000,11 +2000,11 @@ def test_get_index_style_exposure():
                                    ['size', 'beta', '801740', '801020', '801060'],
                                    '2024-12-01',
                                    '2024-12-10')
-    assert df5.shape == (21, 4)
-    assert any(df5.factor.str.endswith('801060')) == False
+    assert df5.shape == (7, 5)
+    assert not df5['801020'].any()
 
     df6 = get_index_style_exposure('000906.XSHG',
                                    ['earnyild', 'long_growth', 'HY001', 'HY002', 'HY003'],
                                    '2024-12-01',
                                    '2024-12-10')
-    assert df6.shape == (35, 4)
+    assert df6.shape == (7, 5)
