@@ -1218,7 +1218,9 @@ def test_get_current_tick():
     if is_tradeday:
         assert type(get_current_tick('000002.XSHE')) == pd.DataFrame
         assert len(get_current_tick('000001.XSHE')) == 1
-        assert get_current_tick('600535.XSHG').columns.tolist() == [
+        df = get_current_tick('600535.XSHG')
+        print(df.iloc[0])
+        assert df.columns.tolist() == [
             'datetime', 'current', 'high', 'low', 'volume', 'money',
             'a1_p', 'a1_v', 'a2_p', 'a2_v', 'a3_p', 'a3_v', 'a4_p',
             'a4_v', 'a5_p', 'a5_v', 'b1_p', 'b1_v', 'b2_p', 'b2_v',
@@ -1228,6 +1230,19 @@ def test_get_current_tick():
             'datetime', 'current', 'high', 'low', 'volume', 'money', 'position',
             'a1_p', 'a1_v', 'b1_p', 'b1_v'
         ]
+        tick = df.iloc[0]
+        assert int(tick.a1_v) == tick.a1_v
+        assert int(tick.a2_v) == tick.a2_v
+        assert int(tick.a2_v) == tick.a2_v
+        assert int(tick.a3_v) == tick.a3_v
+        assert int(tick.a4_v) == tick.a4_v
+        assert int(tick.a5_v) == tick.a5_v
+        assert int(tick.b1_v) == tick.b1_v
+        assert int(tick.b2_v) == tick.b2_v
+        assert int(tick.b2_v) == tick.b2_v
+        assert int(tick.b3_v) == tick.b3_v
+        assert int(tick.b4_v) == tick.b4_v
+        assert int(tick.b5_v) == tick.b5_v
     else:
         assert get_current_tick('000002.XSHE').isnull().all().all()
     trade_codes = get_future_contracts("IF")
