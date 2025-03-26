@@ -1168,6 +1168,12 @@ def test_get_bars3():
                   skip_paused=False)
     assert len(df) == 1
 
+    df = get_bars('600519.XSHG',
+                  start_dt=pd.to_datetime('2025-03-26 09:50:00'),
+                  end_dt=pd.to_datetime('2025-03-26 10:00:00'),
+                  unit='1m')
+    assert len(df) == 10
+
 
 def test_get_fund_info():
     assert get_fund_info("000001.OF")

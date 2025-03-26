@@ -743,6 +743,7 @@ def get_bars(security, count=None, unit="1d", fields=("date", "open", "high", "l
     assert security, "security is required"
     security = convert_security(security)
     end_dt = to_date_str(end_dt)
+    start_dt = to_date_str(start_dt)
     fq_ref_date = to_date_str(fq_ref_date)
     return JQDataClient.instance().get_bars(**locals())
 
