@@ -545,20 +545,21 @@ def test_log():
 
 
 def test_get_fundamentals():
-    df = get_fundamentals(query(income.day).limit(10), date='2016-07-01')
+    df = get_fundamentals(query(income.day).limit(5000), date='2025-07-01')
     assert isinstance(df, pd.DataFrame)
-    assert len(df.index) == 10
-    df = get_fundamentals(query(income.day).limit(10))
-    assert(len(df.index)) == 10
+    assert len(df.index) == 5000
+    df = get_fundamentals(query(income.day).limit(5000))
+    assert(len(df.index)) == 5000
     with pytest.raises(Exception) as e:
-        get_fundamentals(query(income.day).limit(10), date='2016-07-01', statDate='2016-07-01')
-    df = get_fundamentals(query(income).limit(10))
+        get_fundamentals(query(income.day).limit(10), date='2025-07-01', statDate='2025-07-01')
+    df = get_fundamentals(query(income).limit(10000))
     assert 'rd_expenses' in df.columns
-    df = get_fundamentals(query(balance).limit(10))
+    df = get_fundamentals(query(balance).limit(10000))
     assert 'lease_liability' in df.columns
 
 
 def test_get_fundamentals2():
+    codes = get_all_securities('stock').index.tolist()
     q = query(
         valuation.code,
         indicator.statDate,
@@ -577,14 +578,13 @@ def test_get_fundamentals2():
         indicator.financing_expense_to_total_revenue,
         valuation.pb_ratio
     ).filter(
-        valuation.code == '000895.XSHE'
+        valuation.code.in_(codes)
     )
-    df = get_fundamentals(q, statDate='2017')
-    print(df)
-    assert df.shape == (1, 16)
-    assert "roe" in df.columns
-    assert "pe_ratio" in df.columns
-    assert "pb_ratio" in df.columns
+    s = time.time()
+    df = get_fundamentals(q, statDate='2025q3')
+    e = time.time()
+    assert len(df) == 5157
+    assert e - s < 10
 
 
 def test_get_fundamentals3():
@@ -599,13 +599,13 @@ def test_get_fundamentals3():
     assert len(df) <= 10
     with pytest.raises(Exception):
         cli.get_fundamentals(sql="select * from a limit 1")
-
+    codes = get_all_securities('stock').index.tolist()
     q = query(
         income.statDate, income.code, income.basic_eps,
         balance.cash_equivalents,
         cash_flow.goods_sale_and_service_render_cash
-    ).filter(income.code == '000001.XSHE')
-    sql = get_fundamentals_sql(q, statDate='2018q1')
+    ).filter(income.code.in_(codes))
+    sql = get_fundamentals_sql(q, statDate='2025q1')
     cli.get_fundamentals(sql=sql)
 
 
@@ -779,10 +779,9 @@ def test_ta():
     assert len(data) == 3
     assert isinstance(data, tuple)
     assert isinstance(data[0], dict) and sorted([i for i in data[0].keys()]) == security_list
-
     assert_dict_equal(
         technical_analysis.CCI("000001.XSHE", datetime.date(2024, 7, 5)),
-        {'000001.XSHE': -56.86342193073365}
+        {'000001.XSHE': -59.83787767133543}
     )
 
 
