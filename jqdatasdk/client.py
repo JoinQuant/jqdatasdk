@@ -31,6 +31,7 @@ except ImportError:
 
 from .utils import classproperty, isatty, suppress, get_mac_address
 from .version import __version__ as current_version
+from .compat import pd_astype as pd_astype_compat
 from .compat.pickle_compat import load as pickle_load
 from .thriftclient import thrift
 from .exceptions import ResponseError
@@ -360,7 +361,7 @@ class JQDataClient(object):
                         msg = pd.DataFrame(**params)
                     if dtypes:
                         try:
-                            msg = msg.astype(dtypes, copy=False)
+                            msg = pd_astype_compat(msg, dtypes, copy=False)
                         except Exception:
                             for col, dtype in dtypes.items():
                                 try:
@@ -374,7 +375,7 @@ class JQDataClient(object):
                     msg = pd.Panel(**params)
                     if dtypes:
                         try:
-                            msg = msg.astype(dtypes, copy=False)
+                            msg = pd_astype_compat(msg, dtypes, copy=False)
                         except Exception:
                             for col, dtype in dtypes.items():
                                 try:

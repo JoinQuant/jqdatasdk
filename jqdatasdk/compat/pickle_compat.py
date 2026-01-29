@@ -10,7 +10,35 @@ except ImportError:
 
 import numpy as np
 from pandas import Index
-from pandas.compat.pickle_compat import pkl, Unpickler, load as _load
+
+try:
+    from pandas.compat.pickle_compat import pkl, Unpickler, load as _load
+except ImportError:
+    # pandas 3.0+ 移除了 pkl, load 等导出，直接使用标准库的 pickle
+    pkl = pickle
+    try:
+        from pandas.compat.pickle_compat import Unpickler
+    except ImportError:
+        Unpickler = getattr(pickle, '_Unpickler', pickle.Unpickler)
+
+    def _load(fh, encoding=None, is_verbose=False):
+        """兼容 pandas 3.0+ 的 load 函数"""
+        try:
+            if encoding is not None:
+                return pickle.load(fh, encoding=encoding)
+            else:
+                return pickle.load(fh)
+        except Exception:
+            fh.seek(0)
+            try:
+                from pandas.compat.pickle_compat import Unpickler as PdUnpickler
+                if encoding is not None:
+                    up = PdUnpickler(fh, encoding=encoding)
+                else:
+                    up = PdUnpickler(fh)
+                return up.load()
+            except Exception:
+                raise
 
 try:
     from pandas._libs.arrays import NDArrayBacked
